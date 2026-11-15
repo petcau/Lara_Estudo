@@ -151,7 +151,13 @@
         <section id="quiz-screen" class="screen quiz-screen" aria-labelledby="question-text">
           <div class="quiz-topbar">
             <button class="text-button" data-go-home type="button">← Sair do quiz</button>
-            <span id="question-counter">Pergunta 1 de 1</span>
+            <div class="quiz-progress-summary">
+              <span id="question-counter">Pergunta 1 de 1</span>
+              <div class="answer-totals" aria-label="Placar do quiz" aria-live="polite">
+                <span class="answer-total answer-total--correct"><strong id="correct-count">0</strong> acertos</span>
+                <span class="answer-total answer-total--wrong"><strong id="wrong-count">0</strong> erros</span>
+              </div>
+            </div>
           </div>
 
           <div class="progress-track" aria-label="Progresso do quiz">
@@ -186,9 +192,15 @@
           <span class="eyebrow">QUIZ CONCLUÍDO</span>
           <h2 id="result-title">Muito bem!</h2>
           <p id="result-message"></p>
-          <div class="score-card">
-            <strong id="score-value">0/0</strong>
-            <span>respostas corretas</span>
+          <div class="result-stats">
+            <div class="score-card">
+              <strong id="score-value">0/0</strong>
+              <span>respostas corretas</span>
+            </div>
+            <div class="score-card score-card--wrong">
+              <strong id="wrong-score-value">0</strong>
+              <span>respostas erradas</span>
+            </div>
           </div>
           <div class="result-actions">
             <button id="restart-button" class="primary-button" type="button">Tentar novamente</button>

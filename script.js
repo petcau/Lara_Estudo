@@ -13,6 +13,8 @@ const contentSelect = document.querySelector("#content-select");
 const availableCount = document.querySelector("#available-count");
 const amountButtons = document.querySelectorAll("[data-amount]");
 const questionCounter = document.querySelector("#question-counter");
+const correctCount = document.querySelector("#correct-count");
+const wrongCount = document.querySelector("#wrong-count");
 const progressBar = document.querySelector("#progress-bar");
 const questionSubject = document.querySelector("#question-subject");
 const questionChapter = document.querySelector("#question-chapter");
@@ -24,10 +26,12 @@ const answerList = document.querySelector("#answer-list");
 const feedback = document.querySelector("#feedback");
 const nextButton = document.querySelector("#next-button");
 const scoreValue = document.querySelector("#score-value");
+const wrongScoreValue = document.querySelector("#wrong-score-value");
 const resultMessage = document.querySelector("#result-message");
 const restartButton = document.querySelector("#restart-button");
 
 const ALL = "__all";
+const STORAGE_KEY = "estuda-plus-quiz-progress-v1";
 let selectedSubject = ALL;
 let selectedChapters = new Set();
 let selectedAmount = "all";
@@ -35,6 +39,7 @@ let quizQuestions = [];
 let currentQuestion = 0;
 let selectedAnswer = null;
 let score = 0;
+let wrongAnswers = 0;
 let answerConfirmed = false;
 
 function showScreen(screen) {
@@ -187,6 +192,101 @@ function shuffle(items) {
   return copy;
 }
 
+function updateQuizStats() {
+  correctCount.textContent = score;
+  wrongCount.textContent = wrongAnswers;
+}
+
+function saveProgress(status = "quiz") {
+  if (!quizQuestions.length) return;
+
+  const state = {
+    version: 1,
+    status,
+    questionIds: quizQuestions.map((question) => question.pergunta),
+    currentQuestion: status === "result" ? quizQuestions.length - 1 : currentQuestion,
+    selectedAnswer,
+    answerConfirmed,
+    score,
+    wrongAnswers,
+  };
+
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  } catch {
+    // O quiz continua funcionando mesmo se o navegador bloquear o armazenamento local.
+  }
+}
+
+function clearSavedProgress() {
+  try {
+    localStorage.removeItem(STORAGE_KEY);
+  } catch {
+    // Sem ação: o armazenamento local pode estar indisponível.
+  }
+}
+
+function restoreProgress() {
+  let state;
+  try {
+    state = JSON.parse(localStorage.getItem(STORAGE_KEY));
+  } catch {
+    clearSavedProgress();
+    return false;
+  }
+
+  if (!state || state.version !== 1 || !Array.isArray(state.questionIds) || !state.questionIds.length) {
+    return false;
+  }
+
+  const questionsById = new Map(perguntas.map((question) => [question.pergunta, question]));
+  const restoredQuestions = state.questionIds.map((id) => questionsById.get(id));
+  const validIndex = Number.isInteger(state.currentQuestion)
+    && state.currentQuestion >= 0
+    && state.currentQuestion < restoredQuestions.length;
+
+  if (!validIndex || restoredQuestions.some((question) => !question)) {
+    clearSavedProgress();
+    return false;
+  }
+
+  quizQuestions = restoredQuestions;
+  currentQuestion = state.currentQuestion;
+  score = Number.isInteger(state.score) && state.score >= 0 ? state.score : 0;
+  wrongAnswers = Number.isInteger(state.wrongAnswers) && state.wrongAnswers >= 0 ? state.wrongAnswers : 0;
+  updateQuizStats();
+
+  if (state.status === "result") {
+    showResults();
+    return true;
+  }
+
+  const savedAnswer = Number.isInteger(state.selectedAnswer)
+    && state.selectedAnswer >= 0
+    && state.selectedAnswer < 4
+    ? state.selectedAnswer
+    : null;
+  const savedConfirmation = Boolean(state.answerConfirmed && savedAnswer !== null);
+
+  showScreen(quizScreen);
+  renderQuestion();
+
+  if (savedAnswer !== null) {
+    const button = answerList.querySelectorAll(".answer-button")[savedAnswer];
+    selectedAnswer = savedAnswer;
+    button?.classList.add("is-selected");
+    button?.setAttribute("aria-checked", "true");
+    nextButton.disabled = false;
+  }
+
+  if (savedConfirmation) {
+    answerConfirmed = true;
+    revealConfirmedAnswer();
+  }
+
+  return true;
+}
+
 function openSetup() {
   showScreen(setupScreen);
   updateAvailableCount();
@@ -207,9 +307,12 @@ function buildQuiz() {
   currentQuestion = 0;
   selectedAnswer = null;
   score = 0;
+  wrongAnswers = 0;
   answerConfirmed = false;
+  updateQuizStats();
   showScreen(quizScreen);
   renderQuestion();
+  saveProgress();
 }
 
 function renderQuestion() {
@@ -256,6 +359,7 @@ function selectAnswer(index, selectedButton) {
   selectedButton.classList.add("is-selected");
   selectedButton.setAttribute("aria-checked", "true");
   nextButton.disabled = false;
+  saveProgress();
 }
 
 function confirmOrAdvance() {
@@ -269,6 +373,7 @@ function confirmOrAdvance() {
   currentQuestion += 1;
   if (currentQuestion < quizQuestions.length) {
     renderQuestion();
+    saveProgress();
   } else {
     showResults();
   }
@@ -276,8 +381,22 @@ function confirmOrAdvance() {
 
 function confirmAnswer() {
   const question = quizQuestions[currentQuestion];
-  const buttons = answerList.querySelectorAll(".answer-button");
   answerConfirmed = true;
+
+  if (selectedAnswer === question.correta) {
+    score += 1;
+  } else {
+    wrongAnswers += 1;
+  }
+
+  updateQuizStats();
+  revealConfirmedAnswer();
+  saveProgress();
+}
+
+function revealConfirmedAnswer() {
+  const question = quizQuestions[currentQuestion];
+  const buttons = answerList.querySelectorAll(".answer-button");
 
   buttons.forEach((button) => {
     button.disabled = true;
@@ -286,7 +405,6 @@ function confirmAnswer() {
   buttons[question.correta]?.classList.add("is-correct");
 
   if (selectedAnswer === question.correta) {
-    score += 1;
     feedback.classList.add("is-correct");
     feedback.textContent = `Correto! ${question.explicacao}`;
   } else {
@@ -303,6 +421,7 @@ function confirmAnswer() {
 function showResults() {
   const percentage = Math.round((score / quizQuestions.length) * 100);
   scoreValue.textContent = `${score}/${quizQuestions.length}`;
+  wrongScoreValue.textContent = wrongAnswers;
 
   if (percentage === 100) {
     resultMessage.textContent = "Você acertou tudo. Excelente trabalho!";
@@ -315,6 +434,7 @@ function showResults() {
   }
 
   showScreen(resultScreen);
+  saveProgress("result");
 }
 
 function updateHomeState() {
@@ -349,3 +469,4 @@ document.querySelector(".brand").addEventListener("click", (event) => {
 
 populateSubjects();
 updateHomeState();
+restoreProgress();
