@@ -41,11 +41,11 @@
             </p>
 
             <div class="action-row">
-              <button id="start-button" class="primary-button" type="button" disabled>
-                Começar quiz
+              <button id="start-button" class="primary-button" type="button">
+                Escolher conteúdo
                 <span aria-hidden="true">→</span>
               </button>
-              <span id="material-status" class="material-status">Aguardando material</span>
+              <span id="material-status" class="material-status">Material disponível</span>
             </div>
 
             <div class="mini-features" aria-label="Recursos do quiz">
@@ -81,6 +81,66 @@
           </div>
         </section>
 
+        <section id="setup-screen" class="screen setup-screen" aria-labelledby="setup-title">
+          <div class="setup-heading">
+            <button class="text-button" data-go-home type="button">← Voltar ao início</button>
+            <span class="eyebrow">MONTE SEU QUIZ</span>
+            <h2 id="setup-title">O que você quer estudar?</h2>
+            <p>Escolha a matéria, o capítulo e o conteúdo. Você também pode misturar tudo.</p>
+          </div>
+
+          <div class="study-path" aria-label="Organização do material">
+            <label class="filter-field">
+              <span class="filter-number">1</span>
+              <span class="filter-copy">
+                <strong>Matéria</strong>
+                <small>Área de estudo</small>
+              </span>
+              <select id="subject-select" aria-label="Escolha a matéria">
+                <option value="Inglês">Inglês</option>
+              </select>
+            </label>
+
+            <label class="filter-field">
+              <span class="filter-number">2</span>
+              <span class="filter-copy">
+                <strong>Capítulo</strong>
+                <small>Unidade do livro</small>
+              </span>
+              <select id="chapter-select" aria-label="Escolha o capítulo"></select>
+            </label>
+
+            <label class="filter-field">
+              <span class="filter-number">3</span>
+              <span class="filter-copy">
+                <strong>Conteúdo</strong>
+                <small>Tema para praticar</small>
+              </span>
+              <select id="content-select" aria-label="Escolha o conteúdo"></select>
+            </label>
+          </div>
+
+          <div class="quiz-options">
+            <div>
+              <span class="option-label">QUANTIDADE DE QUESTÕES</span>
+              <div id="amount-options" class="amount-options" role="radiogroup" aria-label="Quantidade de questões">
+                <button type="button" data-amount="10" role="radio" aria-checked="false">10</button>
+                <button type="button" data-amount="20" role="radio" aria-checked="true" class="is-selected">20</button>
+                <button type="button" data-amount="all" role="radio" aria-checked="false">Todas</button>
+              </div>
+            </div>
+
+            <div class="selection-summary">
+              <strong id="available-count">0</strong>
+              <span>questões disponíveis</span>
+            </div>
+          </div>
+
+          <button id="begin-quiz-button" class="primary-button begin-button" type="button">
+            Começar agora <span aria-hidden="true">→</span>
+          </button>
+        </section>
+
         <section id="empty-screen" class="screen empty-screen" aria-labelledby="empty-title">
           <div class="empty-icon" aria-hidden="true">⌁</div>
           <span class="eyebrow">QUASE LÁ</span>
@@ -100,7 +160,13 @@
           </div>
 
           <article class="question-card">
-            <span id="question-subject" class="subject-tag">Geral</span>
+            <div class="question-taxonomy" aria-label="Classificação da questão">
+              <span id="question-subject" class="subject-tag">Inglês</span>
+              <span aria-hidden="true">›</span>
+              <span id="question-chapter"></span>
+              <span aria-hidden="true">›</span>
+              <span id="question-content"></span>
+            </div>
             <h2 id="question-text"></h2>
             <div id="answer-list" class="answer-list" role="radiogroup" aria-label="Alternativas"></div>
             <div class="question-footer">
@@ -134,6 +200,7 @@
       </footer>
     </div>
 
+    <script src="questions.js"></script>
     <script src="script.js"></script>
   </body>
 </html>
