@@ -97,7 +97,6 @@
                 <small>Área de estudo</small>
               </span>
               <select id="subject-select" aria-label="Escolha a matéria">
-                <option value="Inglês">Inglês</option>
               </select>
             </label>
 
@@ -126,6 +125,7 @@
               <div id="amount-options" class="amount-options" role="radiogroup" aria-label="Quantidade de questões">
                 <button type="button" data-amount="10" role="radio" aria-checked="false">10</button>
                 <button type="button" data-amount="20" role="radio" aria-checked="true" class="is-selected">20</button>
+                <button type="button" data-amount="50" role="radio" aria-checked="false">50</button>
                 <button type="button" data-amount="all" role="radio" aria-checked="false">Todas</button>
               </div>
             </div>
@@ -167,6 +167,10 @@
               <span aria-hidden="true">›</span>
               <span id="question-content"></span>
             </div>
+            <section id="source-text" class="source-text" aria-labelledby="source-text-label" hidden>
+              <span id="source-text-label" class="source-text-label">Texto para responder</span>
+              <p id="source-text-content"></p>
+            </section>
             <h2 id="question-text"></h2>
             <div id="answer-list" class="answer-list" role="radiogroup" aria-label="Alternativas"></div>
             <div class="question-footer">
@@ -201,6 +205,7 @@
     </div>
 
     <script src="questions.js"></script>
+    <script src="science-questions.js"></script>
     <script src="script.js"></script>
   </body>
 </html>

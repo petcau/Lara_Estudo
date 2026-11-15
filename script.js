@@ -7,6 +7,7 @@ const resultScreen = document.querySelector("#result-screen");
 const startButton = document.querySelector("#start-button");
 const beginQuizButton = document.querySelector("#begin-quiz-button");
 const materialStatus = document.querySelector("#material-status");
+const subjectSelect = document.querySelector("#subject-select");
 const chapterSelect = document.querySelector("#chapter-select");
 const contentSelect = document.querySelector("#content-select");
 const availableCount = document.querySelector("#available-count");
@@ -16,6 +17,8 @@ const progressBar = document.querySelector("#progress-bar");
 const questionSubject = document.querySelector("#question-subject");
 const questionChapter = document.querySelector("#question-chapter");
 const questionContent = document.querySelector("#question-content");
+const sourceText = document.querySelector("#source-text");
+const sourceTextContent = document.querySelector("#source-text-content");
 const questionText = document.querySelector("#question-text");
 const answerList = document.querySelector("#answer-list");
 const feedback = document.querySelector("#feedback");
@@ -49,10 +52,24 @@ function addOption(select, value, label) {
   select.appendChild(option);
 }
 
+function populateSubjects() {
+  subjectSelect.replaceChildren();
+  addOption(subjectSelect, ALL, "Todas as matérias");
+  unique(perguntas.map((question) => question.materia)).forEach((subject) => {
+    addOption(subjectSelect, subject, subject);
+  });
+  populateChapters();
+}
+
 function populateChapters() {
+  const selectedSubject = subjectSelect.value;
+  const matchingQuestions = selectedSubject === ALL
+    ? perguntas
+    : perguntas.filter((question) => question.materia === selectedSubject);
+
   chapterSelect.replaceChildren();
   addOption(chapterSelect, ALL, "Todos os capítulos");
-  unique(perguntas.map((question) => question.capitulo)).forEach((chapter) => {
+  unique(matchingQuestions.map((question) => question.capitulo)).forEach((chapter) => {
     addOption(chapterSelect, chapter, chapter);
   });
   populateContents();
@@ -74,9 +91,10 @@ function populateContents() {
 
 function getFilteredQuestions() {
   return perguntas.filter((question) => {
+    const subjectMatches = subjectSelect.value === ALL || question.materia === subjectSelect.value;
     const chapterMatches = chapterSelect.value === ALL || question.capitulo === chapterSelect.value;
     const contentMatches = contentSelect.value === ALL || question.conteudo === contentSelect.value;
-    return chapterMatches && contentMatches;
+    return subjectMatches && chapterMatches && contentMatches;
   });
 }
 
@@ -134,6 +152,9 @@ function renderQuestion() {
   questionSubject.textContent = question.materia;
   questionChapter.textContent = question.capitulo;
   questionContent.textContent = `${question.conteudo} · pág. ${question.pagina}`;
+  const hasSourceText = Boolean(question.textoBase?.trim());
+  sourceText.hidden = !hasSourceText;
+  sourceTextContent.textContent = hasSourceText ? question.textoBase : "";
   questionText.textContent = question.pergunta;
   answerList.replaceChildren();
 
@@ -231,6 +252,7 @@ beginQuizButton.addEventListener("click", buildQuiz);
 nextButton.addEventListener("click", confirmOrAdvance);
 restartButton.addEventListener("click", buildQuiz);
 chapterSelect.addEventListener("change", populateContents);
+subjectSelect.addEventListener("change", populateChapters);
 contentSelect.addEventListener("change", updateAvailableCount);
 
 amountButtons.forEach((button) => {
@@ -253,5 +275,5 @@ document.querySelector(".brand").addEventListener("click", (event) => {
   showScreen(welcomeScreen);
 });
 
-populateChapters();
+populateSubjects();
 updateHomeState();

@@ -145,3 +145,74 @@ const perguntas = [
   criarQuestao(U8, "Graffiti e street art", 21, "No passado, muitas pessoas consideravam o graffiti uma forma de:", ["Vandalism", "Advertising", "Teamwork", "Personality"], 0, "A página afirma que, no passado, a maioria das pessoas pensava que graffiti was vandalism."),
   criarQuestao(U8, "Graffiti e street art", 21, "Segundo a página, uma oficina de graffiti pode ajudar os alunos a desenvolver:", ["Somente velocidade", "Trabalho em equipe e expressão artística", "Técnicas de viagem", "Conhecimentos de culinária"], 1, "O texto destaca que atividades artísticas são divertidas e que a oficina reúne as pessoas como uma equipe."),
 ];
+
+// Trechos exibidos somente quando a resposta depende de uma leitura ou conversa.
+// Todo o contexto abaixo foi extraído ou condensado das páginas enviadas pelo usuário.
+const textosBaseIngles = {
+  "Leitura: Budget bucket list": `Ashley — Budget bucket list!
+
+A: "Have you ever dyed your hair a different color? I did it for the first time last weekend! But I didn't go to a hairdresser. I did it myself at home! It only cost me $4!"
+
+B: "I recently decorated my bedroom myself! I used some old paint and my sister's old shelves, and bought some fairy lights."
+
+C: "My friends and I wanted to go camping, but we didn't have much money. Camping in our friend's backyard cost nothing."
+
+D: "Last week my friends and I made a dance video. We put it on YouTube."`,
+
+  "FOMO e JOMO": `Missing out?
+
+About 25% of teenagers say that they experience FOMO — Fear of Missing Out. Grace, 18, has learned to feel JOMO — the Joy of Missing Out. In the past, she never stayed in, but then she understood that she needed to organize her own life. Now she only goes out occasionally and spends more time on her interests.
+
+Dr. Stella Taylor says: "Remember that you are in control of your life." With JOMO, you have more time for hobbies you enjoy.`,
+
+  "Leitura: FOMO e JOMO": `Missing out?
+
+About 25% of teenagers say that they experience FOMO — Fear of Missing Out. Grace, 18, has learned to feel JOMO — the Joy of Missing Out. In the past, she never stayed in, but then she understood that she needed to organize her own life. Now she only goes out occasionally and spends more time on her interests.
+
+Dr. Stella Taylor says: "Remember that you are in control of your life." With JOMO, you have more time for hobbies you enjoy.`,
+
+  "Experiências: present perfect e simple past": `Robert: Mr. Fry, you teach us music, but we know you play a lot of sports, too. Have you ever participated in a big sports event?
+Mr. Fry: Yes, I have!
+Robert: What did you do?
+Mr. Fry: I sailed across the Atlantic Ocean about 15 years ago.
+Robert: How long did the journey take?
+Mr. Fry: It took about four weeks.
+Robert: Did you feel scared or worried sometimes?
+Mr. Fry: Yes. We were in a terrible storm. We were very scared, but then we reminded each other that people go on these trips all the time!`,
+
+  "Cosplay e atividades criativas": `Documentary: Sophie's costume
+
+Sophie made a smart costume and learned many new skills while working on it. She enjoys cosplay because she likes learning new skills. The costume shown in the material took her two weeks to make.`,
+
+  "Leitura: But is it art?": `But is it art?
+
+Ben Wilson paints tiny pictures on old gum that people drop in the street. Jolanda Stokkermans creates pictures with food, using vegetables and different sauces. Ai-Da is a robot artist that can draw and paint; she held her first exhibition in Oxford, England.`,
+
+  "Leitura: Teen creators": `Teen creators
+
+Hannah Herbst received a letter from her Ethiopian pen pal, whose community did not have a reliable source of energy. Hannah designed Beacon, a machine that uses energy from the ocean, costs only $12 to make, and can provide energy for lighting and clean water.
+
+Guillaume Rolland disliked his loud alarm clock. He started working in his parents' garage and developed SensorWake, an alarm clock that wakes people with smells such as lemon, apples, chocolate, or grass. The invention made him a successful businessman.`,
+
+  "Compreensão e paráfrase": `Teen creators
+
+At 13, Hannah Herbst discovered that science was very enjoyable. She designed Beacon, a machine that uses ocean energy and costs only $12 to make.
+
+Guillaume Rolland started working in his parents' garage. He created SensorWake, a clock that wakes people with different smells, and became a successful businessman.`,
+
+  "Gostos, opiniões e comparações": `Kaitlyn: What does everyone think of Billie Eilish's song?
+Ana: I really like it! It reminds me of the songs from her first album. And it sounds a bit like music from the 70s!
+Kaitlyn: Me, too. I love it! The part I like best is the second half of the song when the music gets faster.
+Eduardo: It isn't really my kind of thing. I'm not a fan of Billie Eilish's music. It isn't original enough, and it's too boring!
+Ana: You can't say her music is boring! I'm really into it! And this is the best song on the album!
+Eduardo: Sorry! It's just not for me!`,
+
+  "Graffiti e street art": `Graffiti Life
+
+Street art is art made in public spaces, such as an enormous painting on a building or wall. Graffiti consists of words and pictures painted on a wall or public place. In the past, many people thought graffiti was vandalism. The material also says that a graffiti workshop can bring people together as a team and allow artistic expression.`
+};
+
+perguntas.forEach((questao) => {
+  const textoBase = textosBaseIngles[questao.conteudo];
+  if (textoBase) questao.textoBase = textoBase;
+});
