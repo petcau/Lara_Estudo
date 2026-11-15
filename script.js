@@ -8,7 +8,7 @@ const startButton = document.querySelector("#start-button");
 const beginQuizButton = document.querySelector("#begin-quiz-button");
 const materialStatus = document.querySelector("#material-status");
 const subjectOptions = document.querySelector("#subject-options");
-const chapterSelect = document.querySelector("#chapter-select");
+const chapterOptions = document.querySelector("#chapter-options");
 const contentSelect = document.querySelector("#content-select");
 const availableCount = document.querySelector("#available-count");
 const amountButtons = document.querySelectorAll("[data-amount]");
@@ -29,6 +29,7 @@ const restartButton = document.querySelector("#restart-button");
 
 const ALL = "__all";
 let selectedSubject = ALL;
+let selectedChapters = new Set();
 let selectedAmount = "20";
 let quizQuestions = [];
 let currentQuestion = 0;
@@ -91,20 +92,65 @@ function populateChapters() {
   const matchingQuestions = selectedSubject === ALL
     ? perguntas
     : perguntas.filter((question) => question.materia === selectedSubject);
+  const chapters = unique(matchingQuestions.map((question) => question.capitulo));
 
-  chapterSelect.replaceChildren();
-  addOption(chapterSelect, ALL, "Todos os capítulos");
-  unique(matchingQuestions.map((question) => question.capitulo)).forEach((chapter) => {
-    addOption(chapterSelect, chapter, chapter);
+  selectedChapters = new Set(chapters);
+  chapterOptions.replaceChildren();
+
+  const allChoice = createChapterChoice(ALL, "Todos os capítulos", true, true);
+  chapterOptions.appendChild(allChoice);
+  chapters.forEach((chapter) => {
+    chapterOptions.appendChild(createChapterChoice(chapter, chapter, true));
   });
-  populateContents();
+
+  populateContents(true);
 }
 
-function populateContents() {
-  const selectedChapter = chapterSelect.value;
+function createChapterChoice(value, label, checked, isAll = false) {
+  const choice = document.createElement("label");
+  const checkbox = document.createElement("input");
+  const text = document.createElement("span");
+
+  choice.className = "chapter-choice";
+  choice.classList.toggle("chapter-choice--all", isAll);
+  checkbox.type = "checkbox";
+  checkbox.value = value;
+  checkbox.checked = checked;
+  checkbox.dataset.chapter = value;
+  text.textContent = label;
+  choice.append(checkbox, text);
+
+  checkbox.addEventListener("change", () => {
+    if (value === ALL) {
+      chapterOptions.querySelectorAll('input[data-chapter]:not([data-chapter="__all"])').forEach((item) => {
+        item.checked = checkbox.checked;
+      });
+    }
+
+    syncSelectedChapters();
+    populateContents(true);
+  });
+
+  return choice;
+}
+
+function syncSelectedChapters() {
+  const chapterCheckboxes = [...chapterOptions.querySelectorAll('input[data-chapter]:not([data-chapter="__all"])')];
+  selectedChapters = new Set(
+    chapterCheckboxes.filter((checkbox) => checkbox.checked).map((checkbox) => checkbox.value),
+  );
+
+  const allCheckbox = chapterOptions.querySelector('input[data-chapter="__all"]');
+  if (allCheckbox) {
+    allCheckbox.checked = chapterCheckboxes.length > 0 && chapterCheckboxes.every((checkbox) => checkbox.checked);
+    allCheckbox.indeterminate = selectedChapters.size > 0 && selectedChapters.size < chapterCheckboxes.length;
+  }
+}
+
+function populateContents(resetSelection = false) {
   const matchingQuestions = perguntas.filter((question) => {
     const subjectMatches = selectedSubject === ALL || question.materia === selectedSubject;
-    const chapterMatches = selectedChapter === ALL || question.capitulo === selectedChapter;
+    const chapterMatches = selectedChapters.has(question.capitulo);
     return subjectMatches && chapterMatches;
   });
 
@@ -113,13 +159,14 @@ function populateContents() {
   unique(matchingQuestions.map((question) => question.conteudo)).forEach((content) => {
     addOption(contentSelect, content, content);
   });
+  if (resetSelection) contentSelect.value = ALL;
   updateAvailableCount();
 }
 
 function getFilteredQuestions() {
   return perguntas.filter((question) => {
     const subjectMatches = selectedSubject === ALL || question.materia === selectedSubject;
-    const chapterMatches = chapterSelect.value === ALL || question.capitulo === chapterSelect.value;
+    const chapterMatches = selectedChapters.has(question.capitulo);
     const contentMatches = contentSelect.value === ALL || question.conteudo === contentSelect.value;
     return subjectMatches && chapterMatches && contentMatches;
   });
@@ -278,7 +325,6 @@ startButton.addEventListener("click", openSetup);
 beginQuizButton.addEventListener("click", buildQuiz);
 nextButton.addEventListener("click", confirmOrAdvance);
 restartButton.addEventListener("click", buildQuiz);
-chapterSelect.addEventListener("change", populateContents);
 contentSelect.addEventListener("change", updateAvailableCount);
 
 amountButtons.forEach((button) => {
