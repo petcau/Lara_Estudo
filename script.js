@@ -7,7 +7,7 @@ const resultScreen = document.querySelector("#result-screen");
 const startButton = document.querySelector("#start-button");
 const beginQuizButton = document.querySelector("#begin-quiz-button");
 const materialStatus = document.querySelector("#material-status");
-const subjectSelect = document.querySelector("#subject-select");
+const subjectOptions = document.querySelector("#subject-options");
 const chapterSelect = document.querySelector("#chapter-select");
 const contentSelect = document.querySelector("#content-select");
 const availableCount = document.querySelector("#available-count");
@@ -28,6 +28,7 @@ const resultMessage = document.querySelector("#result-message");
 const restartButton = document.querySelector("#restart-button");
 
 const ALL = "__all";
+let selectedSubject = ALL;
 let selectedAmount = "20";
 let quizQuestions = [];
 let currentQuestion = 0;
@@ -53,16 +54,40 @@ function addOption(select, value, label) {
 }
 
 function populateSubjects() {
-  subjectSelect.replaceChildren();
-  addOption(subjectSelect, ALL, "Todas as matérias");
-  unique(perguntas.map((question) => question.materia)).forEach((subject) => {
-    addOption(subjectSelect, subject, subject);
+  const subjects = [
+    { value: ALL, label: "Todas" },
+    ...unique(perguntas.map((question) => question.materia)).map((subject) => ({
+      value: subject,
+      label: subject,
+    })),
+  ];
+
+  subjectOptions.replaceChildren();
+  subjects.forEach(({ value, label }) => {
+    const button = document.createElement("button");
+    const isSelected = value === selectedSubject;
+    button.type = "button";
+    button.className = "subject-button";
+    button.dataset.subject = value;
+    button.setAttribute("role", "radio");
+    button.setAttribute("aria-checked", String(isSelected));
+    button.classList.toggle("is-selected", isSelected);
+    button.textContent = label;
+    button.addEventListener("click", () => {
+      selectedSubject = value;
+      subjectOptions.querySelectorAll(".subject-button").forEach((item) => {
+        const itemIsSelected = item === button;
+        item.classList.toggle("is-selected", itemIsSelected);
+        item.setAttribute("aria-checked", String(itemIsSelected));
+      });
+      populateChapters();
+    });
+    subjectOptions.appendChild(button);
   });
   populateChapters();
 }
 
 function populateChapters() {
-  const selectedSubject = subjectSelect.value;
   const matchingQuestions = selectedSubject === ALL
     ? perguntas
     : perguntas.filter((question) => question.materia === selectedSubject);
@@ -77,9 +102,11 @@ function populateChapters() {
 
 function populateContents() {
   const selectedChapter = chapterSelect.value;
-  const matchingQuestions = selectedChapter === ALL
-    ? perguntas
-    : perguntas.filter((question) => question.capitulo === selectedChapter);
+  const matchingQuestions = perguntas.filter((question) => {
+    const subjectMatches = selectedSubject === ALL || question.materia === selectedSubject;
+    const chapterMatches = selectedChapter === ALL || question.capitulo === selectedChapter;
+    return subjectMatches && chapterMatches;
+  });
 
   contentSelect.replaceChildren();
   addOption(contentSelect, ALL, "Todos os conteúdos");
@@ -91,7 +118,7 @@ function populateContents() {
 
 function getFilteredQuestions() {
   return perguntas.filter((question) => {
-    const subjectMatches = subjectSelect.value === ALL || question.materia === subjectSelect.value;
+    const subjectMatches = selectedSubject === ALL || question.materia === selectedSubject;
     const chapterMatches = chapterSelect.value === ALL || question.capitulo === chapterSelect.value;
     const contentMatches = contentSelect.value === ALL || question.conteudo === contentSelect.value;
     return subjectMatches && chapterMatches && contentMatches;
@@ -252,7 +279,6 @@ beginQuizButton.addEventListener("click", buildQuiz);
 nextButton.addEventListener("click", confirmOrAdvance);
 restartButton.addEventListener("click", buildQuiz);
 chapterSelect.addEventListener("change", populateContents);
-subjectSelect.addEventListener("change", populateChapters);
 contentSelect.addEventListener("change", updateAvailableCount);
 
 amountButtons.forEach((button) => {

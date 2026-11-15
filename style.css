@@ -459,6 +459,43 @@ h1 em::after {
   cursor: pointer;
 }
 
+.subject-options {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  width: 100%;
+}
+
+.subject-button {
+  min-height: 48px;
+  padding: 8px 14px;
+  color: var(--purple-dark);
+  background: #f8f6fc;
+  border: 1px solid #d8cff7;
+  border-radius: 12px;
+  font: 700 0.86rem "DM Sans", sans-serif;
+  cursor: pointer;
+  transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.subject-button:hover {
+  background: var(--purple-soft);
+  border-color: #baaaf1;
+  transform: translateY(-1px);
+}
+
+.subject-button.is-selected {
+  color: white;
+  background: var(--purple);
+  border-color: var(--purple);
+  box-shadow: 0 6px 16px rgba(113, 87, 217, 0.22);
+}
+
+.subject-button:focus-visible {
+  outline: 3px solid rgba(113, 87, 217, 0.25);
+  outline-offset: 2px;
+}
+
 .quiz-options {
   display: flex;
   align-items: center;
@@ -795,6 +832,7 @@ a:focus-visible {
   .setup-heading .text-button { margin-bottom: 28px; }
   .filter-field { grid-template-columns: 40px 1fr; padding: 16px; }
   .filter-field select { grid-column: 1 / -1; }
+  .subject-options { grid-column: 1 / -1; }
   .quiz-options { align-items: stretch; flex-direction: column; }
   .selection-summary { align-items: flex-start; }
   .amount-options { width: 100%; }
