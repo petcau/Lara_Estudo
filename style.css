@@ -372,6 +372,162 @@ h1 em::after {
   text-align: center;
 }
 
+.setup-screen {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 48px 0 72px;
+  flex-direction: column;
+}
+
+.setup-heading {
+  text-align: center;
+}
+
+.setup-heading .text-button {
+  display: block;
+  margin-bottom: 34px;
+}
+
+.setup-heading .eyebrow {
+  margin-bottom: 12px;
+}
+
+.setup-heading h2 {
+  font-size: clamp(2rem, 5vw, 3.25rem);
+}
+
+.setup-heading p {
+  margin: 12px 0 0;
+  color: var(--muted);
+}
+
+.study-path {
+  display: grid;
+  gap: 14px;
+  margin-top: 42px;
+}
+
+.filter-field {
+  display: grid;
+  grid-template-columns: 44px minmax(140px, 1fr) minmax(260px, 1.45fr);
+  align-items: center;
+  gap: 16px;
+  min-height: 82px;
+  padding: 14px 18px;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  box-shadow: 0 8px 30px rgba(55, 42, 103, 0.06);
+}
+
+.filter-number {
+  display: grid;
+  width: 38px;
+  height: 38px;
+  place-items: center;
+  color: white;
+  background: var(--purple);
+  border-radius: 12px;
+  font-family: "Nunito", sans-serif;
+  font-weight: 900;
+}
+
+.filter-copy {
+  display: flex;
+  flex-direction: column;
+}
+
+.filter-copy strong {
+  font-size: 0.95rem;
+}
+
+.filter-copy small {
+  margin-top: 2px;
+  color: var(--muted);
+  font-size: 0.72rem;
+}
+
+.filter-field select {
+  width: 100%;
+  min-height: 48px;
+  padding: 0 42px 0 14px;
+  color: var(--ink);
+  background: #f8f6fc;
+  border: 1px solid #ded9e9;
+  border-radius: 12px;
+  font: 600 0.86rem "DM Sans", sans-serif;
+  cursor: pointer;
+}
+
+.quiz-options {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  margin-top: 28px;
+  padding: 24px;
+  background: var(--purple-soft);
+  border-radius: 20px;
+}
+
+.option-label {
+  display: block;
+  margin-bottom: 12px;
+  color: var(--purple-dark);
+  font-size: 0.66rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+}
+
+.amount-options {
+  display: flex;
+  gap: 8px;
+}
+
+.amount-options button {
+  min-width: 68px;
+  min-height: 40px;
+  padding: 0 14px;
+  color: var(--purple-dark);
+  background: white;
+  border: 1px solid #d8cff7;
+  border-radius: 11px;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.amount-options button.is-selected {
+  color: white;
+  background: var(--purple);
+  border-color: var(--purple);
+  box-shadow: 0 6px 16px rgba(113, 87, 217, 0.22);
+}
+
+.selection-summary {
+  display: flex;
+  align-items: flex-end;
+  flex-direction: column;
+}
+
+.selection-summary strong {
+  color: var(--purple);
+  font-family: "Nunito", sans-serif;
+  font-size: 2.1rem;
+  line-height: 1;
+}
+
+.selection-summary span {
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 0.75rem;
+}
+
+.begin-button {
+  align-self: center;
+  min-width: 230px;
+  margin-top: 28px;
+}
+
 .empty-icon,
 .result-badge {
   display: grid;
@@ -456,6 +612,20 @@ h1 em::after {
   text-transform: uppercase;
 }
 
+.question-taxonomy {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.question-taxonomy > span:not(.subject-tag) {
+  line-height: 1.4;
+}
+
 .question-card h2 {
   margin: 20px 0 30px;
   font-size: clamp(1.55rem, 4vw, 2.25rem);
@@ -516,10 +686,27 @@ h1 em::after {
 }
 
 .feedback {
+  flex: 1;
   margin: 0;
   color: var(--muted);
   font-size: 0.9rem;
   font-weight: 600;
+  line-height: 1.55;
+}
+
+.feedback:not(:empty) {
+  padding: 14px 16px;
+  border-radius: 12px;
+}
+
+.feedback.is-correct {
+  color: #26785c;
+  background: #e8f8f1;
+}
+
+.feedback.is-wrong {
+  color: #9f4549;
+  background: #fff0f0;
 }
 
 .score-card {
@@ -577,6 +764,15 @@ a:focus-visible {
   .primary-button { width: 100%; }
   .mini-features { align-items: flex-start; flex-direction: column; width: fit-content; margin-right: auto; margin-left: auto; }
   .quiz-screen { padding: 32px 0 50px; }
+  .setup-screen { padding: 32px 0 50px; }
+  .setup-heading .text-button { margin-bottom: 28px; }
+  .filter-field { grid-template-columns: 40px 1fr; padding: 16px; }
+  .filter-field select { grid-column: 1 / -1; }
+  .quiz-options { align-items: stretch; flex-direction: column; }
+  .selection-summary { align-items: flex-start; }
+  .amount-options { width: 100%; }
+  .amount-options button { flex: 1; min-width: 0; }
+  .begin-button { width: 100%; }
   .question-card { border-radius: 22px; }
   .question-footer { align-items: stretch; flex-direction: column; }
   .result-actions { width: 100%; flex-direction: column; }
