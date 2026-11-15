@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Espaço de estudos e quizzes de Lara Sampaio."
+    />
+    <title>Estuda, Lara!</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Nunito:wght@700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="site-header">
+        <a class="brand" href="#" aria-label="Página inicial do Estuda, Lara!">
+          <span class="brand-mark" aria-hidden="true">L</span>
+          <span>Estuda, Lara!</span>
+        </a>
+
+        <div class="header-chip" aria-label="Modo de estudo">
+          <span class="status-dot" aria-hidden="true"></span>
+          Meu espaço de estudos
+        </div>
+      </header>
+
+      <main>
+        <section id="welcome-screen" class="screen welcome-screen is-active" aria-labelledby="welcome-title">
+          <div class="welcome-copy">
+            <span class="eyebrow">QUIZ DE ESTUDOS</span>
+            <h1 id="welcome-title">Aprender fica mais leve quando é <em>do seu jeito.</em></h1>
+            <p>
+              Este é o seu cantinho para revisar conteúdos, testar seus conhecimentos
+              e acompanhar cada conquista.
+            </p>
+
+            <div class="action-row">
+              <button id="start-button" class="primary-button" type="button" disabled>
+                Começar quiz
+                <span aria-hidden="true">→</span>
+              </button>
+              <span id="material-status" class="material-status">Aguardando material</span>
+            </div>
+
+            <div class="mini-features" aria-label="Recursos do quiz">
+              <div>
+                <span class="feature-icon feature-icon--purple" aria-hidden="true">✓</span>
+                <span><strong>Pratique</strong> no seu ritmo</span>
+              </div>
+              <div>
+                <span class="feature-icon feature-icon--yellow" aria-hidden="true">★</span>
+                <span><strong>Descubra</strong> o que já sabe</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="study-visual" aria-hidden="true">
+            <div class="sparkle sparkle--one">✦</div>
+            <div class="sparkle sparkle--two">✦</div>
+            <div class="visual-card visual-card--back">
+              <span>abc</span>
+            </div>
+            <div class="visual-card visual-card--front">
+              <div class="card-topline">
+                <span>PERGUNTA</span>
+                <span class="tiny-dots">•••</span>
+              </div>
+              <div class="fake-question"></div>
+              <div class="fake-question fake-question--short"></div>
+              <div class="fake-option"><span>A</span></div>
+              <div class="fake-option is-selected"><span>B</span><b>✓</b></div>
+              <div class="fake-option"><span>C</span></div>
+            </div>
+            <div class="pencil"></div>
+          </div>
+        </section>
+
+        <section id="empty-screen" class="screen empty-screen" aria-labelledby="empty-title">
+          <div class="empty-icon" aria-hidden="true">⌁</div>
+          <span class="eyebrow">QUASE LÁ</span>
+          <h2 id="empty-title">O quiz ainda está vazio</h2>
+          <p>Assim que o material for adicionado, as perguntas aparecerão aqui.</p>
+          <button class="secondary-button" data-go-home type="button">Voltar ao início</button>
+        </section>
+
+        <section id="quiz-screen" class="screen quiz-screen" aria-labelledby="question-text">
+          <div class="quiz-topbar">
+            <button class="text-button" data-go-home type="button">← Sair do quiz</button>
+            <span id="question-counter">Pergunta 1 de 1</span>
+          </div>
+
+          <div class="progress-track" aria-label="Progresso do quiz">
+            <div id="progress-bar" class="progress-bar"></div>
+          </div>
+
+          <article class="question-card">
+            <span id="question-subject" class="subject-tag">Geral</span>
+            <h2 id="question-text"></h2>
+            <div id="answer-list" class="answer-list" role="radiogroup" aria-label="Alternativas"></div>
+            <div class="question-footer">
+              <p id="feedback" class="feedback" aria-live="polite"></p>
+              <button id="next-button" class="primary-button" type="button" disabled>
+                Confirmar resposta
+              </button>
+            </div>
+          </article>
+        </section>
+
+        <section id="result-screen" class="screen result-screen" aria-labelledby="result-title">
+          <div class="result-badge" aria-hidden="true">★</div>
+          <span class="eyebrow">QUIZ CONCLUÍDO</span>
+          <h2 id="result-title">Muito bem, Lara!</h2>
+          <p id="result-message"></p>
+          <div class="score-card">
+            <strong id="score-value">0/0</strong>
+            <span>respostas corretas</span>
+          </div>
+          <div class="result-actions">
+            <button id="restart-button" class="primary-button" type="button">Tentar novamente</button>
+            <button class="secondary-button" data-go-home type="button">Voltar ao início</button>
+          </div>
+        </section>
+      </main>
+
+      <footer>
+        <span>Feito com carinho para Lara Sampaio</span>
+        <span aria-hidden="true">✦</span>
+      </footer>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
