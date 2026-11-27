@@ -10,6 +10,9 @@ const materialStatus = document.querySelector("#material-status");
 const subjectOptions = document.querySelector("#subject-options");
 const chapterOptions = document.querySelector("#chapter-options");
 const contentSelect = document.querySelector("#content-select");
+const difficultyField = document.querySelector("#difficulty-field");
+const difficultyButtons = document.querySelectorAll("[data-difficulty]");
+const portugueseGuide = document.querySelector("#portuguese-guide");
 const availableCount = document.querySelector("#available-count");
 const amountButtons = document.querySelectorAll("[data-amount]");
 const questionCounter = document.querySelector("#question-counter");
@@ -17,6 +20,7 @@ const correctCount = document.querySelector("#correct-count");
 const wrongCount = document.querySelector("#wrong-count");
 const progressBar = document.querySelector("#progress-bar");
 const questionSubject = document.querySelector("#question-subject");
+const questionDifficulty = document.querySelector("#question-difficulty");
 const questionChapter = document.querySelector("#question-chapter");
 const questionContent = document.querySelector("#question-content");
 const sourceText = document.querySelector("#source-text");
@@ -34,6 +38,7 @@ const ALL = "__all";
 const STORAGE_KEY = "estuda-plus-quiz-progress-v1";
 let selectedSubject = ALL;
 let selectedChapters = new Set();
+let selectedDifficulty = ALL;
 let selectedAmount = "all";
 let quizQuestions = [];
 let currentQuestion = 0;
@@ -99,6 +104,8 @@ function populateChapters() {
     : perguntas.filter((question) => question.materia === selectedSubject);
   const chapters = unique(matchingQuestions.map((question) => question.capitulo));
 
+  updateSubjectExtras(matchingQuestions);
+
   selectedChapters = new Set(chapters);
   chapterOptions.replaceChildren();
 
@@ -109,6 +116,22 @@ function populateChapters() {
   });
 
   populateContents(true);
+}
+
+function updateSubjectExtras(matchingQuestions) {
+  const hasDifficulty = selectedSubject !== ALL
+    && matchingQuestions.some((question) => Boolean(question.dificuldade));
+  difficultyField.hidden = !hasDifficulty;
+  portugueseGuide.hidden = selectedSubject !== "Português — 9º ano";
+
+  if (!hasDifficulty) {
+    selectedDifficulty = ALL;
+    difficultyButtons.forEach((button) => {
+      const isSelected = button.dataset.difficulty === ALL;
+      button.classList.toggle("is-selected", isSelected);
+      button.setAttribute("aria-checked", String(isSelected));
+    });
+  }
 }
 
 function createChapterChoice(value, label, checked, isAll = false) {
@@ -173,7 +196,8 @@ function getFilteredQuestions() {
     const subjectMatches = selectedSubject === ALL || question.materia === selectedSubject;
     const chapterMatches = selectedChapters.has(question.capitulo);
     const contentMatches = contentSelect.value === ALL || question.conteudo === contentSelect.value;
-    return subjectMatches && chapterMatches && contentMatches;
+    const difficultyMatches = selectedDifficulty === ALL || question.dificuldade === selectedDifficulty;
+    return subjectMatches && chapterMatches && contentMatches && difficultyMatches;
   });
 }
 
@@ -327,8 +351,14 @@ function renderQuestion() {
   questionCounter.textContent = `Pergunta ${currentQuestion + 1} de ${quizQuestions.length}`;
   progressBar.style.width = `${((currentQuestion + 1) / quizQuestions.length) * 100}%`;
   questionSubject.textContent = question.materia;
+  questionDifficulty.hidden = !question.dificuldade;
+  questionDifficulty.textContent = question.dificuldade || "";
+  questionDifficulty.dataset.level = question.dificuldade || "";
   questionChapter.textContent = question.capitulo;
-  questionContent.textContent = `${question.conteudo} · pág. ${question.pagina}`;
+  const sourceReference = question.pagina === "Prova Final"
+    ? question.pagina
+    : `pág. ${question.pagina}`;
+  questionContent.textContent = `${question.conteudo} · ${sourceReference}`;
   const hasSourceText = Boolean(question.textoBase?.trim());
   sourceText.hidden = !hasSourceText;
   sourceTextContent.textContent = hasSourceText ? question.textoBase : "";
@@ -455,6 +485,18 @@ amountButtons.forEach((button) => {
       item.classList.toggle("is-selected", isSelected);
       item.setAttribute("aria-checked", String(isSelected));
     });
+  });
+});
+
+difficultyButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    selectedDifficulty = button.dataset.difficulty;
+    difficultyButtons.forEach((item) => {
+      const isSelected = item === button;
+      item.classList.toggle("is-selected", isSelected);
+      item.setAttribute("aria-checked", String(isSelected));
+    });
+    updateAvailableCount();
   });
 });
 

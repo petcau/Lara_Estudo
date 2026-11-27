@@ -116,7 +116,46 @@
               </span>
               <select id="content-select" aria-label="Escolha o conteúdo"></select>
             </label>
+
+            <div id="difficulty-field" class="filter-field" hidden>
+              <span class="filter-number">4</span>
+              <span class="filter-copy">
+                <strong>Dificuldade</strong>
+                <small>Nível das questões</small>
+              </span>
+              <div id="difficulty-options" class="difficulty-options" role="radiogroup" aria-label="Escolha a dificuldade">
+                <button type="button" data-difficulty="__all" role="radio" aria-checked="true" class="is-selected">Todas</button>
+                <button type="button" data-difficulty="Fácil" role="radio" aria-checked="false">Fácil</button>
+                <button type="button" data-difficulty="Médio" role="radio" aria-checked="false">Médio</button>
+                <button type="button" data-difficulty="Difícil" role="radio" aria-checked="false">Difícil</button>
+              </div>
+            </div>
           </div>
+
+          <section id="portuguese-guide" class="portuguese-guide" aria-labelledby="portuguese-guide-title" hidden>
+            <div class="guide-heading">
+              <span class="eyebrow">MAPA DE REVISÃO</span>
+              <h3 id="portuguese-guide-title">Português — 9º ano</h3>
+              <p>Use este esquema para lembrar o caminho da análise sintática antes de iniciar.</p>
+            </div>
+            <div class="grammar-flow" aria-label="Esquema de análise sintática">
+              <span>Localize os verbos</span><b aria-hidden="true">›</b>
+              <span>Separe as orações</span><b aria-hidden="true">›</b>
+              <span>Encontre sujeito e predicado</span><b aria-hidden="true">›</b>
+              <span>Analise verbos e complementos</span><b aria-hidden="true">›</b>
+              <span>Classifique as relações</span>
+            </div>
+            <div class="guide-grid">
+              <article><strong>Tipos de sujeito</strong><span>simples, composto, oculto, indeterminado e oração sem sujeito</span></article>
+              <article><strong>Tipos de predicado</strong><span>verbal, nominal e verbo-nominal</span></article>
+              <article><strong>Transitividade verbal</strong><span>VI, VTD, VTI, VTDI e verbo de ligação</span></article>
+              <article><strong>Complementos verbais</strong><span>objeto direto e objeto indireto</span></article>
+              <article><strong>Vozes verbais</strong><span>ativa, passiva analítica, passiva sintética e reflexiva</span></article>
+              <article><strong>Período composto</strong><span>coordenação e subordinação</span></article>
+              <article><strong>Orações coordenadas</strong><span>assindética, aditiva, adversativa, alternativa, conclusiva e explicativa</span></article>
+              <article><strong>Subordinadas substantivas</strong><span>subjetiva, objetiva direta, objetiva indireta, completiva nominal, predicativa e apositiva</span></article>
+            </div>
+          </section>
 
           <div class="quiz-options">
             <div>
@@ -167,6 +206,7 @@
           <article class="question-card">
             <div class="question-taxonomy" aria-label="Classificação da questão">
               <span id="question-subject" class="subject-tag">Inglês</span>
+              <span id="question-difficulty" class="difficulty-tag" hidden></span>
               <span aria-hidden="true">›</span>
               <span id="question-chapter"></span>
               <span aria-hidden="true">›</span>
@@ -218,6 +258,7 @@
     <script src="questions.js"></script>
     <script src="english-extra-questions.js"></script>
     <script src="english-text-questions.js"></script>
+    <script src="portuguese-questions.js"></script>
     <script src="science-questions.js"></script>
     <script src="script.js"></script>
   </body>
