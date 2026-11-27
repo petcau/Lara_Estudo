@@ -192,7 +192,7 @@ function normalizarConteudoGuia(texto) {
 }
 
 function obterGuiaAprender(questao) {
-  if (questao.materia === "Português — 9º ano") return guiasPortugues[questao.conteudo];
+  if (questao.materia === "Português — 8º ano") return guiasPortugues[questao.conteudo];
   if (questao.materia === "Ciências") return guiasCiencias[questao.conteudo];
 
   const conteudo = normalizarConteudoGuia(`${questao.conteudo} ${questao.capitulo}`);

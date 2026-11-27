@@ -1,5 +1,5 @@
 const criarQuestaoPortugues = (conteudo, dificuldade, pergunta, alternativas, correta, explicacao, textoBase = "") => ({
-  materia: "Português — 9º ano",
+  materia: "Português — 8º ano",
   capitulo: "Revisão para a Prova Final",
   conteudo,
   pagina: "Prova Final",
@@ -21,7 +21,7 @@ perguntas.push(
   pq("Tipos de sujeito", "Fácil", "Em “Disseram que a aula foi cancelada”, o sujeito é:", ["Simples", "Composto", "Indeterminado", "Oculto nós"], 2, "Não se informa quem disse. O verbo na 3ª pessoa do plural pode indeterminar o sujeito. Exemplo: “Bateram à porta”."),
   pq("Tipos de sujeito", "Fácil", "A oração “Há muitos livros na estante” possui:", ["Sujeito simples", "Sujeito oculto", "Sujeito composto", "Oração sem sujeito"], 3, "Haver com sentido de existir é impessoal e fica no singular. Exemplo: “Havia duas vagas”, e não “haviam”."),
   pq("Tipos de sujeito", "Fácil", "Em “Choveu muito ontem”, como se classifica o sujeito?", ["Indeterminado", "Inexistente", "Composto", "Oculto"], 1, "Fenômenos da natureza usados em sentido literal formam oração sem sujeito. Exemplo: “Anoiteceu cedo”."),
-  pq("Tipos de sujeito", "Fácil", "Qual é o núcleo do sujeito em “A turma do 9º ano venceu o concurso”?", ["ano", "concurso", "turma", "venceu"], 2, "O núcleo é a palavra central do sujeito: turma. “Do 9º ano” apenas caracteriza essa turma."),
+  pq("Tipos de sujeito", "Fácil", "Qual é o núcleo do sujeito em “A turma do 8º ano venceu o concurso”?", ["ano", "concurso", "turma", "venceu"], 2, "O núcleo é a palavra central do sujeito: turma. “Do 8º ano” apenas caracteriza essa turma."),
   pq("Tipos de sujeito", "Fácil", "Em “Precisa-se de voluntários”, o sujeito é:", ["Voluntários", "Oculto", "Indeterminado", "Composto"], 2, "O verbo precisar exige de; com verbo transitivo indireto + se, o sujeito fica indeterminado. Exemplo: “Necessita-se de ajuda”."),
 
   // Tipos de sujeito — 8 médias

@@ -58,7 +58,7 @@ const performanceQuestionList = document.querySelector("#performance-question-li
 const performanceEmpty = document.querySelector("#performance-empty");
 
 const ALL = "__all";
-const PORTUGUESE_SUBJECT = "Português — 9º ano";
+const PORTUGUESE_SUBJECT = "Português — 8º ano";
 const STORAGE_KEY = "estuda-plus-quiz-progress-v1";
 const PERFORMANCE_STORAGE_KEY = "estuda-plus-question-performance-v1";
 let selectedSubject = ALL;
@@ -372,7 +372,7 @@ function updateSubjectExtras(matchingQuestions) {
   const hasDifficulty = selectedSubject !== ALL
     && matchingQuestions.some((question) => Boolean(question.dificuldade));
   difficultyField.hidden = !hasDifficulty;
-  portugueseGuide.hidden = selectedSubject !== "Português — 9º ano";
+  portugueseGuide.hidden = selectedSubject !== "Português — 8º ano";
 
   if (!hasDifficulty) {
     selectedDifficulty = ALL;
@@ -632,7 +632,7 @@ function closeLearnGuide() {
 }
 
 function createLearnIllustration(subject) {
-  if (subject === "Português — 9º ano") {
+  if (subject === "Português — 8º ano") {
     return `
       <svg viewBox="0 0 520 170" role="img" aria-label="Ilustração de análise de uma frase">
         <rect x="28" y="26" width="464" height="118" rx="24" fill="#ffffff" opacity=".9"/>
