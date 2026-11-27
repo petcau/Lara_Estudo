@@ -30,6 +30,14 @@ const questionText = document.querySelector("#question-text");
 const answerList = document.querySelector("#answer-list");
 const feedback = document.querySelector("#feedback");
 const nextButton = document.querySelector("#next-button");
+const learnButton = document.querySelector("#learn-button");
+const closeLearnButton = document.querySelector("#close-learn-button");
+const learnPanel = document.querySelector("#learn-panel");
+const learnTitle = document.querySelector("#learn-title");
+const learnIntro = document.querySelector("#learn-intro");
+const learnIllustration = document.querySelector("#learn-illustration");
+const learnDiagram = document.querySelector("#learn-diagram");
+const learnSections = document.querySelector("#learn-sections");
 const scoreValue = document.querySelector("#score-value");
 const wrongScoreValue = document.querySelector("#wrong-score-value");
 const resultMessage = document.querySelector("#result-message");
@@ -617,6 +625,101 @@ function buildQuiz() {
   saveProgress();
 }
 
+function closeLearnGuide() {
+  learnPanel.hidden = true;
+  learnButton.setAttribute("aria-expanded", "false");
+  learnButton.classList.remove("is-open");
+}
+
+function createLearnIllustration(subject) {
+  if (subject === "Português — 9º ano") {
+    return `
+      <svg viewBox="0 0 520 170" role="img" aria-label="Ilustração de análise de uma frase">
+        <rect x="28" y="26" width="464" height="118" rx="24" fill="#ffffff" opacity=".9"/>
+        <rect x="58" y="55" width="112" height="38" rx="12" fill="#eee9ff"/>
+        <rect x="184" y="55" width="112" height="38" rx="12" fill="#e8f8f1"/>
+        <rect x="310" y="55" width="150" height="38" rx="12" fill="#fff5d7"/>
+        <text x="114" y="80" text-anchor="middle">TERMO</text>
+        <text x="240" y="80" text-anchor="middle">VERBO</text>
+        <text x="385" y="80" text-anchor="middle">INFORMAÇÃO</text>
+        <path d="M112 112h276" stroke="#7157d9" stroke-width="4" stroke-linecap="round" stroke-dasharray="7 10"/>
+        <circle cx="112" cy="112" r="7" fill="#7157d9"/><circle cx="240" cy="112" r="7" fill="#57b995"/><circle cx="388" cy="112" r="7" fill="#f6c850"/>
+      </svg>`;
+  }
+  if (subject === "Ciências") {
+    return `
+      <svg viewBox="0 0 520 170" role="img" aria-label="Ilustração de um sistema científico">
+        <circle cx="92" cy="85" r="48" fill="#eee9ff"/><circle cx="260" cy="85" r="58" fill="#e8f8f1"/><circle cx="428" cy="85" r="48" fill="#fff5d7"/>
+        <path d="M144 85h52M324 85h52" stroke="#7157d9" stroke-width="5" stroke-linecap="round"/>
+        <path d="m184 72 14 13-14 13M364 72l14 13-14 13" fill="none" stroke="#7157d9" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M72 85c12-26 30-26 42 0-12 26-30 26-42 0ZM235 57v56M217 85h86" fill="none" stroke="#5640bc" stroke-width="6" stroke-linecap="round"/>
+        <path d="M404 105c8-36 36-36 44 0" fill="none" stroke="#d8a61f" stroke-width="7" stroke-linecap="round"/>
+      </svg>`;
+  }
+  return `
+    <svg viewBox="0 0 520 170" role="img" aria-label="Ilustração de aprendizagem de inglês">
+      <path d="M42 37h210a18 18 0 0 1 18 18v55a18 18 0 0 1-18 18H133l-35 25 8-25H42a18 18 0 0 1-18-18V55a18 18 0 0 1 18-18Z" fill="#eee9ff"/>
+      <path d="M298 50h180a18 18 0 0 1 18 18v49a18 18 0 0 1-18 18h-54l8 20-31-20H298a18 18 0 0 1-18-18V68a18 18 0 0 1 18-18Z" fill="#e8f8f1"/>
+      <text x="146" y="91" text-anchor="middle">READ · NOTICE · CONNECT</text>
+      <text x="388" y="97" text-anchor="middle">THINK IN CONTEXT</text>
+      <circle cx="53" cy="66" r="6" fill="#7157d9"/><circle cx="75" cy="66" r="6" fill="#7157d9"/><circle cx="97" cy="66" r="6" fill="#7157d9"/>
+    </svg>`;
+}
+
+function renderLearnGuide() {
+  const question = quizQuestions[currentQuestion];
+  const guide = obterGuiaAprender(question);
+  if (!guide) return;
+
+  learnTitle.textContent = guide.titulo;
+  learnIntro.textContent = guide.introducao;
+  learnIllustration.innerHTML = createLearnIllustration(question.materia);
+  learnDiagram.replaceChildren();
+  guide.diagrama.forEach((step, index) => {
+    const node = document.createElement("span");
+    node.textContent = step;
+    learnDiagram.appendChild(node);
+    if (index < guide.diagrama.length - 1) {
+      const connector = document.createElement("b");
+      connector.textContent = "›";
+      connector.setAttribute("aria-hidden", "true");
+      learnDiagram.appendChild(connector);
+    }
+  });
+
+  learnSections.replaceChildren();
+  guide.secoes.forEach((section) => {
+    const article = document.createElement("article");
+    const title = document.createElement("h4");
+    const text = document.createElement("p");
+    title.textContent = section.titulo;
+    text.textContent = section.texto;
+    article.append(title, text);
+    if (section.exemplos?.length) {
+      const exampleLabel = document.createElement("strong");
+      const list = document.createElement("ul");
+      exampleLabel.textContent = "Exemplos paralelos";
+      section.exemplos.forEach((example) => {
+        const item = document.createElement("li");
+        item.textContent = example;
+        list.appendChild(item);
+      });
+      article.append(exampleLabel, list);
+    }
+    learnSections.appendChild(article);
+  });
+
+  learnPanel.hidden = false;
+  learnButton.setAttribute("aria-expanded", "true");
+  learnButton.classList.add("is-open");
+  learnPanel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+}
+
+function toggleLearnGuide() {
+  if (learnPanel.hidden) renderLearnGuide();
+  else closeLearnGuide();
+}
+
 function renderQuestion() {
   const question = quizQuestions[currentQuestion];
   selectedAnswer = null;
@@ -625,6 +728,7 @@ function renderQuestion() {
   feedback.className = "feedback";
   nextButton.disabled = true;
   nextButton.textContent = "Confirmar resposta";
+  closeLearnGuide();
 
   questionCounter.textContent = `Pergunta ${currentQuestion + 1} de ${quizQuestions.length}`;
   progressBar.style.width = `${((currentQuestion + 1) / quizQuestions.length) * 100}%`;
@@ -756,6 +860,8 @@ beginQuizButton.addEventListener("click", buildQuiz);
 nextButton.addEventListener("click", confirmOrAdvance);
 restartButton.addEventListener("click", buildQuiz);
 contentSelect.addEventListener("change", updateAvailableCount);
+learnButton.addEventListener("click", toggleLearnGuide);
+closeLearnButton.addEventListener("click", closeLearnGuide);
 performanceContentFilter.addEventListener("change", renderPerformance);
 performanceStatusFilter.addEventListener("change", renderPerformance);
 performanceSearch.addEventListener("input", renderPerformance);

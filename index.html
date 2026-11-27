@@ -222,8 +222,31 @@
             </section>
             <h2 id="question-text"></h2>
             <div id="answer-list" class="answer-list" role="radiogroup" aria-label="Alternativas"></div>
+            <aside id="learn-panel" class="learn-panel" aria-labelledby="learn-title" hidden>
+              <div class="learn-panel-heading">
+                <div>
+                  <span class="learn-kicker">GUIA RÁPIDO · SEM REVELAR A RESPOSTA</span>
+                  <h3 id="learn-title"></h3>
+                </div>
+                <button id="close-learn-button" class="learn-close-button" type="button" aria-label="Fechar guia">×</button>
+              </div>
+              <p id="learn-intro" class="learn-intro"></p>
+              <div id="learn-illustration" class="learn-illustration" aria-hidden="true"></div>
+              <div id="learn-diagram" class="learn-diagram" aria-label="Esquema do conteúdo"></div>
+              <div id="learn-sections" class="learn-sections"></div>
+              <div class="learn-reminder">
+                <strong>Agora é sua vez</strong>
+                <span>Volte à pergunta e aplique o método. O guia não analisa o enunciado atual.</span>
+              </div>
+            </aside>
             <div class="question-footer">
-              <p id="feedback" class="feedback" aria-live="polite"></p>
+              <div class="question-help-area">
+                <button id="learn-button" class="learn-button" type="button" aria-expanded="false" aria-controls="learn-panel">
+                  <span aria-hidden="true">✦</span>
+                  APRENDER
+                </button>
+                <p id="feedback" class="feedback" aria-live="polite"></p>
+              </div>
               <button id="next-button" class="primary-button" type="button" disabled>
                 Confirmar resposta
               </button>
@@ -330,6 +353,7 @@
     <script src="english-text-questions.js"></script>
     <script src="portuguese-questions.js"></script>
     <script src="science-questions.js"></script>
+    <script src="learning-guides.js"></script>
     <script src="script.js"></script>
   </body>
 </html>
