@@ -1,91 +1,185 @@
-const criarGuiaAprender = (titulo, introducao, diagrama, secoes) => ({
+const criarGuiaAprender = (titulo, introducao, diagrama, secoes, conceitos = []) => ({
   titulo,
   introducao,
   diagrama,
   secoes,
+  conceitos,
 });
 
 const guiasPortugues = {
   "Tipos de sujeito": criarGuiaAprender(
-    "Como reconhecer o sujeito",
-    "O sujeito é o termo sobre o qual se declara alguma coisa. Para encontrá-lo, localize o verbo e pergunte quem ou o que participa daquele fato.",
-    ["Localize o verbo", "Faça a pergunta", "Ache o núcleo", "Observe a forma"],
+    "Tipos de sujeito: descubra de quem se fala",
+    "Sujeito é o termo sobre o qual o predicado declara algo. O caminho seguro é partir do verbo, verificar a concordância e só então classificar.",
+    ["Marque o verbo", "Pergunte quem/o quê", "Ache o núcleo", "Conte os núcleos", "Verifique casos especiais"],
     [
-      { titulo: "Os cinco casos", texto: "Simples tem um núcleo; composto tem dois ou mais; oculto é recuperado pela terminação verbal; indeterminado não pode ser identificado; oração sem sujeito ocorre com verbos impessoais.", exemplos: ["A turma chegou cedo. → um núcleo", "Lia e Beto chegaram cedo. → dois núcleos", "Chegamos cedo. → o pronome está implícito"] },
-      { titulo: "Atenção ao verbo", texto: "Haver com sentido de existir e fazer indicando tempo são impessoais. Nesses casos, o verbo fica na terceira pessoa do singular.", exemplos: ["Havia muitas pessoas no local.", "Faz três meses que viajamos."] },
-      { titulo: "Estratégia", texto: "Não escolha o primeiro substantivo automaticamente. Descubra quem concorda com o verbo e qual palavra é o centro do sujeito.", exemplos: ["Os livros da estante caíram. → livros é o núcleo"] },
+      { titulo: "Sujeito determinado", tom: "roxo", texto: "É possível reconhecer o sujeito. Ele é simples quando possui um núcleo, composto quando possui dois ou mais e oculto quando não está escrito, mas pode ser recuperado.", termos: ["simples = 1 núcleo", "composto = 2 ou mais", "oculto = identificável"], exemplos: ["A turma chegou cedo. → núcleo: turma", "Lia e Beto chegaram. → núcleos: Lia + Beto", "Chegamos cedo. → sujeito oculto: nós"] },
+      { titulo: "Indeterminado x inexistente", tom: "azul", texto: "No indeterminado, alguém pratica a ação, mas não sabemos quem. Na oração sem sujeito, nenhum ser pratica a ação: o verbo é impessoal.", termos: ["3ª pessoa do plural", "verbo + se", "verbo impessoal"], exemplos: ["Bateram à porta. → alguém bateu", "Precisa-se de ajuda. → não se identifica quem precisa", "Choveu ontem. → fenômeno da natureza"] },
+      { titulo: "Verbos impessoais", tom: "amarelo", texto: "Haver com sentido de existir, fazer indicando tempo e fenômenos naturais em sentido literal formam oração sem sujeito e ficam no singular.", termos: ["há = existe", "faz = tempo decorrido", "clima literal"], exemplos: ["Havia muitas pessoas.", "Faz dois anos que estudo aqui.", "Anoiteceu cedo."] },
+      { titulo: "Armadilha frequente", tom: "verde", texto: "O núcleo é a palavra central do sujeito, não necessariamente o substantivo mais perto do verbo. Confirme pela concordância.", termos: ["núcleo", "concordância", "termos acessórios"], exemplos: ["Os livros da estante caíram. → livros é o núcleo"] },
+    ],
+    [
+      { termo: "Simples", resumo: "um núcleo", tom: "roxo" }, { termo: "Composto", resumo: "dois ou mais núcleos", tom: "azul" },
+      { termo: "Oculto", resumo: "não aparece, mas é recuperável", tom: "verde" }, { termo: "Indeterminado", resumo: "existe, porém não é identificado", tom: "laranja" },
+      { termo: "Sem sujeito", resumo: "verbo impessoal", tom: "amarelo" },
     ],
   ),
   "Tipos de predicado": criarGuiaAprender(
-    "O que o predicado informa",
-    "Predicado é tudo o que se declara sobre o sujeito. Sua classificação depende do núcleo: ação, característica ou os dois juntos.",
-    ["Separe o sujeito", "Observe o verbo", "Procure uma característica", "Identifique o núcleo"],
+    "Tipos de predicado: ação, estado ou os dois",
+    "Predicado é aquilo que se declara sobre o sujeito. Para classificá-lo, descubra qual informação funciona como núcleo: verbo de ação, nome ou ambos.",
+    ["Separe o sujeito", "Localize o verbo", "Procure estado/qualidade", "Ache o núcleo", "Classifique"],
     [
-      { titulo: "Três tipos", texto: "No verbal, o núcleo é um verbo de ação. No nominal, o núcleo é uma característica ligada ao sujeito. No verbo-nominal, aparecem ação e característica ao mesmo tempo.", exemplos: ["Os atletas treinaram. → ação", "A praça permanece tranquila. → característica", "Os atletas voltaram cansados. → ação + estado"] },
-      { titulo: "Predicativo", texto: "Predicativo é a palavra que atribui estado ou qualidade ao sujeito ou ao objeto. Verbos como ser, estar, parecer e permanecer costumam funcionar como ligação.", exemplos: ["O caminho parece longo.", "Consideraram o projeto útil."] },
-      { titulo: "Teste rápido", texto: "Se retirar a característica e ainda restar uma ação completa, pode haver predicado verbo-nominal. Se o verbo apenas liga o sujeito à característica, o predicado é nominal.", exemplos: ["Ela saiu contente. → saiu + contente"] },
+      { titulo: "Predicado verbal", tom: "roxo", texto: "O núcleo é um verbo significativo, que expressa ação, acontecimento ou processo.", termos: ["núcleo = verbo", "ação/processo"], exemplos: ["Os atletas treinaram. → treinaram é o núcleo"] },
+      { titulo: "Predicado nominal", tom: "verde", texto: "O núcleo é um nome que atribui estado ou característica ao sujeito. Um verbo de ligação une as duas partes.", termos: ["verbo de ligação", "predicativo do sujeito"], exemplos: ["A praça permanece tranquila. → tranquila é o núcleo"] },
+      { titulo: "Predicado verbo-nominal", tom: "laranja", texto: "Possui dois núcleos: um verbo significativo e um predicativo, que indica estado do sujeito ou do objeto.", termos: ["ação + característica", "dois núcleos"], exemplos: ["Os atletas voltaram cansados. → voltaram + cansados", "Julgaram o plano arriscado. → julgaram + arriscado"] },
+      { titulo: "Teste de decisão", tom: "azul", texto: "Se o verbo apenas liga o sujeito a uma qualidade, é nominal. Se há ação completa e também uma qualidade, é verbo-nominal.", termos: ["apenas ligação?", "há ação?", "há predicativo?"], exemplos: ["Ela está contente. → nominal", "Ela saiu contente. → verbo-nominal"] },
+    ],
+    [
+      { termo: "Verbal", resumo: "núcleo = verbo de ação", tom: "roxo" }, { termo: "Nominal", resumo: "núcleo = nome/predicativo", tom: "verde" },
+      { termo: "Verbo-nominal", resumo: "ação + predicativo", tom: "laranja" }, { termo: "Predicativo", resumo: "estado ou qualidade", tom: "azul" },
     ],
   ),
   "Transitividade verbal": criarGuiaAprender(
-    "O verbo precisa de complemento?",
-    "A transitividade mostra se um verbo tem sentido completo ou se precisa de uma informação para completar sua ideia.",
-    ["Encontre o verbo", "Leia sem o complemento", "Faça a pergunta", "Observe a preposição"],
+    "Transitividade: o verbo precisa de quê?",
+    "A transitividade descreve a relação do verbo com seus complementos. Analise sempre o sentido que o verbo possui naquela frase.",
+    ["Encontre o verbo", "Teste o sentido", "Faça a pergunta", "Veja a preposição", "Classifique"],
     [
-      { titulo: "Mapa dos verbos", texto: "Verbo intransitivo tem sentido completo. Transitivo direto pede complemento sem preposição obrigatória. Transitivo indireto exige preposição. Direto e indireto recebe os dois tipos.", exemplos: ["A criança dormiu.", "A criança abriu a janela.", "A criança confia nos amigos.", "Ela enviou o recado ao grupo."] },
-      { titulo: "Verbo de ligação", texto: "Ele não expressa uma ação principal: liga o sujeito a um estado ou qualidade.", exemplos: ["O céu ficou escuro.", "A resposta parece correta."] },
-      { titulo: "O contexto manda", texto: "Um mesmo verbo pode mudar de transitividade quando muda de sentido. Sempre analise a frase inteira.", exemplos: ["Aspirou o perfume. / Aspirou à liderança."] },
+      { titulo: "Intransitivo e transitivo direto", tom: "roxo", texto: "O verbo intransitivo (VI) tem sentido completo. O transitivo direto (VTD) exige complemento sem preposição obrigatória.", termos: ["VI = sentido completo", "VTD = objeto direto"], exemplos: ["A criança dormiu. → verbo intransitivo", "A criança abriu a janela. → abriu o quê?"] },
+      { titulo: "Transitivo indireto e direto-indireto", tom: "azul", texto: "O transitivo indireto (VTI) exige complemento com preposição. O direto e indireto (VTDI) pede dois complementos: um sem e outro com preposição.", termos: ["VTI = preposição exigida", "VTDI = OD + OI"], exemplos: ["Ela confia nos amigos. → confia em quem?", "Ela enviou o recado ao grupo. → o quê? a quem?"] },
+      { titulo: "Verbo de ligação", tom: "verde", texto: "Não apresenta uma ação principal. Ele conecta o sujeito a um estado, qualidade ou condição chamada predicativo.", termos: ["ser", "estar", "parecer", "permanecer", "ficar"], exemplos: ["O céu ficou escuro. → liga céu a escuro"] },
+      { titulo: "O contexto decide", tom: "amarelo", texto: "O mesmo verbo pode mudar de classificação conforme o significado e a construção. Nunca classifique um verbo isolado.", termos: ["sentido da frase", "regência", "contexto"], exemplos: ["Ela aspirou o perfume. → VTD", "Ela aspirou ao cargo. → VTI"] },
+    ],
+    [
+      { termo: "VI · intransitivo", resumo: "não exige complemento", tom: "verde" }, { termo: "VTD · transitivo direto", resumo: "complemento sem preposição", tom: "roxo" },
+      { termo: "VTI · transitivo indireto", resumo: "complemento com preposição", tom: "azul" }, { termo: "VTDI · direto e indireto", resumo: "dois complementos", tom: "laranja" },
+      { termo: "VL · ligação", resumo: "liga sujeito a uma característica", tom: "amarelo" },
     ],
   ),
   "Complementos verbais": criarGuiaAprender(
-    "Objeto direto e objeto indireto",
-    "Complementos verbais terminam o sentido de verbos transitivos. O ponto principal é observar se o verbo exige ou não uma preposição.",
-    ["Ache o verbo", "Pergunte o quê/quem", "Procure preposição", "Classifique o complemento"],
+    "Complementos verbais: OD ou OI?",
+    "Objeto direto e objeto indireto completam verbos transitivos. A diferença central é saber se a preposição é exigida pelo verbo.",
+    ["Ache o verbo", "Descubra sua regência", "Faça a pergunta", "Veja a preposição", "Confirme com pronome"],
     [
-      { titulo: "Objeto direto", texto: "Liga-se ao verbo sem preposição obrigatória. Pode ser retomado, em muitos casos, pelos pronomes o, a, os e as.", exemplos: ["Rafa comprou um mapa.", "Rafa o comprou ontem."] },
-      { titulo: "Objeto indireto", texto: "Vem acompanhado da preposição exigida pelo verbo. Os pronomes lhe e lhes podem retomar complementos introduzidos por a.", exemplos: ["Nós confiamos em nossa equipe.", "Entreguei-lhe um convite."] },
-      { titulo: "Não confunda", texto: "Nem todo termo com preposição é objeto indireto. Uma expressão pode indicar lugar, tempo ou modo; verifique se o verbo realmente exige aquela informação.", exemplos: ["Ela mora no interior. → indicação de lugar", "Ela precisa de descanso. → complemento exigido"] },
+      { titulo: "Objeto direto (OD)", tom: "roxo", texto: "Completa um verbo transitivo direto sem preposição obrigatória. Pode ser substituído por o, a, os ou as.", termos: ["sem preposição exigida", "o/a/os/as"], exemplos: ["Rafa comprou um mapa. → comprou o quê?", "Rafa o comprou. → o retoma mapa"] },
+      { titulo: "Objeto indireto (OI)", tom: "azul", texto: "Completa um verbo transitivo indireto por meio da preposição que o próprio verbo exige.", termos: ["a, de, em, com...", "lhe/lhes em alguns casos"], exemplos: ["Confiamos na equipe. → confiamos em quem?", "Obedeceu ao regulamento. → obedeceu a quê?"] },
+      { titulo: "Dois objetos", tom: "laranja", texto: "Um verbo transitivo direto e indireto recebe, na mesma oração, um objeto direto e um objeto indireto.", termos: ["OD = coisa", "OI = destinatário"], exemplos: ["Entreguei o relatório ao diretor. → o relatório (OD) + ao diretor (OI)"] },
+      { titulo: "Preposição não basta", tom: "amarelo", texto: "Nem todo termo preposicionado é objeto indireto. Se ele apenas acrescenta lugar, tempo, modo ou causa, pode ser adjunto adverbial.", termos: ["o verbo exige?", "ou só acrescenta circunstância?"], exemplos: ["Ela precisa de descanso. → OI", "Ela mora no interior. → circunstância de lugar"] },
+    ],
+    [
+      { termo: "Objeto direto (OD)", resumo: "sem preposição obrigatória", tom: "roxo" }, { termo: "Objeto indireto (OI)", resumo: "com preposição exigida", tom: "azul" },
+      { termo: "OD + OI", resumo: "verbo com dois complementos", tom: "laranja" }, { termo: "Adjunto", resumo: "circunstância não exigida", tom: "amarelo" },
     ],
   ),
   "Vozes verbais — agente da passiva": criarGuiaAprender(
-    "Quem pratica e quem recebe a ação",
-    "As vozes verbais mostram a relação entre o sujeito e a ação: ele pode praticá-la, recebê-la ou praticá-la sobre si mesmo.",
-    ["Encontre a ação", "Identifique o sujeito", "Veja quem age", "Veja quem recebe"],
+    "Vozes verbais: quem age e quem recebe?",
+    "A voz verbal revela a posição do sujeito diante da ação. Primeiro identifique o sujeito; depois verifique se ele pratica, recebe ou pratica e recebe a ação.",
+    ["Marque o verbo", "Ache o sujeito", "Identifique o agente", "Identifique o paciente", "Observe a estrutura"],
     [
-      { titulo: "Ativa e passiva", texto: "Na ativa, o sujeito pratica a ação. Na passiva, o sujeito recebe a ação. A passiva analítica usa uma forma de ser mais particípio.", exemplos: ["A equipe preparou o evento.", "O evento foi preparado pela equipe."] },
-      { titulo: "Agente da passiva", texto: "É o termo que pratica a ação dentro de uma oração passiva. Costuma aparecer introduzido por por, pelo ou pela.", exemplos: ["A ponte foi projetada pelos engenheiros."] },
-      { titulo: "Passiva com se", texto: "Na passiva sintética, o verbo concorda com o sujeito paciente. Um bom teste é transformar a frase em ser + particípio.", exemplos: ["Publicam-se histórias. → Histórias são publicadas."] },
+      { titulo: "Voz ativa", tom: "roxo", texto: "O sujeito é agente: ele pratica a ação expressa pelo verbo.", termos: ["sujeito agente", "verbo", "objeto paciente"], exemplos: ["A equipe preparou o evento. → a equipe age"] },
+      { titulo: "Passiva analítica", tom: "azul", texto: "O sujeito é paciente: recebe a ação. A estrutura apresenta verbo ser + particípio; o agente pode aparecer depois.", termos: ["sujeito paciente", "ser + particípio", "agente da passiva"], exemplos: ["O evento foi preparado pela equipe. → o evento recebe"] },
+      { titulo: "Passiva sintética", tom: "verde", texto: "Usa verbo transitivo direto ou direto e indireto acompanhado do pronome apassivador se. O verbo concorda com o sujeito paciente.", termos: ["verbo + se", "concordância", "transformação possível"], exemplos: ["Vendem-se livros. → Livros são vendidos."] },
+      { titulo: "Reflexiva e agente", tom: "laranja", texto: "Na reflexiva, o sujeito pratica e recebe a ação. Na passiva, agente da passiva é o termo que pratica a ação, geralmente iniciado por por, pelo ou pela.", termos: ["reflexiva = agente e paciente", "por/pelo/pela"], exemplos: ["A menina se penteou. → agiu sobre si", "A ponte foi projetada pelos engenheiros. → agente"] },
+    ],
+    [
+      { termo: "Ativa", resumo: "sujeito pratica", tom: "roxo" }, { termo: "Passiva analítica", resumo: "ser + particípio", tom: "azul" },
+      { termo: "Passiva sintética", resumo: "verbo + se", tom: "verde" }, { termo: "Reflexiva", resumo: "pratica e recebe", tom: "laranja" },
+      { termo: "Agente da passiva", resumo: "pratica a ação na passiva", tom: "amarelo" },
     ],
   ),
   "Período composto por coordenação e subordinação": criarGuiaAprender(
-    "Como separar as orações",
-    "Cada verbo ou locução verbal normalmente indica uma oração. Um período composto apresenta duas ou mais orações relacionadas.",
-    ["Circule os verbos", "Separe as orações", "Teste a independência", "Observe o conectivo"],
+    "Período composto: como as orações se conectam",
+    "Cada verbo ou locução verbal normalmente marca uma oração. No período composto, duas ou mais orações podem ser independentes ou exercer uma função umas nas outras.",
+    ["Conte os verbos", "Separe as orações", "Ache os conectivos", "Teste a dependência", "Classifique cada ligação"],
     [
-      { titulo: "Coordenação", texto: "As orações têm estrutura sintática independente. Uma não ocupa uma função dentro da outra.", exemplos: ["A aula terminou e todos saíram."] },
-      { titulo: "Subordinação", texto: "Uma oração depende da outra e exerce uma função nela, como complemento, característica ou circunstância.", exemplos: ["Espero que todos participem.", "Quando a aula terminou, todos saíram."] },
-      { titulo: "Período misto", texto: "Um mesmo período pode ter coordenação e subordinação. Analise cada ligação separadamente.", exemplos: ["Quando anoiteceu, voltamos e fechamos as janelas."] },
+      { titulo: "Da frase ao período", tom: "roxo", texto: "Frase é um enunciado com sentido. Oração contém verbo ou locução verbal. Período é a frase organizada em uma ou mais orações.", termos: ["frase = sentido", "oração = verbo", "período = uma ou mais orações"], exemplos: ["Silêncio! → frase sem oração", "A aula começou. → uma oração"] },
+      { titulo: "Coordenação", tom: "verde", texto: "As orações são sintaticamente independentes: uma não funciona como termo da outra. Podem estar unidas por conjunção ou pontuação.", termos: ["independência sintática", "ideias lado a lado"], exemplos: ["A aula terminou e todos saíram. → duas estruturas independentes"] },
+      { titulo: "Subordinação", tom: "azul", texto: "Uma oração depende da principal porque exerce nela uma função de substantivo, adjetivo ou advérbio.", termos: ["oração principal", "função sintática", "dependência"], exemplos: ["Espero que todos participem. → a segunda completa espero", "Quando anoiteceu, voltamos. → indica tempo"] },
+      { titulo: "Período misto", tom: "laranja", texto: "Pode haver coordenação e subordinação no mesmo período. Analise cada conexão, em vez de dar uma única classificação ao período inteiro.", termos: ["mais de uma relação", "análise por pares"], exemplos: ["Quando anoiteceu, voltamos e fechamos as janelas. → subordinação + coordenação"] },
+    ],
+    [
+      { termo: "Frase", resumo: "enunciado com sentido", tom: "amarelo" }, { termo: "Oração", resumo: "estrutura com verbo", tom: "roxo" },
+      { termo: "Coordenação", resumo: "orações independentes", tom: "verde" }, { termo: "Subordinação", resumo: "uma oração exerce função na outra", tom: "azul" },
+      { termo: "Misto", resumo: "as duas relações no período", tom: "laranja" },
     ],
   ),
   "Orações coordenadas — classificação": criarGuiaAprender(
-    "As relações entre ideias independentes",
-    "Orações coordenadas são independentes na estrutura, mas estabelecem relações de sentido por meio da pontuação e das conjunções.",
-    ["Separe as orações", "Localize a conjunção", "Entenda a relação", "Classifique"],
+    "Orações coordenadas: qual relação existe?",
+    "Orações coordenadas são independentes na estrutura, mas estabelecem relações de sentido. A classificação depende da ideia criada no contexto, não apenas da conjunção.",
+    ["Separe as orações", "Ache a conjunção", "Leia a relação", "Troque por conectivo equivalente", "Classifique"],
     [
-      { titulo: "Sem ou com conjunção", texto: "A coordenada assindética não tem conjunção. A sindética tem conectivo e recebe uma classificação de sentido.", exemplos: ["Abriu o livro, começou a leitura.", "Abriu o livro e começou a leitura."] },
-      { titulo: "Relações principais", texto: "Aditiva soma; adversativa opõe; alternativa apresenta escolha; conclusiva traz conclusão; explicativa justifica uma ideia ou ordem.", exemplos: ["Treinou, mas não competiu.", "Faça silêncio, pois a apresentação começou."] },
-      { titulo: "Leia o sentido", texto: "Não classifique apenas decorando uma palavra. Pois, por exemplo, pode mudar de valor conforme a posição e a relação entre as ideias.", exemplos: ["Estudou; foi, pois, aprovado."] },
+      { titulo: "Assindética e aditiva", tom: "roxo", texto: "Assindética não apresenta conjunção. A sindética aditiva soma fatos ou ideias.", termos: ["sem conjunção", "e", "nem", "mas também"], exemplos: ["Cheguei, sentei, esperei. → assindéticas", "Leu e fez anotações. → adição"] },
+      { titulo: "Adversativa e alternativa", tom: "azul", texto: "A adversativa cria contraste ou oposição. A alternativa apresenta escolha, revezamento ou possibilidades.", termos: ["mas/porém/contudo", "ou... ou/ora... ora"], exemplos: ["Estudou, mas ficou nervoso. → contraste", "Ou você liga, ou envia uma mensagem. → escolha"] },
+      { titulo: "Conclusiva", tom: "verde", texto: "Apresenta uma conclusão ou consequência lógica construída a partir da oração anterior.", termos: ["logo", "portanto", "por isso", "pois deslocado"], exemplos: ["Estudou bastante; foi, portanto, aprovado. → conclusão"] },
+      { titulo: "Explicativa", tom: "laranja", texto: "Explica ou justifica a ideia anterior, muito comum depois de ordem, pedido, conselho ou hipótese.", termos: ["porque", "que", "pois antes do verbo"], exemplos: ["Feche a janela, pois está frio. → justificativa da ordem"] },
+      { titulo: "O caso de pois", tom: "amarelo", texto: "Antes do verbo e explicando uma ideia, pois costuma ser explicativo. Deslocado entre vírgulas e retomando uma razão anterior, costuma ser conclusivo.", termos: ["pois + verbo = explicação", "verbo, pois, = conclusão"], exemplos: ["Não saia, pois chove. → explicativa", "Chove; ficarei, pois, em casa. → conclusiva"] },
+    ],
+    [
+      { termo: "Assindética", resumo: "sem conjunção", tom: "cinza" }, { termo: "Aditiva", resumo: "soma", tom: "roxo" },
+      { termo: "Adversativa", resumo: "contraste", tom: "azul" }, { termo: "Alternativa", resumo: "escolha", tom: "amarelo" },
+      { termo: "Conclusiva", resumo: "conclusão", tom: "verde" }, { termo: "Explicativa", resumo: "justificativa", tom: "laranja" },
     ],
   ),
   "Orações subordinadas substantivas": criarGuiaAprender(
-    "Quando uma oração vale por um substantivo",
-    "A oração subordinada substantiva ocupa uma função que poderia ser exercida por um substantivo. O teste inicial é substituir toda a oração por isso.",
-    ["Isole a oração", "Troque por isso", "Descubra a função", "Classifique"],
+    "Subordinadas substantivas: a oração que vale por “isso”",
+    "Uma oração subordinada substantiva exerce uma função típica de substantivo. Substitua toda a oração por “isso” e descubra que função esse pronome teria na oração principal.",
+    ["Marque os verbos", "Isole a subordinada", "Troque por isso", "Ache o termo incompleto", "Descubra a função"],
     [
-      { titulo: "Funções ligadas ao verbo", texto: "Pode funcionar como sujeito, objeto direto ou objeto indireto. A presença de preposição ajuda a distinguir os objetos.", exemplos: ["É necessário que todos colaborem. → Isso é necessário.", "Desejo que você participe. → Desejo isso."] },
-      { titulo: "Funções ligadas a nomes", texto: "Pode completar um nome, funcionar como predicativo ou explicar um termo anterior como aposto.", exemplos: ["Tenho certeza de que dará certo.", "Meu desejo é que haja paz.", "Só peço isto: que tenham calma."] },
-      { titulo: "Pergunta-chave", texto: "Descubra qual termo está incompleto e qual função a oração exerce em relação a ele. A conjunção que sozinha não define a classificação.", exemplos: ["Duvido de que ele venha. → completa um verbo com preposição"] },
+      { titulo: "Subjetiva", tom: "roxo", texto: "A oração subordinada funciona como sujeito da oração principal. É comum a principal apresentar expressões como é necessário, convém ou sabe-se.", termos: ["isso é necessário", "isso convém", "sabe-se isso"], exemplos: ["É necessário que todos colaborem. → Isso é necessário."] },
+      { titulo: "Objetiva direta", tom: "azul", texto: "Completa um verbo sem preposição obrigatória; por isso, exerce função de objeto direto.", termos: ["verbo + isso", "sem preposição"], exemplos: ["Desejo que você participe. → Desejo isso."] },
+      { titulo: "Objetiva indireta", tom: "verde", texto: "Completa um verbo que exige preposição; por isso, exerce função de objeto indireto.", termos: ["verbo + preposição + isso"], exemplos: ["Duvido de que ele venha. → Duvido disso."] },
+      { titulo: "Completiva nominal", tom: "laranja", texto: "Completa o sentido de um nome — substantivo, adjetivo ou advérbio — por meio de preposição.", termos: ["nome incompleto", "preposição + isso"], exemplos: ["Tenho certeza de que dará certo. → certeza disso"] },
+      { titulo: "Predicativa", tom: "amarelo", texto: "Funciona como predicativo do sujeito, normalmente depois de verbo de ligação.", termos: ["sujeito + verbo de ligação + isso"], exemplos: ["Meu desejo é que haja paz. → Meu desejo é isso."] },
+      { titulo: "Apositiva", tom: "cinza", texto: "Explica ou especifica um termo anterior. É comum aparecer depois de dois-pontos.", termos: ["termo anterior: explicação", "dois-pontos"], exemplos: ["Só peço isto: que tenham calma. → a oração explica isto"] },
+      { titulo: "Não decore apenas o “que”", tom: "azul", texto: "A conjunção integrante introduz muitas dessas orações, mas não informa sozinha a classificação. A função sintática é que decide.", termos: ["substitua por isso", "analise a função"], exemplos: ["Quero que venha. / Tenho certeza de que virá. → funções diferentes"] },
+    ],
+    [
+      { termo: "Subjetiva", resumo: "funciona como sujeito", tom: "roxo" }, { termo: "Objetiva direta", resumo: "completa verbo sem preposição", tom: "azul" },
+      { termo: "Objetiva indireta", resumo: "completa verbo com preposição", tom: "verde" }, { termo: "Completiva nominal", resumo: "completa um nome", tom: "laranja" },
+      { termo: "Predicativa", resumo: "predicativo do sujeito", tom: "amarelo" }, { termo: "Apositiva", resumo: "explica um termo", tom: "cinza" },
     ],
   ),
+};
+
+const fundamentosPortugues = {
+  "Tipos de sujeito": [
+    { termo: "Verbo", significado: "palavra que indica ação, estado ou fenômeno: correr, estar, chover" },
+    { termo: "Sujeito", significado: "pessoa, ser ou assunto sobre o qual a frase fala" },
+    { termo: "Núcleo", significado: "palavra principal do sujeito; as outras apenas a acompanham" },
+  ],
+  "Tipos de predicado": [
+    { termo: "Predicado", significado: "tudo o que a frase informa sobre o sujeito" },
+    { termo: "Núcleo", significado: "informação mais importante dentro do predicado" },
+    { termo: "Predicativo", significado: "palavra que dá uma característica ou estado a alguém ou algo" },
+  ],
+  "Transitividade verbal": [
+    { termo: "Sentido completo", significado: "a ideia do verbo já fica clara sem outra informação" },
+    { termo: "Complemento", significado: "informação necessária para terminar a ideia do verbo" },
+    { termo: "Preposição", significado: "palavra pequena que liga termos: a, de, em, com, para, por" },
+  ],
+  "Complementos verbais": [
+    { termo: "Complemento", significado: "parte que completa o sentido de um verbo" },
+    { termo: "Preposição", significado: "palavra de ligação como a, de, em, com, para ou por" },
+    { termo: "Regência", significado: "modo como o verbo pede seu complemento, com ou sem preposição" },
+  ],
+  "Vozes verbais — agente da passiva": [
+    { termo: "Agente", significado: "quem pratica a ação" },
+    { termo: "Paciente", significado: "quem recebe ou sofre a ação" },
+    { termo: "Particípio", significado: "forma verbal comum em palavras como feito, escrito, vendido e preparado" },
+  ],
+  "Período composto por coordenação e subordinação": [
+    { termo: "Frase", significado: "mensagem com sentido, mesmo quando não possui verbo" },
+    { termo: "Oração", significado: "parte da frase organizada em torno de um verbo ou locução verbal" },
+    { termo: "Período", significado: "frase que começa com letra maiúscula e termina em pontuação final" },
+  ],
+  "Orações coordenadas — classificação": [
+    { termo: "Conjunção", significado: "palavra que conecta ideias, como e, mas, ou, portanto e porque" },
+    { termo: "Independente", significado: "oração que não funciona como uma peça sintática da outra" },
+    { termo: "Relação de sentido", significado: "ideia de soma, contraste, escolha, conclusão ou explicação" },
+  ],
+  "Orações subordinadas substantivas": [
+    { termo: "Oração principal", significado: "parte que contém o termo que será completado ou explicado" },
+    { termo: "Subordinada", significado: "oração que trabalha como uma peça dentro da oração principal" },
+    { termo: "Função", significado: "papel realizado na frase: sujeito, objeto, complemento, predicativo ou aposto" },
+  ],
 };
 
 const guiasCiencias = {
@@ -192,7 +286,10 @@ function normalizarConteudoGuia(texto) {
 }
 
 function obterGuiaAprender(questao) {
-  if (questao.materia === "Português — 8º ano") return guiasPortugues[questao.conteudo];
+  if (questao.materia === "Português — 8º ano") {
+    const guia = guiasPortugues[questao.conteudo];
+    return guia ? { ...guia, fundamentos: fundamentosPortugues[questao.conteudo] || [] } : undefined;
+  }
   if (questao.materia === "Ciências") return guiasCiencias[questao.conteudo];
 
   const conteudo = normalizarConteudoGuia(`${questao.conteudo} ${questao.capitulo}`);

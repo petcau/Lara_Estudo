@@ -995,6 +995,115 @@ h1 em::after {
   letter-spacing: 0.03em;
 }
 
+.tone-roxo { --learn-tone: #6f4fd8; --learn-tone-soft: #eee8ff; --learn-tone-ink: #4f32ac; }
+.tone-azul { --learn-tone: #3278c8; --learn-tone-soft: #e7f2ff; --learn-tone-ink: #19578f; }
+.tone-verde { --learn-tone: #2b9b74; --learn-tone-soft: #e3f7ef; --learn-tone-ink: #176b4e; }
+.tone-laranja { --learn-tone: #df7a30; --learn-tone-soft: #fff0e4; --learn-tone-ink: #a94d12; }
+.tone-amarelo { --learn-tone: #c68b12; --learn-tone-soft: #fff5cf; --learn-tone-ink: #815800; }
+.tone-cinza { --learn-tone: #6d7183; --learn-tone-soft: #eff0f4; --learn-tone-ink: #464a5a; }
+
+.is-portuguese-guide .learn-illustration {
+  display: grid;
+  gap: 16px;
+  padding: 16px;
+  background: #fff;
+}
+
+.learn-foundations,
+.portuguese-concept-map {
+  padding: 17px;
+  background: #fbfaff;
+  border: 1px solid #e8e2f7;
+  border-radius: 16px;
+}
+
+.learn-foundations { background: linear-gradient(135deg, #fffdf5, #fff); }
+
+.learn-visual-heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 13px;
+}
+.learn-visual-heading strong {
+  color: var(--ink);
+  font-family: "Nunito", sans-serif;
+  font-size: 1rem;
+}
+.learn-visual-heading span {
+  color: var(--muted);
+  font-size: 0.8rem;
+  line-height: 1.4;
+  text-align: right;
+}
+
+.learn-foundation-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+.learn-foundation-card {
+  position: relative;
+  display: grid;
+  gap: 4px;
+  padding: 13px 14px 13px 17px;
+  overflow: hidden;
+  background: var(--learn-tone-soft);
+  border-radius: 12px;
+}
+.learn-foundation-card::before {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 5px;
+  background: var(--learn-tone);
+  content: "";
+}
+.learn-foundation-card strong { color: var(--learn-tone-ink); font-size: 0.88rem; }
+.learn-foundation-card span { color: #575165; font-size: 0.8rem; line-height: 1.42; }
+
+.concept-map-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(135px, 1fr));
+  gap: 10px;
+}
+.concept-card {
+  position: relative;
+  display: grid;
+  min-height: 112px;
+  align-content: start;
+  gap: 7px;
+  padding: 14px;
+  overflow: hidden;
+  background: var(--learn-tone-soft);
+  border: 1px solid color-mix(in srgb, var(--learn-tone) 28%, white);
+  border-radius: 14px;
+}
+.concept-card::after {
+  position: absolute;
+  right: -17px;
+  bottom: -24px;
+  width: 62px;
+  height: 62px;
+  background: var(--learn-tone);
+  border-radius: 50%;
+  content: "";
+  opacity: 0.1;
+}
+.concept-marker {
+  display: grid;
+  width: 28px;
+  height: 25px;
+  place-items: center;
+  color: white;
+  background: var(--learn-tone);
+  border-radius: 8px;
+  font-size: 0.68rem;
+  font-weight: 900;
+}
+.concept-card strong { color: var(--learn-tone-ink); font-size: 0.91rem; line-height: 1.2; }
+.concept-card small { color: #554f63; font-size: 0.77rem; line-height: 1.38; }
+
 .learn-diagram {
   display: flex;
   align-items: stretch;
@@ -1015,6 +1124,11 @@ h1 em::after {
   font-weight: 800;
   text-align: center;
 }
+.is-portuguese-guide .learn-diagram span:nth-of-type(5n + 1) { color: #4f32ac; background: #eee8ff; border-color: #dcd0ff; }
+.is-portuguese-guide .learn-diagram span:nth-of-type(5n + 2) { color: #176b4e; background: #e3f7ef; border-color: #c8eadc; }
+.is-portuguese-guide .learn-diagram span:nth-of-type(5n + 3) { color: #19578f; background: #e7f2ff; border-color: #cde2f8; }
+.is-portuguese-guide .learn-diagram span:nth-of-type(5n + 4) { color: #a94d12; background: #fff0e4; border-color: #f4d7c3; }
+.is-portuguese-guide .learn-diagram span:nth-of-type(5n + 5) { color: #815800; background: #fff5cf; border-color: #f0dda0; }
 .learn-diagram b {
   align-self: center;
   color: var(--purple);
@@ -1028,12 +1142,32 @@ h1 em::after {
   margin-top: 18px;
 }
 .learn-sections article {
+  position: relative;
   padding: 18px;
+  overflow: hidden;
   background: white;
   border: 1px solid var(--line);
   border-radius: 16px;
 }
+.is-portuguese-guide .learn-sections article { border-top: 5px solid var(--learn-tone); }
 .learn-sections article:last-child:nth-child(odd) { grid-column: 1 / -1; }
+.learn-section-heading {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+.learn-section-number {
+  display: grid;
+  width: 30px;
+  height: 27px;
+  flex: 0 0 30px;
+  place-items: center;
+  color: white;
+  background: var(--learn-tone, var(--purple));
+  border-radius: 8px;
+  font-size: 0.67rem;
+  font-weight: 900;
+}
 .learn-sections h4 {
   margin: 0;
   font-family: "Nunito", sans-serif;
@@ -1045,6 +1179,22 @@ h1 em::after {
   font-size: 0.9rem;
   line-height: 1.58;
 }
+.is-portuguese-guide .learn-sections h4 { color: var(--learn-tone-ink); }
+.learn-keywords {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 12px;
+}
+.learn-keywords span {
+  padding: 6px 9px;
+  color: var(--learn-tone-ink);
+  background: var(--learn-tone-soft);
+  border-radius: 999px;
+  font-size: 0.73rem;
+  font-weight: 750;
+  line-height: 1.2;
+}
 .learn-sections article > strong {
   display: block;
   margin-top: 13px;
@@ -1052,6 +1202,7 @@ h1 em::after {
   font-size: 0.76rem;
   text-transform: uppercase;
 }
+.is-portuguese-guide .learn-sections article > strong { color: var(--learn-tone-ink); }
 .learn-sections ul {
   display: grid;
   gap: 6px;
@@ -1061,6 +1212,32 @@ h1 em::after {
   font-size: 0.88rem;
   line-height: 1.5;
 }
+.is-portuguese-guide .learn-sections ul {
+  gap: 8px;
+  padding: 0;
+  list-style: none;
+}
+.is-portuguese-guide .learn-sections li {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 7px;
+  padding: 9px 10px;
+  background: #faf9fc;
+  border-left: 3px solid var(--learn-tone);
+  border-radius: 7px 10px 10px 7px;
+}
+.example-sentence { color: #343044; font-weight: 650; }
+.example-connector {
+  padding: 3px 7px;
+  color: var(--learn-tone-ink, var(--purple));
+  background: var(--learn-tone-soft, var(--purple-soft));
+  border-radius: 999px;
+  font-size: 0.66rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+.example-result { color: var(--learn-tone-ink, #4e485d); font-weight: 800; }
 
 .learn-reminder {
   display: flex;
@@ -1509,6 +1686,12 @@ a:focus-visible {
   .question-footer { align-items: stretch; flex-direction: column; }
   .question-help-area { align-items: stretch; flex-direction: column; }
   .learn-button { justify-content: center; width: 100%; }
+  .is-portuguese-guide .learn-illustration { padding: 10px; }
+  .learn-visual-heading { align-items: flex-start; flex-direction: column; }
+  .learn-visual-heading span { text-align: left; }
+  .learn-foundation-grid { grid-template-columns: 1fr; }
+  .concept-map-grid { grid-template-columns: 1fr; }
+  .concept-card { min-height: 105px; }
   .learn-diagram { display: grid; grid-template-columns: 1fr 1fr; }
   .learn-diagram b { display: none; }
   .learn-sections { grid-template-columns: 1fr; }

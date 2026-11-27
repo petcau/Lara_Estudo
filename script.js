@@ -666,14 +666,65 @@ function createLearnIllustration(subject) {
     </svg>`;
 }
 
+function renderPortugueseConceptMap(guide) {
+  const foundations = document.createElement("section");
+  foundations.className = "learn-foundations";
+  const foundationHeading = document.createElement("div");
+  foundationHeading.className = "learn-visual-heading";
+  foundationHeading.innerHTML = "<strong>Comece do zero</strong><span>Estas palavras aparecem no guia. Entenda-as antes de continuar.</span>";
+  const foundationGrid = document.createElement("div");
+  foundationGrid.className = "learn-foundation-grid";
+
+  guide.fundamentos.forEach((item, index) => {
+    const card = document.createElement("article");
+    card.className = `learn-foundation-card tone-${["roxo", "verde", "amarelo"][index % 3]}`;
+    const term = document.createElement("strong");
+    const meaning = document.createElement("span");
+    term.textContent = item.termo;
+    meaning.textContent = item.significado;
+    card.append(term, meaning);
+    foundationGrid.appendChild(card);
+  });
+  foundations.append(foundationHeading, foundationGrid);
+
+  const map = document.createElement("section");
+  map.className = "portuguese-concept-map";
+  const mapHeading = document.createElement("div");
+  mapHeading.className = "learn-visual-heading";
+  mapHeading.innerHTML = "<strong>Mapa dos conceitos</strong><span>Compare as caixas: a cor ajuda a separar cada ideia.</span>";
+  const mapGrid = document.createElement("div");
+  mapGrid.className = "concept-map-grid";
+
+  guide.conceitos.forEach((concept, index) => {
+    const card = document.createElement("article");
+    card.className = `concept-card tone-${concept.tom || "roxo"}`;
+    const marker = document.createElement("span");
+    const term = document.createElement("strong");
+    const summary = document.createElement("small");
+    marker.className = "concept-marker";
+    marker.textContent = String(index + 1).padStart(2, "0");
+    term.textContent = concept.termo;
+    summary.textContent = concept.resumo;
+    card.append(marker, term, summary);
+    mapGrid.appendChild(card);
+  });
+  map.append(mapHeading, mapGrid);
+  learnIllustration.append(foundations, map);
+}
+
 function renderLearnGuide() {
   const question = quizQuestions[currentQuestion];
   const guide = obterGuiaAprender(question);
   if (!guide) return;
 
+  const isPortuguese = question.materia === PORTUGUESE_SUBJECT;
+  learnPanel.classList.toggle("is-portuguese-guide", isPortuguese);
+
   learnTitle.textContent = guide.titulo;
   learnIntro.textContent = guide.introducao;
-  learnIllustration.innerHTML = createLearnIllustration(question.materia);
+  learnIllustration.replaceChildren();
+  if (isPortuguese) renderPortugueseConceptMap(guide);
+  else learnIllustration.innerHTML = createLearnIllustration(question.materia);
   learnDiagram.replaceChildren();
   guide.diagrama.forEach((step, index) => {
     const node = document.createElement("span");
@@ -688,20 +739,50 @@ function renderLearnGuide() {
   });
 
   learnSections.replaceChildren();
-  guide.secoes.forEach((section) => {
+  guide.secoes.forEach((section, sectionIndex) => {
     const article = document.createElement("article");
+    article.className = `learn-section tone-${section.tom || ["roxo", "verde", "azul"][sectionIndex % 3]}`;
+    const heading = document.createElement("div");
+    const number = document.createElement("span");
     const title = document.createElement("h4");
     const text = document.createElement("p");
+    heading.className = "learn-section-heading";
+    number.className = "learn-section-number";
+    number.textContent = String(sectionIndex + 1).padStart(2, "0");
     title.textContent = section.titulo;
     text.textContent = section.texto;
-    article.append(title, text);
+    heading.append(number, title);
+    article.append(heading, text);
+    if (section.termos?.length) {
+      const keywords = document.createElement("div");
+      keywords.className = "learn-keywords";
+      section.termos.forEach((keyword) => {
+        const chip = document.createElement("span");
+        chip.textContent = keyword;
+        keywords.appendChild(chip);
+      });
+      article.appendChild(keywords);
+    }
     if (section.exemplos?.length) {
       const exampleLabel = document.createElement("strong");
       const list = document.createElement("ul");
       exampleLabel.textContent = "Exemplos paralelos";
       section.exemplos.forEach((example) => {
         const item = document.createElement("li");
-        item.textContent = example;
+        const [sentence, ...analysis] = example.split("→");
+        const sentenceText = document.createElement("span");
+        sentenceText.className = "example-sentence";
+        sentenceText.textContent = sentence.trim();
+        item.appendChild(sentenceText);
+        if (analysis.length) {
+          const connector = document.createElement("span");
+          const result = document.createElement("span");
+          connector.className = "example-connector";
+          connector.textContent = "então";
+          result.className = "example-result";
+          result.textContent = analysis.join("→").trim();
+          item.append(connector, result);
+        }
         list.appendChild(item);
       });
       article.append(exampleLabel, list);
