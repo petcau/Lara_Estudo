@@ -633,23 +633,120 @@ function closeLearnGuide() {
   learnButton.classList.remove("is-open");
 }
 
+const GEOMETRY_EPSILON = 0.001;
+
+function geometryRound(value) {
+  return Number(value.toFixed(3));
+}
+
+function geometryPoint(point) {
+  return `${geometryRound(point.x)} ${geometryRound(point.y)}`;
+}
+
+function triangleFromBaseAngles(x, baseY, width, leftAngle, rightAngle) {
+  const leftRadians = leftAngle * Math.PI / 180;
+  const rightRadians = rightAngle * Math.PI / 180;
+  const height = width * Math.tan(leftRadians) * Math.tan(rightRadians)
+    / (Math.tan(leftRadians) + Math.tan(rightRadians));
+  return {
+    points: [
+      { x, y: baseY },
+      { x: x + height / Math.tan(leftRadians), y: baseY - height },
+      { x: x + width, y: baseY },
+    ],
+    angles: [leftAngle, 180 - leftAngle - rightAngle, rightAngle],
+  };
+}
+
+function regularPolygonPoints(cx, cy, radius, sides, rotation = -90) {
+  return Array.from({ length: sides }, (_, index) => {
+    const angle = (rotation + index * 360 / sides) * Math.PI / 180;
+    return { x: cx + radius * Math.cos(angle), y: cy + radius * Math.sin(angle) };
+  });
+}
+
+function trianglePath(triangle) {
+  return `M${triangle.points.map(geometryPoint).join(" L")} Z`;
+}
+
+function polygonPath(points) {
+  return `M${points.map(geometryPoint).join(" L")} Z`;
+}
+
+function geometryDistance(pointA, pointB) {
+  return Math.hypot(pointA.x - pointB.x, pointA.y - pointB.y);
+}
+
+function geometryPolygonArea(points) {
+  const doubleArea = points.reduce((sum, point, index) => {
+    const next = points[(index + 1) % points.length];
+    return sum + point.x * next.y - next.x * point.y;
+  }, 0);
+  return Math.abs(doubleArea) / 2;
+}
+
+function validateGeometryDiagramSpecs() {
+  const equilateral = triangleFromBaseAngles(0, 100, 100, 60, 60);
+  const isosceles = triangleFromBaseAngles(0, 100, 100, 65, 65);
+  const acute = triangleFromBaseAngles(0, 100, 100, 50, 60);
+  const obtuse = triangleFromBaseAngles(0, 100, 100, 25, 35);
+  const sides = (triangle) => [
+    geometryDistance(triangle.points[0], triangle.points[1]),
+    geometryDistance(triangle.points[1], triangle.points[2]),
+    geometryDistance(triangle.points[2], triangle.points[0]),
+  ];
+  const nearlyEqual = (a, b) => Math.abs(a - b) < GEOMETRY_EPSILON;
+  const equilateralSides = sides(equilateral);
+  const isoscelesSides = sides(isosceles);
+  const regularHexagon = regularPolygonPoints(0, 0, 80, 6);
+  const hexagonSides = regularHexagon.map((point, index) => geometryDistance(point, regularHexagon[(index + 1) % regularHexagon.length]));
+  const midpoint = { x: (30 + 190) / 2, y: (92 + 92) / 2 };
+  const perpendicularDotProduct = (190 - 30) * (110 - 110) + (92 - 92) * (7 - 105);
+  const parallelogramArea = geometryPolygonArea([{ x: 55, y: 165 }, { x: 110, y: 55 }, { x: 290, y: 55 }, { x: 235, y: 165 }]);
+  const rectangleArea = geometryPolygonArea([{ x: 315, y: 55 }, { x: 495, y: 55 }, { x: 495, y: 165 }, { x: 315, y: 165 }]);
+  const baricenterRatio = (130.33333333333334 - 35) / (178 - 130.33333333333334);
+  return {
+    equilateral: equilateralSides.every((side) => nearlyEqual(side, equilateralSides[0])),
+    isosceles: nearlyEqual(isoscelesSides[0], isoscelesSides[1]) && !nearlyEqual(isoscelesSides[1], isoscelesSides[2]),
+    acute: acute.angles.every((angle) => angle < 90),
+    right: [30, 60, 90].filter((angle) => nearlyEqual(angle, 90)).length === 1,
+    obtuse: obtuse.angles.filter((angle) => angle > 90).length === 1 && nearlyEqual(obtuse.angles.reduce((sum, angle) => sum + angle, 0), 180),
+    midpoint: nearlyEqual(midpoint.x, 110) && nearlyEqual(midpoint.y, 92),
+    perpendicular: nearlyEqual(perpendicularDotProduct, 0),
+    equivalentArea: nearlyEqual(parallelogramArea, rectangleArea),
+    doubledArea: nearlyEqual((160 * 120) / (80 * 60), 4),
+    regularHexagon: hexagonSides.every((side) => nearlyEqual(side, hexagonSides[0])),
+    baricenter: nearlyEqual(baricenterRatio, 2),
+  };
+}
+
 function createGeometryLearnIllustration(visual) {
   const open = (label) => `<svg viewBox="0 0 520 220" role="img" aria-label="${label}"><rect x="12" y="12" width="496" height="196" rx="22" fill="#fff"/>`;
   const close = "</svg>";
 
-  if (visual === "triangulo-lados") return `${open("Três tipos de triângulo classificados pelos lados")}
-    <path d="M28 154 90 57l62 97Z" fill="#eee9ff" stroke="#7157d9" stroke-width="4"/><path d="M42 132l12 8M126 140l12-8M84 67h12" stroke="#df7a30" stroke-width="4"/>
-    <path d="M181 154 248 58l85 96Z" fill="#e8f8f1" stroke="#2b9b74" stroke-width="4"/><path d="M198 130l12 8M305 138l12-8" stroke="#df7a30" stroke-width="4"/>
-    <path d="M360 154 415 47l82 107Z" fill="#fff5d7" stroke="#d49a18" stroke-width="4"/><path d="M374 128l11 7M466 135l13-9M408 62l12 5M411 68l12 5" stroke="#df7a30" stroke-width="4"/>
+  if (visual === "triangulo-lados") {
+    const equilateral = triangleFromBaseAngles(24, 154, 126, 60, 60);
+    const isosceles = triangleFromBaseAngles(185, 154, 136, 65, 65);
+    const scalene = triangleFromBaseAngles(358, 154, 138, 48, 72);
+    return `${open("Três tipos de triângulo classificados pelos lados")}
+    <path d="${trianglePath(equilateral)}" fill="#eee9ff" stroke="#7157d9" stroke-width="4"/><path d="M45 126l11 7M119 133l11-7M82 72h12" stroke="#df7a30" stroke-width="4"/>
+    <path d="${trianglePath(isosceles)}" fill="#e8f8f1" stroke="#2b9b74" stroke-width="4"/><path d="M207 117l12 8M288 125l12-8" stroke="#df7a30" stroke-width="4"/>
+    <path d="${trianglePath(scalene)}" fill="#fff5d7" stroke="#d49a18" stroke-width="4"/><path d="M378 122l11 7M468 132l13-8M409 64l12 5M412 70l12 5" stroke="#df7a30" stroke-width="4"/>
     <text x="90" y="183" text-anchor="middle">EQUILÁTERO</text><text x="257" y="183" text-anchor="middle">ISÓSCELES</text><text x="427" y="183" text-anchor="middle">ESCALENO</text>
-    <text x="90" y="202" text-anchor="middle">3 lados iguais</text><text x="257" y="202" text-anchor="middle">2 lados iguais</text><text x="427" y="202" text-anchor="middle">3 lados diferentes</text>${close}`;
+    <text x="90" y="202" text-anchor="middle">60° · 60° · 60°</text><text x="257" y="202" text-anchor="middle">65° · 50° · 65°</text><text x="427" y="202" text-anchor="middle">48° · 60° · 72°</text>${close}`;
+  }
 
-  if (visual === "triangulo-angulos") return `${open("Três tipos de triângulo classificados pelos ângulos")}
-    <path d="M25 155 88 56l72 99Z" fill="#e8f8f1" stroke="#2b9b74" stroke-width="4"/><path d="M46 140q18-20 36-5" fill="none" stroke="#df7a30" stroke-width="4"/>
+  if (visual === "triangulo-angulos") {
+    const acute = triangleFromBaseAngles(25, 155, 135, 50, 60);
+    const obtuse = triangleFromBaseAngles(340, 155, 160, 25, 35);
+    const obtuseApex = obtuse.points[1];
+    return `${open("Três tipos de triângulo classificados pelos ângulos")}
+    <path d="${trianglePath(acute)}" fill="#e8f8f1" stroke="#2b9b74" stroke-width="4"/><path d="M47 145q14-18 32-8" fill="none" stroke="#df7a30" stroke-width="4"/>
     <path d="M185 155V62l125 93Z" fill="#e7f2ff" stroke="#3278c8" stroke-width="4"/><path d="M185 135h20v20" fill="none" stroke="#df7a30" stroke-width="4"/>
-    <path d="M344 155 408 81l92 74Z" fill="#fff0e4" stroke="#df7a30" stroke-width="4"/><path d="M365 151q22-45 55-45" fill="none" stroke="#7157d9" stroke-width="4"/>
+    <path d="${trianglePath(obtuse)}" fill="#fff0e4" stroke="#df7a30" stroke-width="4"/><path d="M${geometryRound(obtuseApex.x - 24)} ${geometryRound(obtuseApex.y + 15)} Q${geometryPoint(obtuseApex)} ${geometryRound(obtuseApex.x + 24)} ${geometryRound(obtuseApex.y + 15)}" fill="none" stroke="#7157d9" stroke-width="4"/>
     <text x="91" y="183" text-anchor="middle">ACUTÂNGULO</text><text x="245" y="183" text-anchor="middle">RETÂNGULO</text><text x="421" y="183" text-anchor="middle">OBTUSÂNGULO</text>
-    <text x="91" y="202" text-anchor="middle">todos &lt; 90°</text><text x="245" y="202" text-anchor="middle">um = 90°</text><text x="421" y="202" text-anchor="middle">um &gt; 90°</text>${close}`;
+    <text x="91" y="202" text-anchor="middle">50° · 70° · 60°</text><text x="245" y="202" text-anchor="middle">90° · 36,6° · 53,4°</text><text x="421" y="202" text-anchor="middle">25° · 120° · 35°</text>${close}`;
+  }
 
   if (visual === "triangulo-soma") return `${open("Soma dos três ângulos internos do triângulo")}
     <path d="M80 175 260 38l180 137Z" fill="#eee9ff" stroke="#7157d9" stroke-width="5"/>
@@ -694,23 +791,33 @@ function createGeometryLearnIllustration(visual) {
     <text x="255" y="18" text-anchor="middle">lado</text><text x="140" y="126" text-anchor="middle" transform="rotate(-90 140 126)">lado</text><text x="255" y="132" text-anchor="middle">lado × lado</text>${close}`;
 
   if (visual === "escala-area") return `${open("Efeito da ampliação das medidas sobre a área")}
-    <path d="M55 82h100v90H55Z" fill="#eee9ff" stroke="#7157d9" stroke-width="5"/><path d="M250 30h210v142H250Z" fill="#e8f8f1" stroke="#2b9b74" stroke-width="5"/>
+    <path d="M55 102h80v60H55Z" fill="#eee9ff" stroke="#7157d9" stroke-width="5"/><path d="M250 42h160v120H250Z" fill="#e8f8f1" stroke="#2b9b74" stroke-width="5"/>
     <path d="M177 105h45" stroke="#df7a30" stroke-width="5"/><path d="m211 94 12 11-12 11" fill="none" stroke="#df7a30" stroke-width="4"/>
-    <text x="105" y="199" text-anchor="middle">medidas × 1</text><text x="355" y="199" text-anchor="middle">medidas ampliadas → área cresce em duas direções</text>${close}`;
+    <text x="95" y="190" text-anchor="middle">80 × 60 → A</text><text x="330" y="190" text-anchor="middle">160 × 120 → 4A</text>${close}`;
 
-  if (visual === "poligonos-nomes") return `${open("Polígonos organizados pelo número de lados")}
-    <path d="M28 140 72 58l44 82Z" fill="#eee9ff" stroke="#7157d9" stroke-width="4"/><path d="M140 58h82v82h-82Z" fill="#e8f8f1" stroke="#2b9b74" stroke-width="4"/>
-    <path d="m294 52 48 35-18 56h-60l-18-56Z" fill="#e7f2ff" stroke="#3278c8" stroke-width="4"/><path d="m430 47 48 28v56l-48 28-48-28V75Z" fill="#fff5d7" stroke="#d49a18" stroke-width="4"/>
-    <text x="72" y="170" text-anchor="middle">3 · TRIÂNGULO</text><text x="181" y="170" text-anchor="middle">4 · QUADRILÁTERO</text><text x="294" y="170" text-anchor="middle">5 · PENTÁGONO</text><text x="430" y="170" text-anchor="middle">6 · HEXÁGONO</text>
+  if (visual === "poligonos-nomes") {
+    const triangle = regularPolygonPoints(72, 100, 48, 3);
+    const square = regularPolygonPoints(181, 100, 48, 4, -45);
+    const pentagon = regularPolygonPoints(294, 100, 50, 5);
+    const hexagon = regularPolygonPoints(430, 100, 53, 6);
+    return `${open("Polígonos organizados pelo número de lados")}
+    <path d="${polygonPath(triangle)}" fill="#eee9ff" stroke="#7157d9" stroke-width="4"/><path d="${polygonPath(square)}" fill="#e8f8f1" stroke="#2b9b74" stroke-width="4"/>
+    <path d="${polygonPath(pentagon)}" fill="#e7f2ff" stroke="#3278c8" stroke-width="4"/><path d="${polygonPath(hexagon)}" fill="#fff5d7" stroke="#d49a18" stroke-width="4"/>
+    <text x="72" y="169" text-anchor="middle">TRIÂNGULO</text><text x="181" y="169" text-anchor="middle">QUADRILÁTERO</text><text x="294" y="169" text-anchor="middle">PENTÁGONO</text><text x="430" y="169" text-anchor="middle">HEXÁGONO</text>
+    <text x="72" y="185" text-anchor="middle">3 lados</text><text x="181" y="185" text-anchor="middle">4 lados</text><text x="294" y="185" text-anchor="middle">5 lados</text><text x="430" y="185" text-anchor="middle">6 lados</text>
     <text x="260" y="203" text-anchor="middle">o nome depende da quantidade de lados do contorno</text>${close}`;
+  }
 
-  if (visual === "poligono-regular") return `${open("Comparação entre polígono regular e irregular")}
-    <path d="m145 38 83 60-32 98H94L62 98Z" fill="#e8f8f1" stroke="#2b9b74" stroke-width="5"/><path d="m385 44 84 45-25 99H330L300 105Z" fill="#fff0e4" stroke="#df7a30" stroke-width="5"/>
+  if (visual === "poligono-regular") {
+    const regular = regularPolygonPoints(145, 112, 82, 5);
+    return `${open("Comparação entre polígono regular e irregular")}
+    <path d="${polygonPath(regular)}" fill="#e8f8f1" stroke="#2b9b74" stroke-width="5"/><path d="M385 35 478 88 445 194 328 184 294 104Z" fill="#fff0e4" stroke="#df7a30" stroke-width="5"/>
     <text x="145" y="216" text-anchor="middle">REGULAR · lados e ângulos iguais</text><text x="385" y="216" text-anchor="middle">IRREGULAR · medidas diferentes</text>${close}`;
+  }
 
   if (visual === "poligono-convexidade") return `${open("Comparação entre polígono convexo e não convexo")}
-    <path d="m140 38 92 56-28 102H78L48 92Z" fill="#e8f8f1" stroke="#2b9b74" stroke-width="5"/><path d="m350 45 120 48-70 25 56 78H300l38-78-70-25Z" fill="#fff0e4" stroke="#df7a30" stroke-width="5"/>
-    <path d="M90 80 205 170M300 80 444 170" stroke="#7157d9" stroke-width="3" stroke-dasharray="7 6"/>
+    <path d="m140 38 92 56-28 102H78L48 92Z" fill="#e8f8f1" stroke="#2b9b74" stroke-width="5"/><path d="M286 48 478 48 408 112 478 190 286 190 350 112Z" fill="#fff0e4" stroke="#df7a30" stroke-width="5"/>
+    <path d="M48 92 204 196M286 48 408 112" stroke="#7157d9" stroke-width="3" stroke-dasharray="7 6"/>
     <text x="140" y="216" text-anchor="middle">CONVEXO · sem reentrância</text><text x="370" y="216" text-anchor="middle">NÃO CONVEXO · com reentrância</text>${close}`;
 
   if (visual === "triangulo-area") return `${open("Triângulo com base e altura perpendicular")}
@@ -735,8 +842,8 @@ function createGeometryLearnIllustration(visual) {
   if (visual === "triangulo-segmentos") return `${open("Mediana, altura, bissetriz e mediatriz")}
     <path d="M18 132 70 42l52 90Z" fill="#f7f4ff" stroke="#7157d9" stroke-width="3"/><path d="M70 42v90" stroke="#7157d9" stroke-width="4"/><circle cx="70" cy="132" r="4" fill="#df7a30"/>
     <path d="M146 132 198 42l52 90Z" fill="#f7f4ff" stroke="#2b9b74" stroke-width="3"/><path d="M198 42v90" stroke="#2b9b74" stroke-width="4"/><path d="M198 120h12v12" fill="none" stroke="#df7a30" stroke-width="3"/>
-    <path d="M274 132 326 42l52 90Z" fill="#f7f4ff" stroke="#3278c8" stroke-width="3"/><path d="M326 42 310 132" stroke="#3278c8" stroke-width="4"/><path d="M304 57q20 13 38 0" fill="none" stroke="#df7a30" stroke-width="3"/>
-    <path d="M402 132 454 42l52 90Z" fill="#f7f4ff" stroke="#d49a18" stroke-width="3"/><path d="M454 25v132" stroke="#d49a18" stroke-width="4" stroke-dasharray="6 5"/><path d="M454 120h12v12" fill="none" stroke="#df7a30" stroke-width="3"/>
+    <path d="M274 132 326 42l52 90Z" fill="#f7f4ff" stroke="#3278c8" stroke-width="3"/><path d="M326 42V132" stroke="#3278c8" stroke-width="4"/><path d="M309 58q17 13 34 0" fill="none" stroke="#df7a30" stroke-width="3"/>
+    <path d="M402 132 432 50l74 82Z" fill="#f7f4ff" stroke="#d49a18" stroke-width="3"/><path d="M454 25v132" stroke="#d49a18" stroke-width="4" stroke-dasharray="6 5"/><path d="M454 120h12v12" fill="none" stroke="#df7a30" stroke-width="3"/><path d="M446 132h16" stroke="#df7a30" stroke-width="3"/>
     <text x="70" y="164" text-anchor="middle">MEDIANA</text><text x="198" y="164" text-anchor="middle">ALTURA</text><text x="326" y="164" text-anchor="middle">BISSETRIZ</text><text x="454" y="164" text-anchor="middle">MEDIATRIZ</text>
     <text x="260" y="203" text-anchor="middle">ponto médio · 90° · ângulo ao meio · meio + 90°</text>${close}`;
 
@@ -748,8 +855,8 @@ function createGeometryLearnIllustration(visual) {
 
   if (visual === "triangulo-baricentro") return `${open("Mediana dividida pelo baricentro na razão dois para um")}
     <path d="M75 178 260 35l185 143Z" fill="#f7f4ff" stroke="#7157d9" stroke-width="5"/><path d="M260 35v143" stroke="#3278c8" stroke-width="5"/>
-    <circle cx="260" cy="130" r="10" fill="#df7a30"/><path d="M275 55h70M275 130h70M275 178h70" stroke="#aaa3bb" stroke-width="2" stroke-dasharray="5 5"/>
-    <text x="355" y="61">VÉRTICE</text><text x="355" y="136">BARICENTRO</text><text x="355" y="184">PONTO MÉDIO</text><text x="220" y="90">2 partes</text><text x="220" y="163">1 parte</text>${close}`;
+    <circle cx="260" cy="130.333" r="10" fill="#df7a30"/><path d="M275 35h70M275 130.333h70M275 178h70" stroke="#aaa3bb" stroke-width="2" stroke-dasharray="5 5"/>
+    <text x="355" y="41">VÉRTICE</text><text x="355" y="136">BARICENTRO</text><text x="355" y="184">PONTO MÉDIO</text><text x="220" y="85">2 partes</text><text x="220" y="163">1 parte</text>${close}`;
 
   if (["triangulo-segmentos", "triangulo-centros", "triangulo-baricentro"].includes(visual)) return `${open("Segmentos e pontos notáveis de um triângulo")}
     <path d="M70 176 260 36l190 140Z" fill="#f7f4ff" stroke="#7157d9" stroke-width="5"/>
@@ -774,28 +881,31 @@ function createGeometryLearnIllustration(visual) {
       <text x="260" y="42" text-anchor="middle">base menor</text><text x="260" y="204" text-anchor="middle">base maior</text><text x="169" y="115">altura</text>${close}`;
     return `${open("Paralelogramo transformado em retângulo")}
       <path d="M55 165 110 55h180l-55 110Z" fill="#eee9ff" stroke="#7157d9" stroke-width="5"/><path d="M110 55v110" stroke="#2b9b74" stroke-width="4" stroke-dasharray="7 6"/>
-      <path d="M315 55h150v110H315Z" fill="#e8f8f1" stroke="#2b9b74" stroke-width="5"/><path d="m285 110 25 0" stroke="#df7a30" stroke-width="5"/><path d="m302 99 12 11-12 11" fill="none" stroke="#df7a30" stroke-width="4"/>
+      <path d="M315 55h180v110H315Z" fill="#e8f8f1" stroke="#2b9b74" stroke-width="5"/><path d="m285 110 25 0" stroke="#df7a30" stroke-width="5"/><path d="m302 99 12 11-12 11" fill="none" stroke="#df7a30" stroke-width="4"/>
       <text x="172" y="197" text-anchor="middle">mesma base e altura</text><text x="390" y="197" text-anchor="middle">mesma área</text>${close}`;
   }
 
   if (visual === "poligono-diagonais") return `${open("Diagonais ligando vértices não consecutivos")}
     <path d="m260 25 92 36 55 82-69 62H182l-69-62 55-82Z" fill="#e7f2ff" stroke="#3278c8" stroke-width="5"/>
-    <path d="M168 61 338 205M168 61 407 143M168 61 352 61M260 25 338 205" stroke="#7157d9" stroke-width="4" stroke-dasharray="7 5"/>
+    <path d="M168 61 352 61M168 61 407 143M168 61 338 205M168 61 182 205" stroke="#7157d9" stroke-width="4" stroke-dasharray="7 5"/>
     <circle cx="168" cy="61" r="8" fill="#df7a30"/><text x="260" y="216" text-anchor="middle">de um vértice: não conte ele mesmo nem os 2 vizinhos</text>${close}`;
 
   if (visual === "poligono-angulos") return `${open("Polígono dividido em triângulos para estudar os ângulos")}
     <path d="m260 25 92 36 55 82-69 62H182l-69-62 55-82Z" fill="#eee9ff" stroke="#7157d9" stroke-width="5"/>
-    <path d="M168 61 407 143M168 61 338 205M168 61 182 205" stroke="#2b9b74" stroke-width="4" stroke-dasharray="7 5"/>
+    <path d="M168 61 352 61M168 61 407 143M168 61 338 205M168 61 182 205" stroke="#2b9b74" stroke-width="4" stroke-dasharray="7 5"/>
     <text x="260" y="216" text-anchor="middle">n lados → n − 2 triângulos → (n − 2) × 180°</text>${close}`;
 
-  if (["poligono-diagonais", "poligono-angulos", "hexagono-inscrito"].includes(visual)) return `${open("Hexágono com centro, ângulos e diagonais")}
+  if (["poligono-diagonais", "poligono-angulos", "hexagono-inscrito"].includes(visual)) {
+    const hexagon = regularPolygonPoints(260, 112, 88, 6);
+    return `${open("Hexágono regular inscrito, com lado exatamente igual ao raio")}
     <circle cx="260" cy="112" r="88" fill="#f9fbff" stroke="#cfe0f7" stroke-width="3"/>
-    <path d="m260 24 76 44v88l-76 44-76-44V68Z" fill="#e7f2ff" fill-opacity=".65" stroke="#3278c8" stroke-width="5"/>
-    <path d="M184 68 336 156M336 68 184 156M260 24v176" stroke="#7157d9" stroke-width="3" stroke-dasharray="7 6"/><circle cx="260" cy="112" r="6" fill="#df7a30"/>
-    <path d="M260 112 336 68" stroke="#2b9b74" stroke-width="5"/><text x="300" y="82">raio</text>${close}`;
+    <path d="${polygonPath(hexagon)}" fill="#e7f2ff" fill-opacity=".65" stroke="#3278c8" stroke-width="5"/>
+    <path d="M${geometryPoint(hexagon[0])} L${geometryPoint(hexagon[3])} M${geometryPoint(hexagon[1])} L${geometryPoint(hexagon[4])} M${geometryPoint(hexagon[2])} L${geometryPoint(hexagon[5])}" stroke="#7157d9" stroke-width="3" stroke-dasharray="7 6"/><circle cx="260" cy="112" r="6" fill="#df7a30"/>
+    <path d="M260 112 L${geometryPoint(hexagon[1])}" stroke="#2b9b74" stroke-width="5"/><text x="300" y="82">raio = lado</text>${close}`;
+  }
 
   if (visual === "construcao-angulos") return `${open("Construção de ângulos por perpendicular e bissetriz")}
-    <path d="M70 175h170V42M70 175 190 55" stroke="#7157d9" stroke-width="6" stroke-linecap="round"/><path d="M220 155h20v20" fill="none" stroke="#2b9b74" stroke-width="4"/>
+    <path d="M70 175H240M70 175V35M70 175 169 76" stroke="#7157d9" stroke-width="6" stroke-linecap="round"/><path d="M70 155h20v20" fill="none" stroke="#2b9b74" stroke-width="4"/>
     <path d="M330 175h135M330 175l68-118M330 175l118-68" stroke="#3278c8" stroke-width="6" stroke-linecap="round"/>
     <path d="M366 112q24 12 35 36M397 142q16 7 21 23" fill="none" stroke="#df7a30" stroke-width="4"/>
     <text x="155" y="205" text-anchor="middle">90° dividido ao meio</text><text x="400" y="205" text-anchor="middle">60° dividido ao meio</text>${close}`;
@@ -934,6 +1044,88 @@ function renderPortugueseConceptMap(guide) {
   learnIllustration.append(foundations, map);
 }
 
+function createGeometryCardDiagram(visual, index, title) {
+  const open = (label) => `<svg viewBox="0 0 220 112" role="img" aria-label="${label}"><rect x="1" y="1" width="218" height="110" rx="12" fill="#fff" fill-opacity=".78"/>`;
+  const close = "</svg>";
+  const triangle = (points, stroke = "#7157d9", fill = "#eee9ff") => `<path d="${trianglePath(points)}" fill="${fill}" stroke="${stroke}" stroke-width="3"/>`;
+
+  if (visual === "triangulo-lados") {
+    const specs = [
+      triangleFromBaseAngles(45, 87, 130, 60, 60),
+      triangleFromBaseAngles(45, 87, 130, 68, 68),
+      triangleFromBaseAngles(45, 87, 130, 43, 71),
+    ];
+    const labels = ["5 cm", "7 · 7 · 4 cm", "4 · 5 · 6 cm"];
+    return `${open(`${title}: medidas dos lados`)}${triangle(specs[index] || specs[0])}<text x="110" y="105" text-anchor="middle">${labels[index] || labels[0]}</text>${close}`;
+  }
+
+  if (visual === "triangulo-angulos") {
+    if (index === 1) return `${open("Triângulo retângulo de 30, 60 e 90 graus")}<path d="M45 88V25h110Z" fill="#e7f2ff" stroke="#3278c8" stroke-width="3"/><path d="M45 74h14v14" fill="none" stroke="#df7a30" stroke-width="3"/><text x="31" y="63">90°</text><text x="110" y="105" text-anchor="middle">30° + 60° + 90°</text>${close}`;
+    const spec = index === 2
+      ? triangleFromBaseAngles(35, 87, 150, 25, 35)
+      : triangleFromBaseAngles(35, 87, 150, 50, 60);
+    const labels = index === 2 ? ["25°", "120°", "35°"] : ["50°", "70°", "60°"];
+    const apex = spec.points[1];
+    return `${open(`${title}: ângulos medidos`)}${triangle(spec, index === 2 ? "#df7a30" : "#2b9b74", index === 2 ? "#fff0e4" : "#e8f8f1")}<text x="39" y="102">${labels[0]}</text><text x="${geometryRound(apex.x)}" y="${geometryRound(apex.y + 18)}" text-anchor="middle">${labels[1]}</text><text x="181" y="102" text-anchor="end">${labels[2]}</text>${close}`;
+  }
+
+  if (visual === "quadrilateros-tipos") {
+    const figures = [
+      '<path d="M70 18h80v80H70Z" fill="#eee9ff" stroke="#7157d9" stroke-width="4"/>',
+      '<path d="M45 30h130v68H45Z" fill="#e8f8f1" stroke="#2b9b74" stroke-width="4"/>',
+      '<path d="M110 12 174 56 110 100 46 56Z" fill="#e7f2ff" stroke="#3278c8" stroke-width="4"/>',
+      '<path d="M38 96 68 25h84l30 71Z" fill="#fff5d7" stroke="#d49a18" stroke-width="4"/>',
+    ];
+    return `${open(title)}${figures[index] || figures[0]}${close}`;
+  }
+
+  if (visual === "triangulo-segmentos") {
+    const base = '<path d="M30 92 98 18 190 92Z" fill="#f7f4ff" stroke="#7157d9" stroke-width="3"/>';
+    const marks = [
+      '<path d="M98 18 110 92" stroke="#df7a30" stroke-width="4"/><path d="M102 92h16" stroke="#3278c8" stroke-width="3"/>',
+      '<path d="M98 18v74" stroke="#2b9b74" stroke-width="4"/><path d="M98 79h13v13" fill="none" stroke="#df7a30" stroke-width="3"/>',
+      '<path d="M98 18 103.6 92" stroke="#3278c8" stroke-width="4"/><path d="M83 30q14 11 27 1" fill="none" stroke="#df7a30" stroke-width="3"/>',
+      '<path d="M110 7v98" stroke="#d49a18" stroke-width="4" stroke-dasharray="6 4"/><path d="M110 79h13v13" fill="none" stroke="#df7a30" stroke-width="3"/>',
+    ];
+    return `${open(title)}${base}${marks[index] || marks[0]}${close}`;
+  }
+
+  if (visual === "poligonos-nomes") {
+    const pair = [[3, 4], [5, 6], [7, 8], [9, 10]][index] || [3, 4];
+    const first = regularPolygonPoints(65, 55, 35, pair[0]);
+    const second = regularPolygonPoints(157, 55, 35, pair[1]);
+    return `${open(`${pair[0]} e ${pair[1]} lados`)}<path d="${polygonPath(first)}" fill="#eee9ff" stroke="#7157d9" stroke-width="3"/><path d="${polygonPath(second)}" fill="#e8f8f1" stroke="#2b9b74" stroke-width="3"/><text x="65" y="105" text-anchor="middle">${pair[0]} lados</text><text x="157" y="105" text-anchor="middle">${pair[1]} lados</text>${close}`;
+  }
+
+  if (visual === "construcao-angulos") {
+    const angles = [90, 60, 45, 30];
+    const angle = angles[index] || 90;
+    const radians = angle * Math.PI / 180;
+    const endX = 42 + 70 * Math.cos(radians);
+    const endY = 92 - 70 * Math.sin(radians);
+    return `${open(`Construção exata de ${angle} graus`)}<path d="M42 92h145M42 92 ${geometryRound(endX)} ${geometryRound(endY)}" stroke="#7157d9" stroke-width="4" stroke-linecap="round"/><path d="M70 92 A28 28 0 0 0 ${geometryRound(42 + 28 * Math.cos(radians))} ${geometryRound(92 - 28 * Math.sin(radians))}" fill="none" stroke="#df7a30" stroke-width="4"/><text x="110" y="108" text-anchor="middle">${angle}°</text>${close}`;
+  }
+
+  if (visual === "escala-area") {
+    const shapes = [
+      '<path d="M18 52h55v40H18ZM118 52h110v40H118Z" transform="scale(.9 1)" fill="#eee9ff" stroke="#7157d9" stroke-width="3"/>',
+      '<path d="M16 60h50v30H16ZM105 30h100v60H105Z" fill="#e8f8f1" stroke="#2b9b74" stroke-width="3"/>',
+      '<path d="M16 68h30v20H16ZM92 28h90v60H92Z" fill="#e7f2ff" stroke="#3278c8" stroke-width="3"/>',
+    ];
+    return `${open(title)}${shapes[index] || shapes[0]}${close}`;
+  }
+
+  if (visual === "circulo-area") {
+    return `${open(title)}<circle cx="110" cy="55" r="40" fill="#fff5d7" stroke="#d49a18" stroke-width="4"/><path d="M110 55h40" stroke="#7157d9" stroke-width="4"/><circle cx="110" cy="55" r="4" fill="#7157d9"/><text x="130" y="48">r</text>${close}`;
+  }
+
+  if (visual === "volume-capacidade" || visual === "unidades") {
+    return `${open(title)}<path d="M35 38h95v55H35ZM35 38l28-19h95v55l-28 19M130 38l28-19M130 93l28-19" fill="#e7f2ff" fill-opacity=".75" stroke="#3278c8" stroke-width="3"/><text x="176" y="61" text-anchor="middle">1 dm³</text><text x="176" y="82" text-anchor="middle">= 1 L</text>${close}`;
+  }
+
+  return createGeometryLearnIllustration(visual);
+}
+
 function renderGeometryVisualLesson(guide) {
   const figure = document.createElement("div");
   figure.className = "geometry-main-figure";
@@ -957,7 +1149,10 @@ function renderGeometryVisualLesson(guide) {
     const text = document.createElement("p");
     title.textContent = item.titulo;
     text.textContent = item.texto;
-    card.append(title, text);
+    const diagram = document.createElement("div");
+    diagram.className = "geometry-card-diagram";
+    diagram.innerHTML = createGeometryCardDiagram(guide.visual, index, item.titulo);
+    card.append(title, text, diagram);
     if (item.exemplo) appendMiniExample(card, item.exemplo);
     grid.appendChild(card);
   });

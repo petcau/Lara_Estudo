@@ -1058,6 +1058,29 @@ h1 em::after {
   font-size: 0.84rem;
   line-height: 1.5;
 }
+.geometry-card-diagram {
+  display: grid;
+  place-items: center;
+  min-height: 98px;
+  margin-top: 5px;
+  padding: 5px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.58);
+  border: 1px solid color-mix(in srgb, var(--learn-tone) 20%, white);
+  border-radius: 11px;
+}
+.geometry-card-diagram svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 125px;
+}
+.geometry-card-diagram text {
+  fill: var(--learn-tone-ink);
+  font-family: "Nunito", sans-serif;
+  font-size: 10px;
+  font-weight: 800;
+}
 .geometry-reference-card .mini-card-example { margin-top: 3px; }
 
 .learn-foundations,
