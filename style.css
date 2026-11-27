@@ -1062,15 +1062,50 @@ h1 em::after {
 .learn-foundation-card strong { color: var(--learn-tone-ink); font-size: 0.88rem; }
 .learn-foundation-card span { color: #575165; font-size: 0.8rem; line-height: 1.42; }
 
+.mini-card-example {
+  display: grid;
+  gap: 3px;
+  margin-top: 6px;
+  padding: 9px 10px;
+  color: #4f495c;
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(255, 255, 255, 0.92);
+  border-radius: 9px;
+}
+.mini-card-example .mini-example-label {
+  color: var(--learn-tone-ink);
+  font-size: 0.65rem;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.mini-card-example .mini-example-sentence {
+  color: #4a4558;
+  font-size: 0.75rem;
+  font-weight: 650;
+  line-height: 1.35;
+}
+.mini-card-example .mini-example-result {
+  display: block;
+  margin-top: 2px;
+  color: var(--learn-tone-ink);
+  font-size: 0.75rem;
+  line-height: 1.35;
+}
+.mini-card-example .mini-example-result::before {
+  margin-right: 5px;
+  content: "→";
+}
+
 .concept-map-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(135px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   gap: 10px;
 }
 .concept-card {
   position: relative;
   display: grid;
-  min-height: 112px;
+  min-height: 185px;
   align-content: start;
   gap: 7px;
   padding: 14px;

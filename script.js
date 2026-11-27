@@ -666,6 +666,27 @@ function createLearnIllustration(subject) {
     </svg>`;
 }
 
+function appendMiniExample(card, example) {
+  if (!example) return;
+  const exampleBox = document.createElement("div");
+  const label = document.createElement("span");
+  const [sentence, ...classification] = example.split("→");
+  const sentenceText = document.createElement("span");
+  exampleBox.className = "mini-card-example";
+  label.className = "mini-example-label";
+  label.textContent = "Exemplo";
+  sentenceText.className = "mini-example-sentence";
+  sentenceText.textContent = sentence.trim();
+  exampleBox.append(label, sentenceText);
+  if (classification.length) {
+    const result = document.createElement("strong");
+    result.className = "mini-example-result";
+    result.textContent = classification.join("→").trim();
+    exampleBox.appendChild(result);
+  }
+  card.appendChild(exampleBox);
+}
+
 function renderPortugueseConceptMap(guide) {
   const foundations = document.createElement("section");
   foundations.className = "learn-foundations";
@@ -683,6 +704,7 @@ function renderPortugueseConceptMap(guide) {
     term.textContent = item.termo;
     meaning.textContent = item.significado;
     card.append(term, meaning);
+    appendMiniExample(card, item.exemplo);
     foundationGrid.appendChild(card);
   });
   foundations.append(foundationHeading, foundationGrid);
@@ -706,6 +728,7 @@ function renderPortugueseConceptMap(guide) {
     term.textContent = concept.termo;
     summary.textContent = concept.resumo;
     card.append(marker, term, summary);
+    appendMiniExample(card, concept.exemplo);
     mapGrid.appendChild(card);
   });
   map.append(mapHeading, mapGrid);
