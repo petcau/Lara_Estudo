@@ -33,6 +33,7 @@ const nextButton = document.querySelector("#next-button");
 const learnButton = document.querySelector("#learn-button");
 const closeLearnButton = document.querySelector("#close-learn-button");
 const learnPanel = document.querySelector("#learn-panel");
+const learnKicker = document.querySelector("#learn-kicker");
 const learnTitle = document.querySelector("#learn-title");
 const learnIntro = document.querySelector("#learn-intro");
 const learnIllustration = document.querySelector("#learn-illustration");
@@ -636,6 +637,82 @@ function createGeometryLearnIllustration(visual) {
   const open = (label) => `<svg viewBox="0 0 520 220" role="img" aria-label="${label}"><rect x="12" y="12" width="496" height="196" rx="22" fill="#fff"/>`;
   const close = "</svg>";
 
+  if (visual === "triangulo-lados") return `${open("Três tipos de triângulo classificados pelos lados")}
+    <path d="M28 154 90 57l62 97Z" fill="#eee9ff" stroke="#7157d9" stroke-width="4"/><path d="M42 132l12 8M126 140l12-8M84 67h12" stroke="#df7a30" stroke-width="4"/>
+    <path d="M181 154 248 58l85 96Z" fill="#e8f8f1" stroke="#2b9b74" stroke-width="4"/><path d="M198 130l12 8M305 138l12-8" stroke="#df7a30" stroke-width="4"/>
+    <path d="M360 154 415 47l82 107Z" fill="#fff5d7" stroke="#d49a18" stroke-width="4"/><path d="M374 128l11 7M466 135l13-9M408 62l12 5M411 68l12 5" stroke="#df7a30" stroke-width="4"/>
+    <text x="90" y="183" text-anchor="middle">EQUILÁTERO</text><text x="257" y="183" text-anchor="middle">ISÓSCELES</text><text x="427" y="183" text-anchor="middle">ESCALENO</text>
+    <text x="90" y="202" text-anchor="middle">3 lados iguais</text><text x="257" y="202" text-anchor="middle">2 lados iguais</text><text x="427" y="202" text-anchor="middle">3 lados diferentes</text>${close}`;
+
+  if (visual === "triangulo-angulos") return `${open("Três tipos de triângulo classificados pelos ângulos")}
+    <path d="M25 155 88 56l72 99Z" fill="#e8f8f1" stroke="#2b9b74" stroke-width="4"/><path d="M46 140q18-20 36-5" fill="none" stroke="#df7a30" stroke-width="4"/>
+    <path d="M185 155V62l125 93Z" fill="#e7f2ff" stroke="#3278c8" stroke-width="4"/><path d="M185 135h20v20" fill="none" stroke="#df7a30" stroke-width="4"/>
+    <path d="M344 155 408 81l92 74Z" fill="#fff0e4" stroke="#df7a30" stroke-width="4"/><path d="M365 151q22-45 55-45" fill="none" stroke="#7157d9" stroke-width="4"/>
+    <text x="91" y="183" text-anchor="middle">ACUTÂNGULO</text><text x="245" y="183" text-anchor="middle">RETÂNGULO</text><text x="421" y="183" text-anchor="middle">OBTUSÂNGULO</text>
+    <text x="91" y="202" text-anchor="middle">todos &lt; 90°</text><text x="245" y="202" text-anchor="middle">um = 90°</text><text x="421" y="202" text-anchor="middle">um &gt; 90°</text>${close}`;
+
+  if (visual === "triangulo-soma") return `${open("Soma dos três ângulos internos do triângulo")}
+    <path d="M80 175 260 38l180 137Z" fill="#eee9ff" stroke="#7157d9" stroke-width="5"/>
+    <path d="M106 160q25-27 53-8M228 62q32 25 64 0M361 152q29-18 53 8" fill="none" stroke="#df7a30" stroke-width="5"/>
+    <text x="132" y="145">A</text><text x="260" y="77" text-anchor="middle">B</text><text x="388" y="145">C</text>
+    <rect x="145" y="181" width="230" height="29" rx="11" fill="#e8f8f1"/><text x="260" y="201" text-anchor="middle">A + B + C = 180°</text>${close}`;
+
+  if (visual === "triangulo-classificacao") return `${open("Duas maneiras de classificar o mesmo triângulo")}
+    <path d="M45 162 140 48l95 114Z" fill="#eee9ff" stroke="#7157d9" stroke-width="5"/><path d="M68 135l13 10M199 145l13-10" stroke="#df7a30" stroke-width="5"/>
+    <path d="M285 162V58l170 104Z" fill="#e7f2ff" stroke="#3278c8" stroke-width="5"/><path d="M285 142h20v20" fill="none" stroke="#df7a30" stroke-width="4"/>
+    <text x="140" y="190" text-anchor="middle">PELOS LADOS</text><text x="370" y="190" text-anchor="middle">PELOS ÂNGULOS</text><text x="260" y="210" text-anchor="middle">todo triângulo recebe as duas classificações</text>${close}`;
+
+  if (visual === "triangulo-isosceles") return `${open("Triângulo isósceles com lados e ângulos iguais")}
+    <path d="M95 177 260 36l165 141Z" fill="#eee9ff" stroke="#7157d9" stroke-width="5"/>
+    <path d="M145 128l16 12M359 140l16-12" stroke="#df7a30" stroke-width="5"/><path d="M122 160q28-30 60-12M338 148q32-18 60 12" fill="none" stroke="#2b9b74" stroke-width="5"/>
+    <text x="145" y="112">lado a</text><text x="348" y="112">lado a</text><text x="260" y="201" text-anchor="middle">ângulos da base iguais</text>${close}`;
+
+  if (visual === "triangulo-externo") return `${open("Ângulo externo e ângulos internos não adjacentes")}
+    <path d="M65 165 235 45l150 120Z" fill="#eee9ff" stroke="#7157d9" stroke-width="5"/><path d="M385 165h100" stroke="#7157d9" stroke-width="5"/>
+    <path d="M92 151q25-27 54-11M210 68q28 22 55 0" fill="none" stroke="#2b9b74" stroke-width="5"/><path d="M405 164q8-35 40-42" fill="none" stroke="#df7a30" stroke-width="5"/>
+    <text x="120" y="137">A</text><text x="235" y="83">B</text><text x="437" y="112">EXTERNO</text><text x="260" y="204" text-anchor="middle">externo = A + B</text>${close}`;
+
+  if (visual === "triangulo-perimetro") return `${open("Perímetro de um triângulo isósceles")}
+    <path d="M90 176 260 35l170 141Z" fill="#e8f8f1" stroke="#2b9b74" stroke-width="5"/>
+    <text x="150" y="104">x</text><text x="365" y="104">x</text><text x="260" y="201" text-anchor="middle">base b</text>
+    <rect x="170" y="118" width="180" height="35" rx="12" fill="#eee9ff"/><text x="260" y="141" text-anchor="middle">P = b + x + x</text>${close}`;
+
+  if (visual === "quadrilateros-tipos") return `${open("Quadrado, retângulo, losango e trapézio")}
+    <path d="M28 55h95v95H28Z" fill="#eee9ff" stroke="#7157d9" stroke-width="4"/><path d="M150 72h120v78H150Z" fill="#e8f8f1" stroke="#2b9b74" stroke-width="4"/>
+    <path d="m342 49 58 54-58 54-58-54Z" fill="#e7f2ff" stroke="#3278c8" stroke-width="4"/><path d="M405 150 430 65h60l22 85Z" fill="#fff5d7" stroke="#d49a18" stroke-width="4"/>
+    <text x="75" y="179" text-anchor="middle">QUADRADO</text><text x="210" y="179" text-anchor="middle">RETÂNGULO</text><text x="342" y="179" text-anchor="middle">LOSANGO</text><text x="458" y="179" text-anchor="middle">TRAPÉZIO</text>
+    <text x="260" y="207" text-anchor="middle">compare lados · ângulos retos · paralelismo</text>${close}`;
+
+  if (visual === "quadrilatero-angulos") return `${open("Quatro ângulos internos de um quadrilátero")}
+    <path d="M80 170 125 45h285l35 125Z" fill="#eee9ff" stroke="#7157d9" stroke-width="5"/>
+    <path d="M101 151q23-25 50-10M139 64q20 16 42 0M365 64q22 16 39-1M392 142q29-14 39 10" fill="none" stroke="#df7a30" stroke-width="5"/>
+    <text x="260" y="205" text-anchor="middle">A + B + C + D = 360°</text>${close}`;
+
+  if (visual === "quadrado-area") return `${open("Quadrado dividido em unidades de área")}
+    <path d="M160 28h190v190H160Z" fill="#e8f8f1" stroke="#2b9b74" stroke-width="5"/>
+    <path d="M207 28v190M255 28v190M302 28v190M160 75h190M160 123h190M160 170h190" stroke="#9bd6c0" stroke-width="2"/>
+    <text x="255" y="18" text-anchor="middle">lado</text><text x="140" y="126" text-anchor="middle" transform="rotate(-90 140 126)">lado</text><text x="255" y="132" text-anchor="middle">lado × lado</text>${close}`;
+
+  if (visual === "escala-area") return `${open("Efeito da ampliação das medidas sobre a área")}
+    <path d="M55 82h100v90H55Z" fill="#eee9ff" stroke="#7157d9" stroke-width="5"/><path d="M250 30h210v142H250Z" fill="#e8f8f1" stroke="#2b9b74" stroke-width="5"/>
+    <path d="M177 105h45" stroke="#df7a30" stroke-width="5"/><path d="m211 94 12 11-12 11" fill="none" stroke="#df7a30" stroke-width="4"/>
+    <text x="105" y="199" text-anchor="middle">medidas × 1</text><text x="355" y="199" text-anchor="middle">medidas ampliadas → área cresce em duas direções</text>${close}`;
+
+  if (visual === "poligonos-nomes") return `${open("Polígonos organizados pelo número de lados")}
+    <path d="M28 140 72 58l44 82Z" fill="#eee9ff" stroke="#7157d9" stroke-width="4"/><path d="M140 58h82v82h-82Z" fill="#e8f8f1" stroke="#2b9b74" stroke-width="4"/>
+    <path d="m294 52 48 35-18 56h-60l-18-56Z" fill="#e7f2ff" stroke="#3278c8" stroke-width="4"/><path d="m430 47 48 28v56l-48 28-48-28V75Z" fill="#fff5d7" stroke="#d49a18" stroke-width="4"/>
+    <text x="72" y="170" text-anchor="middle">3 · TRIÂNGULO</text><text x="181" y="170" text-anchor="middle">4 · QUADRILÁTERO</text><text x="294" y="170" text-anchor="middle">5 · PENTÁGONO</text><text x="430" y="170" text-anchor="middle">6 · HEXÁGONO</text>
+    <text x="260" y="203" text-anchor="middle">o nome depende da quantidade de lados do contorno</text>${close}`;
+
+  if (visual === "poligono-regular") return `${open("Comparação entre polígono regular e irregular")}
+    <path d="m145 38 83 60-32 98H94L62 98Z" fill="#e8f8f1" stroke="#2b9b74" stroke-width="5"/><path d="m385 44 84 45-25 99H330L300 105Z" fill="#fff0e4" stroke="#df7a30" stroke-width="5"/>
+    <text x="145" y="216" text-anchor="middle">REGULAR · lados e ângulos iguais</text><text x="385" y="216" text-anchor="middle">IRREGULAR · medidas diferentes</text>${close}`;
+
+  if (visual === "poligono-convexidade") return `${open("Comparação entre polígono convexo e não convexo")}
+    <path d="m140 38 92 56-28 102H78L48 92Z" fill="#e8f8f1" stroke="#2b9b74" stroke-width="5"/><path d="m350 45 120 48-70 25 56 78H300l38-78-70-25Z" fill="#fff0e4" stroke="#df7a30" stroke-width="5"/>
+    <path d="M90 80 205 170M300 80 444 170" stroke="#7157d9" stroke-width="3" stroke-dasharray="7 6"/>
+    <text x="140" y="216" text-anchor="middle">CONVEXO · sem reentrância</text><text x="370" y="216" text-anchor="middle">NÃO CONVEXO · com reentrância</text>${close}`;
+
   if (visual === "triangulo-area") return `${open("Triângulo com base e altura perpendicular")}
     <path d="M90 174h330L260 42Z" fill="#eee9ff" stroke="#7157d9" stroke-width="5"/>
     <path d="M260 42v132" stroke="#2b9b74" stroke-width="5" stroke-dasharray="8 7"/>
@@ -654,6 +731,25 @@ function createGeometryLearnIllustration(visual) {
     <path d="M70 170h375" stroke="#2b9b74" stroke-width="6"/>
     <text x="145" y="100">a</text><text x="350" y="100">b</text><text x="258" y="197">maior lado c</text>
     <rect x="178" y="22" width="164" height="34" rx="12" fill="#fff5cf"/><text x="260" y="44" text-anchor="middle">a + b precisa superar c</text>${close}`;
+
+  if (visual === "triangulo-segmentos") return `${open("Mediana, altura, bissetriz e mediatriz")}
+    <path d="M18 132 70 42l52 90Z" fill="#f7f4ff" stroke="#7157d9" stroke-width="3"/><path d="M70 42v90" stroke="#7157d9" stroke-width="4"/><circle cx="70" cy="132" r="4" fill="#df7a30"/>
+    <path d="M146 132 198 42l52 90Z" fill="#f7f4ff" stroke="#2b9b74" stroke-width="3"/><path d="M198 42v90" stroke="#2b9b74" stroke-width="4"/><path d="M198 120h12v12" fill="none" stroke="#df7a30" stroke-width="3"/>
+    <path d="M274 132 326 42l52 90Z" fill="#f7f4ff" stroke="#3278c8" stroke-width="3"/><path d="M326 42 310 132" stroke="#3278c8" stroke-width="4"/><path d="M304 57q20 13 38 0" fill="none" stroke="#df7a30" stroke-width="3"/>
+    <path d="M402 132 454 42l52 90Z" fill="#f7f4ff" stroke="#d49a18" stroke-width="3"/><path d="M454 25v132" stroke="#d49a18" stroke-width="4" stroke-dasharray="6 5"/><path d="M454 120h12v12" fill="none" stroke="#df7a30" stroke-width="3"/>
+    <text x="70" y="164" text-anchor="middle">MEDIANA</text><text x="198" y="164" text-anchor="middle">ALTURA</text><text x="326" y="164" text-anchor="middle">BISSETRIZ</text><text x="454" y="164" text-anchor="middle">MEDIATRIZ</text>
+    <text x="260" y="203" text-anchor="middle">ponto médio · 90° · ângulo ao meio · meio + 90°</text>${close}`;
+
+  if (visual === "triangulo-centros") return `${open("Quatro pontos notáveis e os segmentos que os formam")}
+    <rect x="30" y="35" width="210" height="62" rx="15" fill="#eee9ff"/><rect x="280" y="35" width="210" height="62" rx="15" fill="#e8f8f1"/>
+    <rect x="30" y="120" width="210" height="62" rx="15" fill="#e7f2ff"/><rect x="280" y="120" width="210" height="62" rx="15" fill="#fff5d7"/>
+    <text x="135" y="61" text-anchor="middle">MEDIANAS</text><text x="135" y="82" text-anchor="middle">→ BARICENTRO</text><text x="385" y="61" text-anchor="middle">ALTURAS</text><text x="385" y="82" text-anchor="middle">→ ORTOCENTRO</text>
+    <text x="135" y="146" text-anchor="middle">BISSETRIZES</text><text x="135" y="167" text-anchor="middle">→ INCENTRO</text><text x="385" y="146" text-anchor="middle">MEDIATRIZES</text><text x="385" y="167" text-anchor="middle">→ CIRCUNCENTRO</text>${close}`;
+
+  if (visual === "triangulo-baricentro") return `${open("Mediana dividida pelo baricentro na razão dois para um")}
+    <path d="M75 178 260 35l185 143Z" fill="#f7f4ff" stroke="#7157d9" stroke-width="5"/><path d="M260 35v143" stroke="#3278c8" stroke-width="5"/>
+    <circle cx="260" cy="130" r="10" fill="#df7a30"/><path d="M275 55h70M275 130h70M275 178h70" stroke="#aaa3bb" stroke-width="2" stroke-dasharray="5 5"/>
+    <text x="355" y="61">VÉRTICE</text><text x="355" y="136">BARICENTRO</text><text x="355" y="184">PONTO MÉDIO</text><text x="220" y="90">2 partes</text><text x="220" y="163">1 parte</text>${close}`;
 
   if (["triangulo-segmentos", "triangulo-centros", "triangulo-baricentro"].includes(visual)) return `${open("Segmentos e pontos notáveis de um triângulo")}
     <path d="M70 176 260 36l190 140Z" fill="#f7f4ff" stroke="#7157d9" stroke-width="5"/>
@@ -682,6 +778,16 @@ function createGeometryLearnIllustration(visual) {
       <text x="172" y="197" text-anchor="middle">mesma base e altura</text><text x="390" y="197" text-anchor="middle">mesma área</text>${close}`;
   }
 
+  if (visual === "poligono-diagonais") return `${open("Diagonais ligando vértices não consecutivos")}
+    <path d="m260 25 92 36 55 82-69 62H182l-69-62 55-82Z" fill="#e7f2ff" stroke="#3278c8" stroke-width="5"/>
+    <path d="M168 61 338 205M168 61 407 143M168 61 352 61M260 25 338 205" stroke="#7157d9" stroke-width="4" stroke-dasharray="7 5"/>
+    <circle cx="168" cy="61" r="8" fill="#df7a30"/><text x="260" y="216" text-anchor="middle">de um vértice: não conte ele mesmo nem os 2 vizinhos</text>${close}`;
+
+  if (visual === "poligono-angulos") return `${open("Polígono dividido em triângulos para estudar os ângulos")}
+    <path d="m260 25 92 36 55 82-69 62H182l-69-62 55-82Z" fill="#eee9ff" stroke="#7157d9" stroke-width="5"/>
+    <path d="M168 61 407 143M168 61 338 205M168 61 182 205" stroke="#2b9b74" stroke-width="4" stroke-dasharray="7 5"/>
+    <text x="260" y="216" text-anchor="middle">n lados → n − 2 triângulos → (n − 2) × 180°</text>${close}`;
+
   if (["poligono-diagonais", "poligono-angulos", "hexagono-inscrito"].includes(visual)) return `${open("Hexágono com centro, ângulos e diagonais")}
     <circle cx="260" cy="112" r="88" fill="#f9fbff" stroke="#cfe0f7" stroke-width="3"/>
     <path d="m260 24 76 44v88l-76 44-76-44V68Z" fill="#e7f2ff" fill-opacity=".65" stroke="#3278c8" stroke-width="5"/>
@@ -693,6 +799,12 @@ function createGeometryLearnIllustration(visual) {
     <path d="M330 175h135M330 175l68-118M330 175l118-68" stroke="#3278c8" stroke-width="6" stroke-linecap="round"/>
     <path d="M366 112q24 12 35 36M397 142q16 7 21 23" fill="none" stroke="#df7a30" stroke-width="4"/>
     <text x="155" y="205" text-anchor="middle">90° dividido ao meio</text><text x="400" y="205" text-anchor="middle">60° dividido ao meio</text>${close}`;
+
+  if (visual === "unidades") return `${open("Comprimento, área, volume e capacidade")}
+    <path d="M35 63h90" stroke="#7157d9" stroke-width="7"/><text x="80" y="48" text-anchor="middle">1 dimensão</text><text x="80" y="92" text-anchor="middle">m</text>
+    <path d="M150 35h90v70h-90Z" fill="#e8f8f1" stroke="#2b9b74" stroke-width="4"/><text x="195" y="130" text-anchor="middle">m² · superfície</text>
+    <path d="M275 50h75v75h-75ZM275 50l28-20h75v75l-28 20M350 50l28-20M350 125l28-20" fill="#e7f2ff" fill-opacity=".7" stroke="#3278c8" stroke-width="4"/><text x="326" y="151" text-anchor="middle">m³ · espaço</text>
+    <path d="M410 38h70v100h-70Z" fill="#fff5d7" stroke="#d49a18" stroke-width="4"/><path d="M410 88h70" stroke="#d49a18" stroke-width="3"/><text x="445" y="164" text-anchor="middle">L · capacidade</text>${close}`;
 
   if (["volume-capacidade", "unidades"].includes(visual)) return `${open("Bloco retangular com três dimensões e conversão de capacidade")}
     <path d="M75 72h180v105H75ZM75 72l55-38h180v105l-55 38M255 72l55-38M255 177l55-38" fill="#e7f2ff" fill-opacity=".7" stroke="#3278c8" stroke-width="4"/>
@@ -822,6 +934,38 @@ function renderPortugueseConceptMap(guide) {
   learnIllustration.append(foundations, map);
 }
 
+function renderGeometryVisualLesson(guide) {
+  const figure = document.createElement("div");
+  figure.className = "geometry-main-figure";
+  figure.innerHTML = createGeometryLearnIllustration(guide.visual);
+  learnIllustration.appendChild(figure);
+
+  if (!guide.quadro?.length) return;
+
+  const reference = document.createElement("section");
+  reference.className = "geometry-reference";
+  const heading = document.createElement("div");
+  heading.className = "learn-visual-heading";
+  heading.innerHTML = "<strong>Veja, compare e aprenda</strong><span>Use o desenho e os cartões juntos para reconhecer cada caso.</span>";
+  const grid = document.createElement("div");
+  grid.className = "geometry-reference-grid";
+
+  guide.quadro.forEach((item, index) => {
+    const card = document.createElement("article");
+    card.className = `geometry-reference-card tone-${item.tom || ["roxo", "verde", "azul", "laranja"][index % 4]}`;
+    const title = document.createElement("strong");
+    const text = document.createElement("p");
+    title.textContent = item.titulo;
+    text.textContent = item.texto;
+    card.append(title, text);
+    if (item.exemplo) appendMiniExample(card, item.exemplo);
+    grid.appendChild(card);
+  });
+
+  reference.append(heading, grid);
+  learnIllustration.appendChild(reference);
+}
+
 function renderLearnGuide() {
   const question = quizQuestions[currentQuestion];
   const guide = obterGuiaAprender(question);
@@ -831,11 +975,13 @@ function renderLearnGuide() {
   const isGeometry = question.materia === GEOMETRY_SUBJECT;
   learnPanel.classList.toggle("is-portuguese-guide", isPortuguese);
   learnPanel.classList.toggle("is-geometry-guide", isGeometry);
+  learnKicker.textContent = isGeometry ? "AULA VISUAL · CONTEÚDO COMPLETO" : "GUIA DE APRENDIZAGEM";
 
   learnTitle.textContent = guide.titulo;
   learnIntro.textContent = guide.introducao;
   learnIllustration.replaceChildren();
   if (isPortuguese) renderPortugueseConceptMap(guide);
+  else if (isGeometry) renderGeometryVisualLesson(guide);
   else learnIllustration.innerHTML = createLearnIllustration(question.materia, guide.visual);
   learnDiagram.replaceChildren();
   guide.diagrama.forEach((step, index) => {

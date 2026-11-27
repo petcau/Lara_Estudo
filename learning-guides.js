@@ -366,25 +366,203 @@ const mapaGuiasGeometria = {
   99: "porcentagemCapacidade", 100: "compararAreas",
 };
 
+const quadroGeometria = (titulo, texto, exemplo, tom) => ({ titulo, texto, exemplo, tom });
+
+const quadrosVisuaisGeometria = {
+  "triangulo-lados": [
+    quadroGeometria("Equilátero", "Possui os três lados com a mesma medida. Seus três ângulos internos medem 60°.", "5 cm · 5 cm · 5 cm → equilátero", "roxo"),
+    quadroGeometria("Isósceles", "Possui exatamente dois lados com a mesma medida. Os ângulos opostos a esses lados também são iguais.", "7 cm · 7 cm · 4 cm → isósceles", "verde"),
+    quadroGeometria("Escaleno", "Possui os três lados com medidas diferentes. Seus três ângulos também são diferentes.", "4 cm · 5 cm · 6 cm → escaleno", "laranja"),
+  ],
+  "triangulo-angulos": [
+    quadroGeometria("Acutângulo", "Os três ângulos são agudos, isto é, todos são menores que 90°.", "50° · 60° · 70° → acutângulo", "verde"),
+    quadroGeometria("Retângulo", "Possui um ângulo reto, de exatamente 90°. O lado oposto é a hipotenusa.", "30° · 60° · 90° → retângulo", "azul"),
+    quadroGeometria("Obtusângulo", "Possui um ângulo obtuso, maior que 90°. Os outros dois precisam ser agudos.", "25° · 35° · 120° → obtusângulo", "laranja"),
+  ],
+  "triangulo-soma": [
+    quadroGeometria("Regra fixa", "A soma dos três ângulos internos de qualquer triângulo é 180°.", "45° + 55° + 80° → 180°", "roxo"),
+    quadroGeometria("Ângulo desconhecido", "Some os conhecidos e retire o resultado de 180°.", "35° + 65° = 100°; falta 80°", "verde"),
+  ],
+  "triangulo-area": [
+    quadroGeometria("Base", "Pode ser qualquer lado escolhido como apoio. A altura usada precisa corresponder a essa base.", "base destacada na parte inferior", "roxo"),
+    quadroGeometria("Altura", "É a distância perpendicular entre a base e o vértice oposto; forma 90° com a base.", "linha tracejada com marca de 90°", "verde"),
+    quadroGeometria("Cálculo", "Multiplique base por altura e divida por 2, pois o triângulo é metade de um paralelogramo.", "b = 8 e h = 6 → área = 24", "azul"),
+    quadroGeometria("Unidade", "Área sempre usa unidade ao quadrado: cm², m², km² e semelhantes.", "medidas em cm → resposta em cm²", "amarelo"),
+  ],
+  "triangulo-congruencia": [
+    quadroGeometria("LLL", "Os três lados de um triângulo são respectivamente iguais aos três lados do outro.", "lado · lado · lado", "roxo"),
+    quadroGeometria("LAL", "Dois lados e o ângulo compreendido entre eles são respectivamente iguais.", "lado · ângulo entre eles · lado", "verde"),
+    quadroGeometria("ALA", "Um lado e os dois ângulos junto a ele são respectivamente iguais.", "ângulo · lado · ângulo", "azul"),
+    quadroGeometria("O que congruência garante", "Mesma forma e mesmo tamanho; lados e ângulos correspondentes possuem medidas iguais.", "as figuras podem estar giradas ou espelhadas", "laranja"),
+  ],
+  "triangulo-existencia": [
+    quadroGeometria("Condição", "O maior lado precisa ser menor que a soma dos outros dois.", "8 < 5 + 6 → consegue fechar", "verde"),
+    quadroGeometria("Não forma", "Se o maior for igual ou maior que a soma dos menores, não existe região triangular.", "9 ≥ 4 + 5 → fica alinhado ou aberto", "laranja"),
+    quadroGeometria("Atalho seguro", "Ordene as três medidas e teste apenas o maior lado contra os dois menores.", "2, 7, 6 → teste 7 < 2 + 6", "azul"),
+  ],
+  "triangulo-classificacao": [
+    quadroGeometria("Pelos lados", "Equilátero: três iguais; isósceles: dois iguais; escaleno: três diferentes.", "6, 6 e 9 → isósceles", "roxo"),
+    quadroGeometria("Pelos ângulos", "Acutângulo: todos menores que 90°; retângulo: um de 90°; obtusângulo: um maior que 90°.", "45°, 45° e 90° → retângulo", "verde"),
+    quadroGeometria("Classificação completa", "Uma característica de cada grupo pode aparecer ao mesmo tempo.", "dois lados iguais + um ângulo de 90° → isósceles e retângulo", "azul"),
+  ],
+  "triangulo-isosceles": [
+    quadroGeometria("Lados congruentes", "Os dois lados iguais encontram-se no ângulo do vértice.", "lado a = lado a", "roxo"),
+    quadroGeometria("Ângulos da base", "Ficam opostos aos lados iguais e, por isso, também possuem a mesma medida.", "65° e 65° na base", "verde"),
+    quadroGeometria("Como calcular", "Retire o ângulo do vértice de 180° e divida o restante por dois.", "vértice 40° → base: 70° e 70°", "azul"),
+  ],
+  "triangulo-externo": [
+    quadroGeometria("Par suplementar", "O externo e o interno vizinho formam uma linha reta e somam 180°.", "interno 70° → externo 110°", "roxo"),
+    quadroGeometria("Teorema do externo", "O ângulo externo equivale à soma dos dois internos não adjacentes.", "45° + 65° → externo 110°", "verde"),
+  ],
+  "triangulo-perimetro": [
+    quadroGeometria("Perímetro", "É a soma dos três lados. No isósceles, pode ser escrito como base + 2 × lado congruente.", "b + x + x = b + 2x", "roxo"),
+    quadroGeometria("Descobrir os lados iguais", "Retire a base do perímetro e divida o restante por dois.", "P = 30 e b = 8 → cada lado igual mede 11", "verde"),
+  ],
+  "triangulo-segmentos": [
+    quadroGeometria("Mediana", "Parte de um vértice e chega ao ponto médio do lado oposto.", "divide o lado em duas partes iguais", "roxo"),
+    quadroGeometria("Altura", "Parte de um vértice e encontra o lado oposto, ou seu prolongamento, formando 90°.", "procure a marca do ângulo reto", "verde"),
+    quadroGeometria("Bissetriz", "Parte de um vértice e divide aquele ângulo em duas medidas iguais.", "80° vira 40° + 40°", "azul"),
+    quadroGeometria("Mediatriz", "Não precisa partir de vértice: corta um lado no ponto médio e forma 90°.", "perpendicular no meio do segmento", "laranja"),
+  ],
+  "triangulo-centros": [
+    quadroGeometria("Baricentro", "Encontro das medianas. É o centro de equilíbrio e divide cada mediana na razão 2:1.", "medianas → baricentro", "roxo"),
+    quadroGeometria("Ortocentro", "Encontro das alturas ou de seus prolongamentos.", "alturas → ortocentro", "verde"),
+    quadroGeometria("Incentro", "Encontro das bissetrizes. Fica à mesma distância dos lados e centra a circunferência inscrita.", "bissetrizes → incentro", "azul"),
+    quadroGeometria("Circuncentro", "Encontro das mediatrizes. Fica à mesma distância dos vértices e centra a circunferência circunscrita.", "mediatrizes → circuncentro", "laranja"),
+  ],
+  "triangulo-baricentro": [
+    quadroGeometria("Razão 2:1", "O trecho entre o vértice e o baricentro é duas vezes o trecho entre o baricentro e o lado.", "10 cm e 5 cm → razão 2:1", "roxo"),
+    quadroGeometria("Do vértice ao centro", "Corresponde a 2/3 do comprimento total da mediana.", "mediana 18 cm → trecho 12 cm", "verde"),
+    quadroGeometria("Do centro ao lado", "Corresponde a 1/3 do comprimento total da mediana.", "mediana 18 cm → trecho 6 cm", "azul"),
+  ],
+  mediatriz: [
+    quadroGeometria("Ponto médio", "A mediatriz passa exatamente no meio do segmento.", "AB = 12 cm → 6 cm de cada lado", "roxo"),
+    quadroGeometria("Perpendicular", "Forma um ângulo de 90° com o segmento.", "procure o pequeno quadrado de 90°", "verde"),
+    quadroGeometria("Equidistância", "Qualquer ponto sobre a mediatriz está à mesma distância das duas extremidades.", "P na mediatriz → PA = PB", "azul"),
+  ],
+  "quadrilateros-tipos": [
+    quadroGeometria("Quadrado", "Quatro lados iguais, quatro ângulos de 90° e dois pares de lados paralelos.", "é retângulo e também losango", "roxo"),
+    quadroGeometria("Retângulo", "Quatro ângulos de 90° e lados opostos iguais e paralelos.", "diagonais com a mesma medida", "verde"),
+    quadroGeometria("Losango", "Quatro lados iguais; ângulos opostos iguais. Não precisa ter ângulos retos.", "diagonais perpendiculares", "azul"),
+    quadroGeometria("Trapézio", "Possui um par de lados paralelos, chamados base maior e base menor.", "a altura é perpendicular às bases", "laranja"),
+  ],
+  "quadrilatero-angulos": [
+    quadroGeometria("Soma interna", "Os quatro ângulos internos de qualquer quadrilátero somam 360°.", "90° + 90° + 90° + 90° = 360°", "roxo"),
+    quadroGeometria("Encontrar o quarto", "Some três ângulos e retire o resultado de 360°.", "80° + 100° + 110° = 290°; falta 70°", "verde"),
+  ],
+  "quadrilatero-area": [
+    quadroGeometria("Retângulo", "Área = base × altura.", "8 × 5 → 40 cm²", "roxo"),
+    quadroGeometria("Paralelogramo", "Também usa base × altura perpendicular; o lado inclinado não é a altura.", "10 × 4 → 40 cm²", "verde"),
+    quadroGeometria("Mesma base e altura", "Retângulo e paralelogramo com base e altura iguais possuem a mesma área.", "recortar e deslocar não muda a área", "azul"),
+  ],
+  "quadrado-area": [
+    quadroGeometria("Área", "Multiplique o lado por ele mesmo: A = lado².", "lado 6 cm → 36 cm²", "roxo"),
+    quadroGeometria("Perímetro", "Some os quatro lados: P = 4 × lado.", "lado 6 cm → 24 cm", "verde"),
+  ],
+  losango: [
+    quadroGeometria("Lados", "Os quatro lados possuem a mesma medida.", "todos os lados marcados igualmente", "roxo"),
+    quadroGeometria("Diagonais", "São perpendiculares, cortam-se ao meio e bissetam os ângulos do losango.", "cruzamento de 90°", "verde"),
+    quadroGeometria("Área", "Multiplique a diagonal maior pela menor e divida por 2.", "D = 12 e d = 8 → área 48", "azul"),
+  ],
+  trapezio: [
+    quadroGeometria("Bases", "São os dois lados paralelos: base maior B e base menor b.", "B e b aparecem paralelas", "roxo"),
+    quadroGeometria("Altura", "É a distância perpendicular entre as bases.", "segmento com marca de 90°", "verde"),
+    quadroGeometria("Área", "Some as bases, multiplique pela altura e divida por 2.", "B = 10, b = 6, h = 4 → área 32", "azul"),
+  ],
+  "escala-area": [
+    quadroGeometria("Uma medida dobra", "Se apenas uma dimensão dobra, mantendo a outra, a área dobra.", "2b × h → 2A", "roxo"),
+    quadroGeometria("Duas medidas dobram", "Se as duas dimensões dobram, a área fica quatro vezes maior.", "2b × 2h → 4A", "verde"),
+    quadroGeometria("Regra geral", "Multiplicar todas as medidas lineares por k multiplica a área por k².", "k = 3 → área 9 vezes maior", "azul"),
+  ],
+  "poligonos-nomes": [
+    quadroGeometria("3 e 4 lados", "Triângulo tem 3 lados; quadrilátero tem 4.", "conte apenas o contorno", "roxo"),
+    quadroGeometria("5 e 6 lados", "Pentágono tem 5 lados; hexágono tem 6.", "penta = 5; hexa = 6", "verde"),
+    quadroGeometria("7 e 8 lados", "Heptágono tem 7 lados; octógono tem 8.", "hepta = 7; octo = 8", "azul"),
+    quadroGeometria("9 e 10 lados", "Eneágono tem 9 lados; decágono tem 10.", "enea = 9; deca = 10", "laranja"),
+  ],
+  "poligono-regular": [
+    quadroGeometria("Equilátero", "Todos os lados têm a mesma medida.", "marcas iguais nos lados", "roxo"),
+    quadroGeometria("Equiângulo", "Todos os ângulos internos têm a mesma medida.", "arcos iguais nos vértices", "verde"),
+    quadroGeometria("Regular", "Precisa ser equilátero e equiângulo ao mesmo tempo.", "lados iguais + ângulos iguais", "azul"),
+  ],
+  "poligono-diagonais": [
+    quadroGeometria("O que é diagonal", "Segmento que une dois vértices não consecutivos.", "lado liga vizinhos; diagonal não", "roxo"),
+    quadroGeometria("De um vértice", "Não liga ao próprio vértice nem aos dois vizinhos: restam n − 3 diagonais.", "hexágono → 3 por vértice", "verde"),
+    quadroGeometria("Total", "D = n(n − 3)/2, pois cada diagonal seria contada duas vezes.", "pentágono → 5 diagonais", "azul"),
+  ],
+  "poligono-angulos": [
+    quadroGeometria("Soma dos internos", "S = (n − 2) × 180°, pois o polígono se divide em n − 2 triângulos.", "hexágono → 720°", "roxo"),
+    quadroGeometria("Cada interno regular", "Divida a soma interna por n.", "hexágono regular → 120°", "verde"),
+    quadroGeometria("Ângulos externos", "A soma é sempre 360°. No regular, cada externo mede 360° ÷ n.", "octógono regular → 45°", "azul"),
+  ],
+  "poligono-convexidade": [
+    quadroGeometria("Convexo", "Não possui reentrância; todos os ângulos internos são menores que 180° e as diagonais ficam dentro.", "quadrado e hexágono regular", "verde"),
+    quadroGeometria("Não convexo", "Possui reentrância, ao menos um ângulo interno maior que 180° e alguma diagonal passa fora.", "formato de ponta de flecha", "laranja"),
+  ],
+  "construcao-angulos": [
+    quadroGeometria("90°", "Construa duas retas perpendiculares.", "o encontro forma quatro ângulos retos", "roxo"),
+    quadroGeometria("60°", "Use a construção de um triângulo equilátero.", "cada ângulo interno mede 60°", "verde"),
+    quadroGeometria("45°", "Construa 90° e trace sua bissetriz.", "90° ÷ 2 = 45°", "azul"),
+    quadroGeometria("30°", "Construa 60° e trace sua bissetriz.", "60° ÷ 2 = 30°", "laranja"),
+  ],
+  "hexagono-inscrito": [
+    quadroGeometria("Seis setores", "A volta de 360° fica dividida em seis ângulos centrais de 60°.", "360° ÷ 6 = 60°", "roxo"),
+    quadroGeometria("Lado igual ao raio", "Cada setor forma um triângulo equilátero; por isso lado e raio têm a mesma medida.", "raio 4 cm → lado 4 cm", "verde"),
+    quadroGeometria("Construção", "Mantenha a abertura do raio e marque seis pontos consecutivos na circunferência.", "não altere o compasso", "azul"),
+  ],
+  unidades: [
+    quadroGeometria("Comprimento", "Mede uma dimensão: cm, m, km.", "comprimento de uma parede → m", "roxo"),
+    quadroGeometria("Área", "Mede superfície: cm², m², km².", "piso de uma sala → m²", "verde"),
+    quadroGeometria("Volume", "Mede espaço tridimensional: cm³, dm³, m³.", "espaço de uma caixa → cm³", "azul"),
+    quadroGeometria("Capacidade", "Mede quanto cabe: mL e L.", "água de um reservatório → L", "laranja"),
+  ],
+  "volume-capacidade": [
+    quadroGeometria("Bloco retangular", "Volume = comprimento × largura × altura.", "5 × 4 × 3 → 60 cm³", "roxo"),
+    quadroGeometria("Cubo", "As três dimensões são iguais: volume = aresta³.", "aresta 3 cm → 27 cm³", "verde"),
+    quadroGeometria("Litro e decímetro", "1 L corresponde exatamente a 1 dm³.", "5 dm³ → 5 L", "azul"),
+    quadroGeometria("Conversões", "1 L = 1000 cm³ e 1 m³ = 1000 L.", "20 000 cm³ → 20 L", "laranja"),
+  ],
+  "circulo-area": [
+    quadroGeometria("Raio", "Segmento do centro até a borda. É metade do diâmetro.", "diâmetro 10 cm → raio 5 cm", "roxo"),
+    quadroGeometria("Área", "A = π × r². Primeiro eleve o raio ao quadrado.", "r = 3 e π = 3,14 → 28,26 cm²", "verde"),
+    quadroGeometria("Circunferência", "É apenas o contorno e usa C = 2πr; não confunda com a área interna.", "área usa unidade²; contorno usa unidade linear", "azul"),
+  ],
+  "area-composta": [
+    quadroGeometria("Decompor", "Divida a figura em retângulos, triângulos, círculos ou outras formas conhecidas.", "trace linhas auxiliares", "roxo"),
+    quadroGeometria("Somar", "Some áreas quando as partes se juntam sem sobreposição.", "retângulo + triângulo", "verde"),
+    quadroGeometria("Subtrair", "Retire áreas de portas, janelas, recortes ou regiões vazias.", "parede − janela", "laranja"),
+  ],
+  "comparar-areas": [
+    quadroGeometria("Calcule separadamente", "Aplique a fórmula correta a cada figura e mantenha a mesma unidade.", "círculo em uma linha; quadrado em outra", "roxo"),
+    quadroGeometria("Compare os resultados", "O maior lado ou raio não garante, sozinho, a maior área.", "compare os valores em m²", "verde"),
+  ],
+};
+
 function obterGuiaGeometriaFocado(questao) {
   const numero = Number(String(questao.aprenderId || "").replace("geo-", ""));
   const chave = mapaGuiasGeometria[numero];
   const visuais = {
+    ladosTriangulo: "triangulo-lados", angulosTriangulo: "triangulo-angulos", somaTriangulo: "triangulo-soma",
     areaTriangulo: "triangulo-area", congruencia: "triangulo-congruencia", existenciaTriangulo: "triangulo-existencia",
+    classificacaoDupla: "triangulo-classificacao", isoscelesAngulos: "triangulo-isosceles", anguloExternoTriangulo: "triangulo-externo",
+    isoscelesPerimetro: "triangulo-perimetro",
     segmentosNotaveis: "triangulo-segmentos", pontosNotaveis: "triangulo-segmentos", medianaMetade: "triangulo-segmentos",
     bissetrizMetade: "triangulo-segmentos", centrosCircunferencias: "triangulo-centros", coincidenciaEquilatero: "triangulo-segmentos",
     posicaoCentros: "triangulo-centros", baricentroRazao: "triangulo-baricentro", construirMediatriz: "mediatriz",
-    propriedadeMediatriz: "mediatriz", areaRetanguloParalelogramo: "quadrilatero-area", areaQuadrado: "quadrilatero-area",
+    propriedadeMediatriz: "mediatriz", quadrilaterosConceitos: "quadrilateros-tipos", somaQuadrilatero: "quadrilatero-angulos",
+    areaRetanguloParalelogramo: "quadrilatero-area", areaQuadrado: "quadrado-area",
     areaLosango: "losango", areaTrapezio: "trapezio", propriedadesDiagonais: "losango", areaEPerimetroRetangulo: "quadrilatero-area",
-    escalaArea: "quadrilatero-area", diagonaisPoligono: "poligono-diagonais", somaPoligono: "poligono-angulos",
+    escalaArea: "escala-area", nomesPoligonos: "poligonos-nomes", poligonoRegular: "poligono-regular",
+    diagonaisPoligono: "poligono-diagonais", somaPoligono: "poligono-angulos",
     angulosExternos: "poligono-angulos", anguloInternoRegular: "poligono-angulos", construcoesAngulos: "construcao-angulos",
-    hexagonoInscrito: "hexagono-inscrito", unidadesGeometricas: "unidades", conversaoCapacidade: "volume-capacidade",
+    hexagonoInscrito: "hexagono-inscrito", convexidade: "poligono-convexidade", unidadesGeometricas: "unidades", conversaoCapacidade: "volume-capacidade",
     volumeBloco: "volume-capacidade", areaCirculo: "circulo-area", areaRetangulo: "quadrilatero-area",
     areaComRetirada: "area-composta", volumeParaLitros: "volume-capacidade", areaComposta: "area-composta",
     porcentagemCapacidade: "volume-capacidade", compararAreas: "comparar-areas",
   };
   const guia = guiasGeometriaFocados[chave] || guiasGeometria[questao.conteudo];
-  return { ...guia, visual: visuais[chave] || "triangulo-angulos" };
+  const visual = visuais[chave] || "triangulo-angulos";
+  return { ...guia, visual, quadro: quadrosVisuaisGeometria[visual] || [] };
 }
 
 const guiasCiencias = {

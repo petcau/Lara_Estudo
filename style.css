@@ -1009,6 +1009,57 @@ h1 em::after {
   background: #fff;
 }
 
+.is-geometry-guide .learn-illustration {
+  display: grid;
+  gap: 18px;
+  padding: 16px;
+  overflow: visible;
+  background: #fff;
+}
+.is-geometry-guide .geometry-main-figure {
+  overflow: hidden;
+  background: linear-gradient(145deg, #fbf9ff, #f8fffc);
+  border: 1px solid #e5def7;
+  border-radius: 16px;
+}
+.is-geometry-guide .geometry-main-figure svg { max-height: 300px; }
+.geometry-reference {
+  padding: 17px;
+  background: #fbfaff;
+  border: 1px solid #e8e2f7;
+  border-radius: 16px;
+}
+.geometry-reference-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 10px;
+}
+.geometry-reference-card {
+  position: relative;
+  display: grid;
+  align-content: start;
+  gap: 6px;
+  min-height: 150px;
+  padding: 15px;
+  overflow: hidden;
+  background: var(--learn-tone-soft);
+  border: 1px solid color-mix(in srgb, var(--learn-tone) 25%, white);
+  border-top: 5px solid var(--learn-tone);
+  border-radius: 13px;
+}
+.geometry-reference-card strong {
+  color: var(--learn-tone-ink);
+  font-family: "Nunito", sans-serif;
+  font-size: 0.96rem;
+}
+.geometry-reference-card > p {
+  margin: 0;
+  color: #514b61;
+  font-size: 0.84rem;
+  line-height: 1.5;
+}
+.geometry-reference-card .mini-card-example { margin-top: 3px; }
+
 .learn-foundations,
 .portuguese-concept-map {
   padding: 17px;
@@ -1727,6 +1778,11 @@ a:focus-visible {
   .question-help-area { align-items: stretch; flex-direction: column; }
   .learn-button { justify-content: center; width: 100%; }
   .is-portuguese-guide .learn-illustration { padding: 10px; }
+  .is-geometry-guide .learn-illustration { padding: 10px; }
+  .is-geometry-guide .geometry-main-figure svg { min-height: 185px; }
+  .geometry-reference { padding: 12px; }
+  .geometry-reference-grid { grid-template-columns: 1fr; }
+  .geometry-reference-card { min-height: 0; }
   .learn-visual-heading { align-items: flex-start; flex-direction: column; }
   .learn-visual-heading span { text-align: left; }
   .learn-foundation-grid { grid-template-columns: 1fr; }
