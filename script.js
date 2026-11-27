@@ -4,6 +4,7 @@ const setupScreen = document.querySelector("#setup-screen");
 const emptyScreen = document.querySelector("#empty-screen");
 const quizScreen = document.querySelector("#quiz-screen");
 const resultScreen = document.querySelector("#result-screen");
+const performanceScreen = document.querySelector("#performance-screen");
 const startButton = document.querySelector("#start-button");
 const beginQuizButton = document.querySelector("#begin-quiz-button");
 const materialStatus = document.querySelector("#material-status");
@@ -33,10 +34,25 @@ const scoreValue = document.querySelector("#score-value");
 const wrongScoreValue = document.querySelector("#wrong-score-value");
 const resultMessage = document.querySelector("#result-message");
 const restartButton = document.querySelector("#restart-button");
+const performanceSubjects = document.querySelector("#performance-subjects");
+const performanceAnswered = document.querySelector("#performance-answered");
+const performanceTotal = document.querySelector("#performance-total");
+const performanceCorrect = document.querySelector("#performance-correct");
+const performanceWrong = document.querySelector("#performance-wrong");
+const performanceRate = document.querySelector("#performance-rate");
+const performanceAttempts = document.querySelector("#performance-attempts");
+const performanceContentFilter = document.querySelector("#performance-content-filter");
+const performanceStatusFilter = document.querySelector("#performance-status-filter");
+const performanceSearch = document.querySelector("#performance-search");
+const performanceListTitle = document.querySelector("#performance-list-title");
+const performanceVisibleCount = document.querySelector("#performance-visible-count");
+const performanceQuestionList = document.querySelector("#performance-question-list");
+const performanceEmpty = document.querySelector("#performance-empty");
 
 const ALL = "__all";
 const PORTUGUESE_SUBJECT = "Português — 9º ano";
 const STORAGE_KEY = "estuda-plus-quiz-progress-v1";
+const PERFORMANCE_STORAGE_KEY = "estuda-plus-question-performance-v1";
 let selectedSubject = ALL;
 let selectedChapters = new Set();
 let selectedDifficulty = ALL;
@@ -47,6 +63,8 @@ let selectedAnswer = null;
 let score = 0;
 let wrongAnswers = 0;
 let answerConfirmed = false;
+let selectedPerformanceSubject = unique(perguntas.map((question) => question.materia))[0] || "";
+let performanceData = loadPerformanceData();
 
 function showScreen(screen) {
   screens.forEach((item) => item.classList.remove("is-active"));
@@ -63,6 +81,229 @@ function addOption(select, value, label) {
   option.value = value;
   option.textContent = label;
   select.appendChild(option);
+}
+
+function getQuestionPerformanceId(question) {
+  return [question.materia, question.capitulo, question.conteudo, question.pergunta].join("|||" );
+}
+
+function loadPerformanceData() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(PERFORMANCE_STORAGE_KEY));
+    if (saved?.version === 1 && saved.questions && typeof saved.questions === "object") {
+      return saved;
+    }
+  } catch {
+    // Um histórico inválido é substituído por uma estrutura vazia.
+  }
+
+  return { version: 1, questions: {} };
+}
+
+function savePerformanceData() {
+  try {
+    localStorage.setItem(PERFORMANCE_STORAGE_KEY, JSON.stringify(performanceData));
+  } catch {
+    // O quiz continua funcionando mesmo se o navegador bloquear o armazenamento local.
+  }
+}
+
+function getQuestionPerformance(question) {
+  return performanceData.questions[getQuestionPerformanceId(question)] || {
+    attempts: 0,
+    correct: 0,
+    wrong: 0,
+    lastCorrect: null,
+    lastAnsweredAt: null,
+  };
+}
+
+function recordQuestionPerformance(question, isCorrect) {
+  const id = getQuestionPerformanceId(question);
+  const current = getQuestionPerformance(question);
+  performanceData.questions[id] = {
+    attempts: current.attempts + 1,
+    correct: current.correct + (isCorrect ? 1 : 0),
+    wrong: current.wrong + (isCorrect ? 0 : 1),
+    lastCorrect: isCorrect,
+    lastAnsweredAt: new Date().toISOString(),
+  };
+  savePerformanceData();
+}
+
+function getPerformanceStatus(stats) {
+  if (!stats.attempts) return "unanswered";
+  const rate = stats.correct / stats.attempts;
+  if (rate >= 0.8) return "mastered";
+  if (rate < 0.6) return "review";
+  return "practicing";
+}
+
+function getPerformanceStatusLabel(status) {
+  return {
+    unanswered: "Não respondida",
+    mastered: "Bom desempenho",
+    review: "Precisa revisar",
+    practicing: "Em progresso",
+  }[status];
+}
+
+function createPerformanceSubjectButtons() {
+  const subjects = unique(perguntas.map((question) => question.materia));
+  if (!subjects.includes(selectedPerformanceSubject)) {
+    selectedPerformanceSubject = subjects[0] || "";
+  }
+
+  performanceSubjects.replaceChildren();
+  subjects.forEach((subject) => {
+    const button = document.createElement("button");
+    const isSelected = subject === selectedPerformanceSubject;
+    button.type = "button";
+    button.textContent = subject;
+    button.dataset.performanceSubject = subject;
+    button.classList.toggle("is-selected", isSelected);
+    button.setAttribute("role", "radio");
+    button.setAttribute("aria-checked", String(isSelected));
+    button.addEventListener("click", () => {
+      selectedPerformanceSubject = subject;
+      performanceContentFilter.value = ALL;
+      createPerformanceSubjectButtons();
+      populatePerformanceContents();
+      renderPerformance();
+    });
+    performanceSubjects.appendChild(button);
+  });
+}
+
+function populatePerformanceContents() {
+  const questions = perguntas.filter((question) => question.materia === selectedPerformanceSubject);
+  const previousValue = performanceContentFilter.value || ALL;
+  performanceContentFilter.replaceChildren();
+  addOption(performanceContentFilter, ALL, "Todos os conteúdos");
+  unique(questions.map((question) => question.conteudo)).forEach((content) => {
+    addOption(performanceContentFilter, content, content);
+  });
+  performanceContentFilter.value = [...performanceContentFilter.options]
+    .some((option) => option.value === previousValue) ? previousValue : ALL;
+}
+
+function createMetric(label, value, modifier = "") {
+  const metric = document.createElement("div");
+  metric.className = `question-metric ${modifier}`.trim();
+  const strong = document.createElement("strong");
+  const span = document.createElement("span");
+  strong.textContent = value;
+  span.textContent = label;
+  metric.append(strong, span);
+  return metric;
+}
+
+function createPerformanceQuestionCard(question) {
+  const stats = getQuestionPerformance(question);
+  const rate = stats.attempts ? Math.round((stats.correct / stats.attempts) * 100) : 0;
+  const status = getPerformanceStatus(stats);
+  const card = document.createElement("article");
+  card.className = "performance-question-card";
+
+  const top = document.createElement("div");
+  top.className = "performance-question-top";
+  const taxonomy = document.createElement("div");
+  taxonomy.className = "performance-question-taxonomy";
+  [question.capitulo, question.conteudo].forEach((text) => {
+    const span = document.createElement("span");
+    span.textContent = text;
+    taxonomy.appendChild(span);
+  });
+  if (question.dificuldade) {
+    const difficulty = document.createElement("span");
+    difficulty.className = "performance-difficulty";
+    difficulty.dataset.level = question.dificuldade;
+    difficulty.textContent = question.dificuldade;
+    taxonomy.appendChild(difficulty);
+  }
+  const statusBadge = document.createElement("strong");
+  statusBadge.className = "performance-status";
+  statusBadge.dataset.status = status;
+  statusBadge.textContent = getPerformanceStatusLabel(status);
+  top.append(taxonomy, statusBadge);
+
+  const title = document.createElement("h4");
+  title.textContent = question.pergunta;
+
+  const metrics = document.createElement("div");
+  metrics.className = "question-metrics";
+  metrics.append(
+    createMetric("tentativas", stats.attempts),
+    createMetric("acertos", stats.correct, "question-metric--correct"),
+    createMetric("erros", stats.wrong, "question-metric--wrong"),
+    createMetric("aproveitamento", `${rate}%`, "question-metric--rate"),
+  );
+
+  const rateBar = document.createElement("div");
+  rateBar.className = "question-rate-bar";
+  rateBar.setAttribute("aria-label", `${rate}% de aproveitamento`);
+  const rateFill = document.createElement("span");
+  rateFill.style.width = `${rate}%`;
+  rateBar.appendChild(rateFill);
+
+  const details = document.createElement("details");
+  details.className = "performance-answer-details";
+  const summary = document.createElement("summary");
+  summary.textContent = "Ver resposta e explicação";
+  const correctAnswer = document.createElement("p");
+  const correctLabel = document.createElement("strong");
+  correctLabel.textContent = "Resposta correta: ";
+  correctAnswer.append(correctLabel, document.createTextNode(question.alternativas[question.correta]));
+  const explanation = document.createElement("p");
+  explanation.textContent = question.explicacao;
+  details.append(summary, correctAnswer, explanation);
+
+  card.append(top, title, metrics, rateBar, details);
+  return card;
+}
+
+function renderPerformance() {
+  performanceData = loadPerformanceData();
+  const subjectQuestions = perguntas.filter((question) => question.materia === selectedPerformanceSubject);
+  const subjectStats = subjectQuestions.map((question) => getQuestionPerformance(question));
+  const answered = subjectStats.filter((stats) => stats.attempts > 0).length;
+  const attempts = subjectStats.reduce((total, stats) => total + stats.attempts, 0);
+  const correct = subjectStats.reduce((total, stats) => total + stats.correct, 0);
+  const wrong = subjectStats.reduce((total, stats) => total + stats.wrong, 0);
+  const rate = attempts ? Math.round((correct / attempts) * 100) : 0;
+
+  performanceAnswered.textContent = answered;
+  performanceTotal.textContent = `de ${subjectQuestions.length} questões`;
+  performanceCorrect.textContent = correct;
+  performanceWrong.textContent = wrong;
+  performanceRate.textContent = `${rate}%`;
+  performanceAttempts.textContent = `${attempts} ${attempts === 1 ? "tentativa" : "tentativas"}`;
+  performanceListTitle.textContent = selectedPerformanceSubject;
+
+  const normalizedSearch = performanceSearch.value.trim().toLocaleLowerCase("pt-BR");
+  const filtered = subjectQuestions.filter((question) => {
+    const stats = getQuestionPerformance(question);
+    const status = getPerformanceStatus(stats);
+    const contentMatches = performanceContentFilter.value === ALL
+      || question.conteudo === performanceContentFilter.value;
+    const statusMatches = performanceStatusFilter.value === ALL
+      || (performanceStatusFilter.value === "answered" && stats.attempts > 0)
+      || status === performanceStatusFilter.value;
+    const searchableText = `${question.pergunta} ${question.conteudo} ${question.capitulo}`
+      .toLocaleLowerCase("pt-BR");
+    return contentMatches && statusMatches && searchableText.includes(normalizedSearch);
+  });
+
+  performanceVisibleCount.textContent = `${filtered.length} ${filtered.length === 1 ? "questão" : "questões"}`;
+  performanceQuestionList.replaceChildren(...filtered.map(createPerformanceQuestionCard));
+  performanceEmpty.hidden = filtered.length > 0;
+}
+
+function openPerformance() {
+  createPerformanceSubjectButtons();
+  populatePerformanceContents();
+  renderPerformance();
+  showScreen(performanceScreen);
 }
 
 function populateSubjects() {
@@ -448,14 +689,16 @@ function confirmOrAdvance() {
 
 function confirmAnswer() {
   const question = quizQuestions[currentQuestion];
+  const isCorrect = selectedAnswer === question.correta;
   answerConfirmed = true;
 
-  if (selectedAnswer === question.correta) {
+  if (isCorrect) {
     score += 1;
   } else {
     wrongAnswers += 1;
   }
 
+  recordQuestionPerformance(question, isCorrect);
   updateQuizStats();
   revealConfirmedAnswer();
   saveProgress();
@@ -513,6 +756,13 @@ beginQuizButton.addEventListener("click", buildQuiz);
 nextButton.addEventListener("click", confirmOrAdvance);
 restartButton.addEventListener("click", buildQuiz);
 contentSelect.addEventListener("change", updateAvailableCount);
+performanceContentFilter.addEventListener("change", renderPerformance);
+performanceStatusFilter.addEventListener("change", renderPerformance);
+performanceSearch.addEventListener("input", renderPerformance);
+
+document.querySelectorAll("[data-open-performance]").forEach((button) => {
+  button.addEventListener("click", openPerformance);
+});
 
 amountButtons.forEach((button) => {
   button.addEventListener("click", () => {

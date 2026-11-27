@@ -24,9 +24,12 @@
           <span>Estuda+</span>
         </a>
 
-        <div class="header-chip" aria-label="Modo de estudo">
-          <span class="status-dot" aria-hidden="true"></span>
-          Meu espaço de estudos
+        <div class="header-actions">
+          <div class="header-chip" aria-label="Modo de estudo">
+            <span class="status-dot" aria-hidden="true"></span>
+            Meu espaço de estudos
+          </div>
+          <button class="header-performance-button" data-open-performance type="button">Desempenho</button>
         </div>
       </header>
 
@@ -45,8 +48,9 @@
                 Escolher conteúdo
                 <span aria-hidden="true">→</span>
               </button>
-              <span id="material-status" class="material-status">Material disponível</span>
+              <button class="secondary-button" data-open-performance type="button">Ver desempenho</button>
             </div>
+            <span id="material-status" class="material-status">Material disponível</span>
 
             <div class="mini-features" aria-label="Recursos do quiz">
               <div>
@@ -244,8 +248,74 @@
           </div>
           <div class="result-actions">
             <button id="restart-button" class="primary-button" type="button">Tentar novamente</button>
+            <button class="secondary-button" data-open-performance type="button">Ver desempenho</button>
             <button class="secondary-button" data-go-home type="button">Voltar ao início</button>
           </div>
+        </section>
+
+        <section id="performance-screen" class="screen performance-screen" aria-labelledby="performance-title">
+          <div class="performance-heading">
+            <button class="text-button" data-go-home type="button">← Voltar ao início</button>
+            <span class="eyebrow">ACOMPANHAMENTO</span>
+            <h2 id="performance-title">Meu desempenho</h2>
+            <p>Veja o histórico de cada questão e descubra quais conteúdos precisam de mais revisão.</p>
+          </div>
+
+          <div id="performance-subjects" class="performance-subjects" role="radiogroup" aria-label="Escolha a matéria"></div>
+
+          <div class="performance-summary" aria-label="Resumo do desempenho">
+            <article class="performance-stat">
+              <span>Questões respondidas</span>
+              <strong id="performance-answered">0</strong>
+              <small id="performance-total">de 0 questões</small>
+            </article>
+            <article class="performance-stat performance-stat--correct">
+              <span>Acertos</span>
+              <strong id="performance-correct">0</strong>
+              <small>respostas corretas</small>
+            </article>
+            <article class="performance-stat performance-stat--wrong">
+              <span>Erros</span>
+              <strong id="performance-wrong">0</strong>
+              <small>respostas incorretas</small>
+            </article>
+            <article class="performance-stat performance-stat--rate">
+              <span>Aproveitamento</span>
+              <strong id="performance-rate">0%</strong>
+              <small id="performance-attempts">0 tentativas</small>
+            </article>
+          </div>
+
+          <div class="performance-filters" aria-label="Filtros do desempenho">
+            <label>
+              <span>Conteúdo</span>
+              <select id="performance-content-filter" aria-label="Filtrar por conteúdo"></select>
+            </label>
+            <label>
+              <span>Situação</span>
+              <select id="performance-status-filter" aria-label="Filtrar por situação">
+                <option value="__all">Todas as questões</option>
+                <option value="answered">Respondidas</option>
+                <option value="review">Precisa revisar</option>
+                <option value="mastered">Bom desempenho</option>
+                <option value="unanswered">Ainda não respondidas</option>
+              </select>
+            </label>
+            <label class="performance-search-field">
+              <span>Buscar questão</span>
+              <input id="performance-search" type="search" placeholder="Digite uma palavra do enunciado" autocomplete="off" />
+            </label>
+          </div>
+
+          <div class="performance-list-heading">
+            <div>
+              <span class="eyebrow">QUESTÃO POR QUESTÃO</span>
+              <h3 id="performance-list-title">Todas as questões</h3>
+            </div>
+            <strong id="performance-visible-count">0 questões</strong>
+          </div>
+          <div id="performance-question-list" class="performance-question-list"></div>
+          <p id="performance-empty" class="performance-empty" hidden>Nenhuma questão corresponde aos filtros escolhidos.</p>
         </section>
       </main>
 
