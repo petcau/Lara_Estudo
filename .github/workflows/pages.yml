@@ -15,10 +15,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  publicar:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+  preparar:
     runs-on: ubuntu-latest
     steps:
       - name: Baixar arquivos do repositório
@@ -34,6 +31,13 @@ jobs:
         with:
           path: .
 
+  publicar:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    needs: preparar
+    runs-on: ubuntu-latest
+    steps:
       - name: Publicar site
         id: deployment
         uses: actions/deploy-pages@v4
