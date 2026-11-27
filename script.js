@@ -27,6 +27,7 @@ const questionContent = document.querySelector("#question-content");
 const sourceText = document.querySelector("#source-text");
 const sourceTextContent = document.querySelector("#source-text-content");
 const questionText = document.querySelector("#question-text");
+const questionGeometry = document.querySelector("#question-geometry");
 const answerList = document.querySelector("#answer-list");
 const feedback = document.querySelector("#feedback");
 const nextButton = document.querySelector("#next-button");
@@ -94,7 +95,11 @@ function addOption(select, value, label) {
 }
 
 function getQuestionPerformanceId(question) {
-  return [question.materia, question.capitulo, question.conteudo, question.pergunta].join("|||" );
+  return question.id || [question.materia, question.capitulo, question.conteudo, question.pergunta].join("|||" );
+}
+
+function getQuestionStorageId(question) {
+  return question.id || question.pergunta;
 }
 
 function loadPerformanceData() {
@@ -492,12 +497,12 @@ function buildProgressiveQuiz(items, limit) {
   ];
 
   if (selected.length < limit) {
-    const selectedIds = new Set(selected.map((question) => question.pergunta));
+    const selectedIds = new Set(selected.map(getQuestionStorageId));
     const remaining = [
       ...groups["Fácil"],
       ...groups["Médio"],
       ...groups["Difícil"],
-    ].filter((question) => !selectedIds.has(question.pergunta));
+    ].filter((question) => !selectedIds.has(getQuestionStorageId(question)));
     selected.push(...remaining.slice(0, limit - selected.length));
   }
 
@@ -515,7 +520,7 @@ function saveProgress(status = "quiz") {
   const state = {
     version: 1,
     status,
-    questionIds: quizQuestions.map((question) => question.pergunta),
+    questionIds: quizQuestions.map(getQuestionStorageId),
     currentQuestion: status === "result" ? quizQuestions.length - 1 : currentQuestion,
     selectedAnswer,
     answerConfirmed,
@@ -551,7 +556,11 @@ function restoreProgress() {
     return false;
   }
 
-  const questionsById = new Map(perguntas.map((question) => [question.pergunta, question]));
+  const questionsById = new Map();
+  perguntas.forEach((question) => {
+    questionsById.set(getQuestionStorageId(question), question);
+    if (!questionsById.has(question.pergunta)) questionsById.set(question.pergunta, question);
+  });
   const restoredQuestions = state.questionIds.map((id) => questionsById.get(id));
   const validIndex = Number.isInteger(state.currentQuestion)
     && state.currentQuestion >= 0
@@ -677,6 +686,35 @@ function geometryDistance(pointA, pointB) {
   return Math.hypot(pointA.x - pointB.x, pointA.y - pointB.y);
 }
 
+function geometryPointAtDistance(vertex, point, distance) {
+  const length = geometryDistance(vertex, point);
+  return {
+    x: vertex.x + (point.x - vertex.x) * distance / length,
+    y: vertex.y + (point.y - vertex.y) * distance / length,
+  };
+}
+
+function geometryAngleArc(vertex, pointA, pointB, radius = 28) {
+  const start = geometryPointAtDistance(vertex, pointA, radius);
+  const end = geometryPointAtDistance(vertex, pointB, radius);
+  return `M${geometryPoint(start)} Q${geometryPoint(vertex)} ${geometryPoint(end)}`;
+}
+
+function geometrySideTicks(pointA, pointB, count, color = "#df7a30") {
+  const length = geometryDistance(pointA, pointB);
+  const alongX = (pointB.x - pointA.x) / length;
+  const alongY = (pointB.y - pointA.y) / length;
+  const normalX = -alongY * 9;
+  const normalY = alongX * 9;
+  const paths = Array.from({ length: count }, (_, index) => {
+    const offset = (index - (count - 1) / 2) * 12;
+    const centerX = (pointA.x + pointB.x) / 2 + alongX * offset;
+    const centerY = (pointA.y + pointB.y) / 2 + alongY * offset;
+    return `M${geometryRound(centerX - normalX)} ${geometryRound(centerY - normalY)} L${geometryRound(centerX + normalX)} ${geometryRound(centerY + normalY)}`;
+  }).join(" ");
+  return `<path d="${paths}" stroke="${color}" stroke-width="4" stroke-linecap="round"/>`;
+}
+
 function geometryPolygonArea(points) {
   const doubleArea = points.reduce((sum, point, index) => {
     const next = points[(index + 1) % points.length];
@@ -705,6 +743,12 @@ function validateGeometryDiagramSpecs() {
   const parallelogramArea = geometryPolygonArea([{ x: 55, y: 165 }, { x: 110, y: 55 }, { x: 290, y: 55 }, { x: 235, y: 165 }]);
   const rectangleArea = geometryPolygonArea([{ x: 315, y: 55 }, { x: 495, y: 55 }, { x: 495, y: 165 }, { x: 315, y: 165 }]);
   const baricenterRatio = (130.33333333333334 - 35) / (178 - 130.33333333333334);
+  const square = [{ x: 145, y: 25 }, { x: 335, y: 25 }, { x: 335, y: 215 }, { x: 145, y: 215 }];
+  const squareSides = square.map((point, index) => geometryDistance(point, square[(index + 1) % square.length]));
+  const congruentA = [{ x: 45, y: 165 }, { x: 145, y: 48 }, { x: 237, y: 165 }];
+  const congruentB = congruentA.map((point) => ({ x: point.x + 238, y: point.y }));
+  const congruentSidesA = congruentA.map((point, index) => geometryDistance(point, congruentA[(index + 1) % congruentA.length]));
+  const congruentSidesB = congruentB.map((point, index) => geometryDistance(point, congruentB[(index + 1) % congruentB.length]));
   return {
     equilateral: equilateralSides.every((side) => nearlyEqual(side, equilateralSides[0])),
     isosceles: nearlyEqual(isoscelesSides[0], isoscelesSides[1]) && !nearlyEqual(isoscelesSides[1], isoscelesSides[2]),
@@ -717,7 +761,15 @@ function validateGeometryDiagramSpecs() {
     doubledArea: nearlyEqual((160 * 120) / (80 * 60), 4),
     regularHexagon: hexagonSides.every((side) => nearlyEqual(side, hexagonSides[0])),
     baricenter: nearlyEqual(baricenterRatio, 2),
+    square: squareSides.every((side) => nearlyEqual(side, squareSides[0])),
+    congruence: congruentSidesA.every((side, index) => nearlyEqual(side, congruentSidesB[index])),
   };
+}
+
+const geometryDiagramValidation = validateGeometryDiagramSpecs();
+const invalidGeometrySpecs = Object.entries(geometryDiagramValidation).filter(([, valid]) => !valid);
+if (invalidGeometrySpecs.length) {
+  throw new Error(`Diagramas geométricos inválidos: ${invalidGeometrySpecs.map(([name]) => name).join(", ")}`);
 }
 
 function createGeometryLearnIllustration(visual) {
@@ -728,10 +780,13 @@ function createGeometryLearnIllustration(visual) {
     const equilateral = triangleFromBaseAngles(24, 154, 126, 60, 60);
     const isosceles = triangleFromBaseAngles(185, 154, 136, 65, 65);
     const scalene = triangleFromBaseAngles(358, 154, 138, 48, 72);
+    const [eA, eB, eC] = equilateral.points;
+    const [iA, iB, iC] = isosceles.points;
+    const [sA, sB, sC] = scalene.points;
     return `${open("Três tipos de triângulo classificados pelos lados")}
-    <path d="${trianglePath(equilateral)}" fill="#eee9ff" stroke="#7157d9" stroke-width="4"/><path d="M45 126l11 7M119 133l11-7M82 72h12" stroke="#df7a30" stroke-width="4"/>
-    <path d="${trianglePath(isosceles)}" fill="#e8f8f1" stroke="#2b9b74" stroke-width="4"/><path d="M207 117l12 8M288 125l12-8" stroke="#df7a30" stroke-width="4"/>
-    <path d="${trianglePath(scalene)}" fill="#fff5d7" stroke="#d49a18" stroke-width="4"/><path d="M378 122l11 7M468 132l13-8M409 64l12 5M412 70l12 5" stroke="#df7a30" stroke-width="4"/>
+    <path d="${trianglePath(equilateral)}" fill="#eee9ff" stroke="#7157d9" stroke-width="4"/>${geometrySideTicks(eA, eB, 1)}${geometrySideTicks(eB, eC, 1)}${geometrySideTicks(eC, eA, 1)}
+    <path d="${trianglePath(isosceles)}" fill="#e8f8f1" stroke="#2b9b74" stroke-width="4"/>${geometrySideTicks(iA, iB, 1)}${geometrySideTicks(iB, iC, 1)}
+    <path d="${trianglePath(scalene)}" fill="#fff5d7" stroke="#d49a18" stroke-width="4"/>${geometrySideTicks(sA, sB, 1)}${geometrySideTicks(sB, sC, 2)}${geometrySideTicks(sC, sA, 3)}
     <text x="90" y="183" text-anchor="middle">EQUILÁTERO</text><text x="257" y="183" text-anchor="middle">ISÓSCELES</text><text x="427" y="183" text-anchor="middle">ESCALENO</text>
     <text x="90" y="202" text-anchor="middle">60° · 60° · 60°</text><text x="257" y="202" text-anchor="middle">65° · 50° · 65°</text><text x="427" y="202" text-anchor="middle">48° · 60° · 72°</text>${close}`;
   }
@@ -745,7 +800,7 @@ function createGeometryLearnIllustration(visual) {
     <path d="M185 155V62l125 93Z" fill="#e7f2ff" stroke="#3278c8" stroke-width="4"/><path d="M185 135h20v20" fill="none" stroke="#df7a30" stroke-width="4"/>
     <path d="${trianglePath(obtuse)}" fill="#fff0e4" stroke="#df7a30" stroke-width="4"/><path d="M${geometryRound(obtuseApex.x - 24)} ${geometryRound(obtuseApex.y + 15)} Q${geometryPoint(obtuseApex)} ${geometryRound(obtuseApex.x + 24)} ${geometryRound(obtuseApex.y + 15)}" fill="none" stroke="#7157d9" stroke-width="4"/>
     <text x="91" y="183" text-anchor="middle">ACUTÂNGULO</text><text x="245" y="183" text-anchor="middle">RETÂNGULO</text><text x="421" y="183" text-anchor="middle">OBTUSÂNGULO</text>
-    <text x="91" y="202" text-anchor="middle">50° · 70° · 60°</text><text x="245" y="202" text-anchor="middle">90° · 36,6° · 53,4°</text><text x="421" y="202" text-anchor="middle">25° · 120° · 35°</text>${close}`;
+    <text x="91" y="202" text-anchor="middle">50° · 70° · 60°</text><text x="245" y="202" text-anchor="middle">90° · 53,4° · 36,6°</text><text x="421" y="202" text-anchor="middle">25° · 120° · 35°</text>${close}`;
   }
 
   if (visual === "triangulo-soma") return `${open("Soma dos três ângulos internos do triângulo")}
@@ -826,12 +881,16 @@ function createGeometryLearnIllustration(visual) {
     <path d="M260 154h20v20" fill="none" stroke="#2b9b74" stroke-width="4"/>
     <text x="255" y="202" text-anchor="middle">BASE</text><text x="285" y="108">ALTURA ⟂</text>${close}`;
 
-  if (visual === "triangulo-congruencia") return `${open("Dois triângulos com lados e ângulos correspondentes marcados")}
+  if (visual === "triangulo-congruencia") return `${open("Triângulos ABC e A linha B linha C linha com correspondência identificada")}
     <path d="M45 165 145 48l92 117Z" fill="#eee9ff" stroke="#7157d9" stroke-width="5"/>
     <path d="M283 165 383 48l92 117Z" fill="#e8f8f1" stroke="#2b9b74" stroke-width="5"/>
-    <path d="M89 113h18M327 113h18M184 108l15 11M422 108l15 11" stroke="#df7a30" stroke-width="5"/>
-    <path d="M125 70q20 11 30 30M363 70q20 11 30 30" fill="none" stroke="#3278c8" stroke-width="4"/>
-    <text x="260" y="201" text-anchor="middle">COMPARE AS MARCAS CORRESPONDENTES</text>${close}`;
+    <path d="M88 111l14 12M326 111l14 12" stroke="#df7a30" stroke-width="5"/>
+    <path d="M181 99l14-11M190 111l14-11M419 99l14-11M428 111l14-11" stroke="#3278c8" stroke-width="4"/>
+    <path d="M124 155v20M141 155v20M158 155v20M362 155v20M379 155v20M396 155v20" stroke="#d49a18" stroke-width="4"/>
+    <path d="M125 70q20 11 30 30M363 70q20 11 30 30" fill="none" stroke="#a24fce" stroke-width="4"/>
+    <text x="32" y="181">A</text><text x="140" y="36">B</text><text x="239" y="181">C</text>
+    <text x="264" y="181">A′</text><text x="378" y="36">B′</text><text x="474" y="181" text-anchor="end">C′</text>
+    <text x="260" y="204" text-anchor="middle">AB ↔ A′B′ · BC ↔ B′C′ · AC ↔ A′C′</text>${close}`;
 
   if (visual === "triangulo-existencia") return `${open("Três segmentos tentando fechar um triângulo")}
     <path d="M70 170 230 52l215 118" fill="none" stroke="#7157d9" stroke-width="6" stroke-linecap="round"/>
@@ -856,7 +915,7 @@ function createGeometryLearnIllustration(visual) {
   if (visual === "triangulo-baricentro") return `${open("Mediana dividida pelo baricentro na razão dois para um")}
     <path d="M75 178 260 35l185 143Z" fill="#f7f4ff" stroke="#7157d9" stroke-width="5"/><path d="M260 35v143" stroke="#3278c8" stroke-width="5"/>
     <circle cx="260" cy="130.333" r="10" fill="#df7a30"/><path d="M275 35h70M275 130.333h70M275 178h70" stroke="#aaa3bb" stroke-width="2" stroke-dasharray="5 5"/>
-    <text x="355" y="41">VÉRTICE</text><text x="355" y="136">BARICENTRO</text><text x="355" y="184">PONTO MÉDIO</text><text x="220" y="85">2 partes</text><text x="220" y="163">1 parte</text>${close}`;
+    <text x="355" y="41">VÉRTICE</text><text x="355" y="136">BARICENTRO</text><text x="355" y="201">PONTO MÉDIO</text><text x="220" y="85">2 partes</text><text x="220" y="163">1 parte</text>${close}`;
 
   if (["triangulo-segmentos", "triangulo-centros", "triangulo-baricentro"].includes(visual)) return `${open("Segmentos e pontos notáveis de um triângulo")}
     <path d="M70 176 260 36l190 140Z" fill="#f7f4ff" stroke="#7157d9" stroke-width="5"/>
@@ -886,14 +945,14 @@ function createGeometryLearnIllustration(visual) {
   }
 
   if (visual === "poligono-diagonais") return `${open("Diagonais ligando vértices não consecutivos")}
-    <path d="m260 25 92 36 55 82-69 62H182l-69-62 55-82Z" fill="#e7f2ff" stroke="#3278c8" stroke-width="5"/>
-    <path d="M168 61 352 61M168 61 407 143M168 61 338 205M168 61 182 205" stroke="#7157d9" stroke-width="4" stroke-dasharray="7 5"/>
-    <circle cx="168" cy="61" r="8" fill="#df7a30"/><text x="260" y="216" text-anchor="middle">de um vértice: não conte ele mesmo nem os 2 vizinhos</text>${close}`;
+    <path d="m260 10 92 36 55 82-69 62H182l-69-62 55-82Z" fill="#e7f2ff" stroke="#3278c8" stroke-width="5"/>
+    <path d="M168 46 352 46M168 46 407 128M168 46 338 190M168 46 182 190" stroke="#7157d9" stroke-width="4" stroke-dasharray="7 5"/>
+    <circle cx="168" cy="46" r="8" fill="#df7a30"/><text x="260" y="215" text-anchor="middle">de um vértice: não conte ele mesmo nem os 2 vizinhos</text>${close}`;
 
   if (visual === "poligono-angulos") return `${open("Polígono dividido em triângulos para estudar os ângulos")}
-    <path d="m260 25 92 36 55 82-69 62H182l-69-62 55-82Z" fill="#eee9ff" stroke="#7157d9" stroke-width="5"/>
-    <path d="M168 61 352 61M168 61 407 143M168 61 338 205M168 61 182 205" stroke="#2b9b74" stroke-width="4" stroke-dasharray="7 5"/>
-    <text x="260" y="216" text-anchor="middle">n lados → n − 2 triângulos → (n − 2) × 180°</text>${close}`;
+    <path d="m260 10 92 36 55 82-69 62H182l-69-62 55-82Z" fill="#eee9ff" stroke="#7157d9" stroke-width="5"/>
+    <path d="M168 46 352 46M168 46 407 128M168 46 338 190M168 46 182 190" stroke="#2b9b74" stroke-width="4" stroke-dasharray="7 5"/>
+    <text x="260" y="215" text-anchor="middle">n lados → n − 2 triângulos → (n − 2) × 180°</text>${close}`;
 
   if (["poligono-diagonais", "poligono-angulos", "hexagono-inscrito"].includes(visual)) {
     const hexagon = regularPolygonPoints(260, 112, 88, 6);
@@ -1254,6 +1313,139 @@ function toggleLearnGuide() {
   else closeLearnGuide();
 }
 
+function createGeometryQuestionDiagram(spec) {
+  const open = (label) => `<svg viewBox="0 0 480 240" role="img" aria-label="${label}"><rect x="4" y="4" width="472" height="232" rx="20" fill="#fff"/>`;
+  const close = "</svg>";
+  const label = (x, y, value, anchor = "middle") => `<text x="${x}" y="${y}" text-anchor="${anchor}">${value}</text>`;
+
+  if (spec.tipo === "triangulo-angulos-calculo") {
+    const shape = spec.forma || [50, 70, 60];
+    const leftRadians = shape[0] * Math.PI / 180;
+    const rightRadians = shape[2] * Math.PI / 180;
+    const heightPerWidth = Math.tan(leftRadians) * Math.tan(rightRadians) / (Math.tan(leftRadians) + Math.tan(rightRadians));
+    const width = Math.min(350, 140 / heightPerWidth);
+    const triangle = triangleFromBaseAngles((480 - width) / 2, 190, width, shape[0], shape[2]);
+    const [left, apex, right] = triangle.points;
+    return `${open("Triângulo com ângulos indicados")}
+      <path d="${trianglePath(triangle)}" fill="#eee9ff" stroke="#7157d9" stroke-width="5"/>
+      <path d="${geometryAngleArc(left, apex, right)} ${geometryAngleArc(apex, left, right)} ${geometryAngleArc(right, apex, left)}" fill="none" stroke="#df7a30" stroke-width="4"/>
+      ${label(left.x + 34, left.y - 16, spec.angulos[0])}${label(apex.x, apex.y + 38, spec.angulos[1])}${label(right.x - 34, right.y - 16, spec.angulos[2])}${close}`;
+  }
+
+  if (spec.tipo === "triangulo-area") return `${open("Triângulo com base e altura indicadas")}
+    <path d="M55 190 245 38 425 190Z" fill="#eee9ff" stroke="#7157d9" stroke-width="5"/>
+    <path d="M245 38V190" stroke="#2b9b74" stroke-width="5" stroke-dasharray="9 7"/><path d="M245 170h20v20" fill="none" stroke="#df7a30" stroke-width="4"/>
+    ${label(240, 222, spec.base)}${label(278, 112, spec.altura, "start")}${close}`;
+
+  if (spec.tipo === "triangulo-isosceles") return `${open("Triângulo isósceles com medidas indicadas")}
+    <path d="M65 190 240 35 415 190Z" fill="#e8f8f1" stroke="#2b9b74" stroke-width="5"/>
+    <path d="M125 132l16 13M339 145l16-13" stroke="#df7a30" stroke-width="5"/>
+    ${label(240, 75, spec.vertice || "")}${label(105, 178, spec.esquerda || "")}${label(375, 178, spec.direita || "")}${spec.base ? label(240, 220, spec.base) : ""}${close}`;
+
+  if (spec.tipo === "triangulo-lados-calculo") return `${open("Triângulo com medidas dos lados")}
+    <path d="M65 190 230 35 420 190Z" fill="#fff5d7" stroke="#d49a18" stroke-width="5"/>
+    ${label(128, 105, spec.lados[0])}${label(337, 105, spec.lados[1])}${label(242, 218, spec.lados[2])}${close}`;
+
+  if (spec.tipo === "triangulo-externo") {
+    const leftAngle = Number.parseFloat(spec.internos[0]);
+    const apexAngle = Number.parseFloat(spec.internos[1]);
+    const rightAngle = 180 - leftAngle - apexAngle;
+    const triangle = triangleFromBaseAngles(55, 185, 335, leftAngle, rightAngle);
+    const [left, apex, right] = triangle.points;
+    const extension = { x: 462, y: right.y };
+    return `${open("Triângulo exato com ângulo externo")}
+      <path d="${trianglePath(triangle)}" fill="#eee9ff" stroke="#7157d9" stroke-width="5"/><path d="M${geometryPoint(right)} L${geometryPoint(extension)}" stroke="#7157d9" stroke-width="5"/>
+      <path d="${geometryAngleArc(left, apex, right)} ${geometryAngleArc(apex, left, right)} ${geometryAngleArc(right, apex, extension, 38)}" fill="none" stroke="#df7a30" stroke-width="4"/>
+      ${label(left.x + 35, left.y - 18, spec.internos[0])}${label(apex.x, apex.y + 38, spec.internos[1])}${label(right.x + 38, right.y - 38, spec.externo)}${close}`;
+  }
+
+  if (spec.tipo === "mediana") return `${open("Mediana dividindo o lado oposto ao meio")}
+    <path d="M55 190 235 35 425 190Z" fill="#eee9ff" stroke="#7157d9" stroke-width="5"/><path d="M235 35 240 190" stroke="#3278c8" stroke-width="5"/>
+    <circle cx="240" cy="190" r="7" fill="#df7a30"/><path d="M145 180v20M335 180v20" stroke="#df7a30" stroke-width="4"/>
+    ${label(145, 212, spec.partes[0])}${label(335, 212, spec.partes[1])}${spec.total ? label(240, 232, `lado inteiro = ${spec.total}`) : ""}${close}`;
+
+  if (spec.tipo === "bissetriz") return `${open("Bissetriz dividindo um ângulo em duas partes iguais")}
+    <path d="M55 190 240 35 425 190Z" fill="#e7f2ff" stroke="#3278c8" stroke-width="5"/><path d="M240 35V190" stroke="#7157d9" stroke-width="5"/>
+    <path d="M207 65q16 18 33 23M240 88q17-5 33-23" fill="none" stroke="#df7a30" stroke-width="4"/>
+    ${label(208, 91, spec.partes[0])}${label(273, 91, spec.partes[1])}${spec.total ? label(240, 25, spec.total) : ""}${close}`;
+
+  if (spec.tipo === "baricentro") return `${open("Mediana dividida pelo baricentro na razão dois para um")}
+    <path d="M70 190 240 30 410 190Z" fill="#f7f4ff" stroke="#7157d9" stroke-width="5"/><path d="M240 30V190" stroke="#3278c8" stroke-width="5"/>
+    <circle cx="240" cy="136.667" r="9" fill="#df7a30"/>
+    ${label(270, 88, spec.vg, "start")}${label(270, 170, spec.gm, "start")}${spec.total ? label(70, 25, `mediana = ${spec.total}`, "start") : ""}${label(240, 220, "M · ponto médio")}${close}`;
+
+  if (spec.tipo === "mediatriz") return `${open("Ponto sobre a mediatriz de um segmento")}
+    <path d="M70 180h340" stroke="#7157d9" stroke-width="6"/><path d="M240 30v190" stroke="#2b9b74" stroke-width="5" stroke-dasharray="8 6"/><path d="M240 160h20v20" fill="none" stroke="#df7a30" stroke-width="4"/>
+    <path d="M240 45 70 180M240 45 410 180" stroke="#3278c8" stroke-width="4"/><circle cx="240" cy="45" r="7" fill="#df7a30"/>
+    ${label(142, 105, spec.distancias[0])}${label(338, 105, spec.distancias[1])}${label(62, 205, "A")}${label(418, 205, "B")}${close}`;
+
+  if (spec.tipo === "retangulo") return `${open("Retângulo com medidas indicadas")}
+    <path d="M85 45h310v145H85Z" fill="#e8f8f1" stroke="#2b9b74" stroke-width="5"/><path d="M85 170h20v20M375 170h20v20" fill="none" stroke="#df7a30" stroke-width="4"/>
+    ${label(240, 220, spec.base)}${label(65, 122, spec.altura)}${spec.interno ? label(240, 125, spec.interno) : ""}${close}`;
+
+  if (spec.tipo === "quadrado") return `${open("Quadrado com quatro lados iguais e medida indicada")}
+    <path d="M145 25h190v190H145Z" fill="#eee9ff" stroke="#7157d9" stroke-width="5"/><path d="M145 195h20v20" fill="none" stroke="#df7a30" stroke-width="4"/>
+    ${label(240, 235, spec.lado)}${label(115, 120, spec.lado)}${close}`;
+
+  if (spec.tipo === "trapezio-calculo") return `${open("Trapézio com bases e altura indicadas")}
+    <path d="M55 190 135 45h210l80 145Z" fill="#fff5d7" stroke="#d49a18" stroke-width="5"/><path d="M135 45v145" stroke="#2b9b74" stroke-width="5" stroke-dasharray="8 6"/><path d="M135 170h20v20" fill="none" stroke="#df7a30" stroke-width="4"/>
+    ${label(240, 35, spec.baseMenor)}${label(240, 220, spec.baseMaior)}${label(164, 120, spec.altura, "start")}${close}`;
+
+  if (spec.tipo === "losango-calculo") return `${open("Losango com diagonais indicadas")}
+    <path d="M240 25 425 120 240 215 55 120Z" fill="#eee9ff" stroke="#7157d9" stroke-width="5"/><path d="M55 120h370M240 25v190" stroke="#2b9b74" stroke-width="5" stroke-dasharray="8 6"/><path d="M240 120h18v18" fill="none" stroke="#df7a30" stroke-width="4"/>
+    ${label(335, 109, spec.diagonalMaior)}${label(258, 70, spec.diagonalMenor, "start")}${close}`;
+
+  if (spec.tipo === "quadrilatero-angulos-calculo") {
+    const angle = Number.parseFloat(spec.angulos[0]);
+    const side = 140;
+    const offsetX = side * Math.cos(angle * Math.PI / 180);
+    const offsetY = side * Math.sin(angle * Math.PI / 180);
+    const leftTopX = 70 + offsetX;
+    const topY = 190 - offsetY;
+    const rightTopX = 410 + offsetX;
+    return `${open("Paralelogramo exato com ângulos opostos iguais e consecutivos suplementares")}
+      <path d="M70 190 ${geometryPoint({ x: leftTopX, y: topY })} ${geometryPoint({ x: rightTopX, y: topY })} 410 190Z" fill="#e7f2ff" stroke="#3278c8" stroke-width="5"/>
+      ${label(105, 173, spec.angulos[0])}${label(leftTopX + 20, topY + 31, spec.angulos[1])}${label(rightTopX - 28, topY + 31, spec.angulos[2])}${label(385, 173, spec.angulos[3])}${close}`;
+  }
+
+  if (spec.tipo === "paralelogramo") return `${open("Paralelogramo com base e altura indicadas")}
+    <path d="M55 190 125 45h280l-70 145Z" fill="#e8f8f1" stroke="#2b9b74" stroke-width="5"/><path d="M125 45v145" stroke="#7157d9" stroke-width="5" stroke-dasharray="8 6"/><path d="M125 170h20v20" fill="none" stroke="#df7a30" stroke-width="4"/>
+    ${label(235, 220, spec.base)}${label(151, 120, spec.altura, "start")}${close}`;
+
+  if (spec.tipo === "poligono-calculo") {
+    if (spec.ocultarLados) return `${open("Polígono com quantidade desconhecida de lados")}
+      <path d="M95 178 62 120 95 62 174 34M306 34 385 62 418 120 385 178 306 206" fill="none" stroke="#7157d9" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="220" cy="34" r="5" fill="#7157d9"/><circle cx="240" cy="34" r="5" fill="#7157d9"/><circle cx="260" cy="34" r="5" fill="#7157d9"/>
+      ${label(240, 112, spec.centro || "n lados")}${label(240, 140, spec.detalhe)}${label(240, 181, "descubra n sem contar o desenho")}${close}`;
+    const points = regularPolygonPoints(240, 120, spec.n > 12 ? 92 : 100, spec.n);
+    return `${open(`Polígono regular de ${spec.n} lados`)}<path d="${polygonPath(points)}" fill="#eee9ff" stroke="#7157d9" stroke-width="5"/>
+      ${label(240, 112, spec.centro || `${spec.n} lados`)}${spec.detalhe ? label(240, 138, spec.detalhe) : ""}${close}`;
+  }
+
+  if (spec.tipo === "bloco") return `${open("Bloco retangular com três dimensões")}
+    <path d="M75 80h230v115H75ZM75 80l65-42h230v115l-65 42M305 80l65-42M305 195l65-42" fill="#e7f2ff" fill-opacity=".75" stroke="#3278c8" stroke-width="5"/>
+    ${label(190, 224, spec.comprimento)}${label(337, 193, spec.largura)}${label(55, 142, spec.altura)}${close}`;
+
+  if (spec.tipo === "cubo") return `${open("Cubo com aresta indicada")}
+    <path d="M115 65h190v140H115ZM115 65l55-35h190v140l-55 35M305 65l55-35M305 205l55-35" fill="#eee9ff" fill-opacity=".8" stroke="#7157d9" stroke-width="5"/>
+    ${label(210, 230, spec.aresta)}${label(332, 196, spec.aresta)}${close}`;
+
+  if (spec.tipo === "circulo-calculo") return `${open("Círculo com raio ou diâmetro indicado")}
+    <circle cx="240" cy="120" r="92" fill="#fff5d7" stroke="#d49a18" stroke-width="5"/><circle cx="240" cy="120" r="7" fill="#7157d9"/>
+    <path d="${spec.diametro ? "M148 120h184" : "M240 120h92"}" stroke="#7157d9" stroke-width="6"/>
+    ${label(spec.diametro ? 240 : 286, 108, spec.diametro || spec.raio)}${close}`;
+
+  if (spec.tipo === "area-composta-calculo") return `${open("Figura composta com recorte retangular")}
+    <path d="M55 35h370v170H55Z" fill="#e8f8f1" stroke="#2b9b74" stroke-width="5"/><path d="M305 125h120v80H305Z" fill="#fff" stroke="#df7a30" stroke-width="5" stroke-dasharray="8 6"/>
+    ${label(240, 230, spec.base)}${label(35, 120, spec.altura)}${label(365, 118, spec.recorte)}${close}`;
+
+  if (spec.tipo === "reservatorio") return `${open("Reservatório com nível de preenchimento")}
+    <path d="M105 ${spec.nivelY}h270v${210 - spec.nivelY}H105Z" fill="#bfe9ff"/><path d="M105 30h270v180H105Z" fill="none" stroke="#3278c8" stroke-width="6"/>
+    <path d="M105 ${spec.nivelY}h270" stroke="#3278c8" stroke-width="4" stroke-dasharray="9 6"/>${label(240, 128, spec.percentual)}${label(240, 232, spec.capacidade)}${close}`;
+
+  return "";
+}
+
 function renderQuestion() {
   const question = quizQuestions[currentQuestion];
   selectedAnswer = null;
@@ -1279,6 +1471,9 @@ function renderQuestion() {
   sourceText.hidden = !hasSourceText;
   sourceTextContent.textContent = hasSourceText ? question.textoBase : "";
   questionText.textContent = question.pergunta;
+  const hasGeometryDiagram = Boolean(question.diagrama);
+  questionGeometry.hidden = !hasGeometryDiagram;
+  questionGeometry.innerHTML = hasGeometryDiagram ? createGeometryQuestionDiagram(question.diagrama) : "";
   answerList.replaceChildren();
 
   question.alternativas.forEach((answer, index) => {

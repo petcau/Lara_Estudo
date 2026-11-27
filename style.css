@@ -883,6 +883,38 @@ h1 em::after {
   line-height: 1.25;
 }
 
+.question-geometry {
+  display: grid;
+  place-items: center;
+  width: min(100%, 720px);
+  margin: -8px auto 30px;
+  padding: clamp(12px, 3vw, 22px);
+  overflow: hidden;
+  background: linear-gradient(145deg, #fbf9ff, #f7fffb);
+  border: 1px solid #ded6f5;
+  border-radius: 18px;
+}
+
+.question-geometry[hidden] { display: none; }
+
+.question-geometry svg {
+  display: block;
+  width: 100%;
+  max-width: 560px;
+  height: auto;
+}
+
+.question-geometry text {
+  fill: #302947;
+  font-family: "Nunito", sans-serif;
+  font-size: 16px;
+  font-weight: 900;
+  paint-order: stroke;
+  stroke: #fff;
+  stroke-width: 4px;
+  stroke-linejoin: round;
+}
+
 .answer-list {
   display: grid;
   gap: 12px;

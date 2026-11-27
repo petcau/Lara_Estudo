@@ -305,7 +305,7 @@ const guiasGeometriaFocados = {
   bissetrizMetade: criarGuiaGeometriaFocado("Divida um ângulo com a bissetriz", "Bissetar significa separar um ângulo em duas medidas iguais.", "A bissetriz parte do vértice e cria dois ângulos congruentes.", "Divida a medida original por dois e confira se as duas partes somam o ângulo inicial.", "Um ângulo de 110° bissetado → duas partes de 55°", "A bissetriz divide o ângulo, não necessariamente o lado oposto ao meio.", ["Leia o ângulo", "Divida por 2", "Confira"], ["bissetriz", "duas partes iguais"]),
   centrosCircunferencias: criarGuiaGeometriaFocado("Escolha o centro pela distância indicada", "Circunferência inscrita e circunscrita usam centros diferentes.", "O incentro fica à mesma distância dos lados e centra a circunferência inscrita. O circuncentro fica à mesma distância dos vértices e centra a circunscrita.", "Veja se a circunferência toca os lados ou passa pelos vértices; isso determina qual centro procurar.", "Uma circunferência tangencia os três lados do triângulo → seu centro é obtido pelo encontro das bissetrizes", "Não troque lados por vértices: essa única palavra muda o centro notável.", ["Toca os lados?", "Passa nos vértices?", "Escolha o centro"], ["incentro ↔ lados", "circuncentro ↔ vértices"]),
   coincidenciaEquilatero: criarGuiaGeometriaFocado("Use a simetria do triângulo equilátero", "No equilátero, a simetria faz diferentes segmentos ocuparem a mesma linha.", "Como os três lados e os três ângulos são iguais, a linha que sai de um vértice para o lado oposto pode, ao mesmo tempo, dividir lado, ângulo e formar 90°.", "Imagine dobrar a figura ao meio a partir de um vértice. A dobra revela as propriedades que coincidem.", "Num equilátero de lado 8 cm, a linha de simetria chega ao lado oposto em duas partes de 4 cm e forma 90°", "Os nomes não deixam de existir; são segmentos diferentes que coincidem na mesma reta.", ["Observe a simetria", "Dobre mentalmente", "Compare as funções"], ["equilátero", "simetria", "segmentos coincidentes"]),
-  posicaoCentros: criarGuiaGeometriaFocado("Localize ortocentro e circuncentro pelo tipo de triângulo", "A posição de alguns pontos notáveis muda conforme os ângulos do triângulo.", "No acutângulo, ortocentro e circuncentro ficam dentro. No retângulo, o ortocentro está no vértice reto e o circuncentro no meio da hipotenusa. No obtusângulo, ambos podem ficar fora.", "Classifique primeiro o triângulo pelos ângulos e só então aplique a regra de localização do centro pedido.", "Em um triângulo retângulo, os catetos já funcionam como duas alturas e se encontram no vértice de 90°", "Não suponha que todo ponto notável fica dentro da figura.", ["Classifique o triângulo", "Identifique o centro", "Localize"], ["acutângulo", "retângulo", "obtusângulo"]),
+  posicaoCentros: criarGuiaGeometriaFocado("Localize ortocentro e circuncentro pelo tipo de triângulo", "A posição de alguns pontos notáveis muda conforme os ângulos do triângulo.", "No acutângulo, ortocentro e circuncentro ficam dentro. No retângulo, o ortocentro está no vértice reto e o circuncentro no meio da hipotenusa. No obtusângulo, ambos ficam fora.", "Classifique primeiro o triângulo pelos ângulos e só então aplique a regra de localização do centro pedido.", "Em um triângulo retângulo, os catetos já funcionam como duas alturas e se encontram no vértice de 90°", "Não suponha que todo ponto notável fica dentro da figura.", ["Classifique o triângulo", "Identifique o centro", "Localize"], ["acutângulo", "retângulo", "obtusângulo"]),
   baricentroRazao: criarGuiaGeometriaFocado("Divida a mediana na razão do baricentro", "O baricentro não fica no meio da mediana: ele cria duas partes na razão 2 para 1.", "Do vértice ao baricentro há dois terços da mediana; do baricentro ao ponto médio do lado há um terço.", "Descubra se o trecho dado representa 2/3, 1/3 ou o total. Converta para três partes iguais antes de calcular.", "Mediana de 21 cm → 14 cm do vértice ao baricentro e 7 cm até o lado", "Não use metade: a divisão do baricentro é 2:1, e não 1:1.", ["Identifique o trecho", "Use 2:1", "Reconstrua o total"], ["2/3 junto ao vértice", "1/3 junto ao lado"]),
   construirMediatriz: criarGuiaGeometriaFocado("Construa a mediatriz com arcos", "Os arcos precisam cruzar-se acima e abaixo do segmento para determinar a reta.", "Com a mesma abertura, trace arcos a partir das duas extremidades. A abertura maior que a metade permite duas interseções; a reta por elas é perpendicular e passa no meio.", "Mantenha a abertura do compasso, marque duas interseções e una esses pontos com a régua.", "Num segmento de 8 cm, uma abertura de 5 cm permite que os arcos das extremidades se cruzem", "Se a abertura for menor que a metade, os arcos não se encontram.", ["Abra mais da metade", "Trace dois pares de arcos", "Una as interseções"], ["mesma abertura", "duas interseções", "90°"]),
   propriedadeMediatriz: criarGuiaGeometriaFocado("Use a equidistância da mediatriz", "Todo ponto da mediatriz mantém a mesma distância das duas extremidades do segmento.", "A mediatriz é o conjunto dos pontos equidistantes dos extremos de um segmento.", "Ligue o ponto às duas extremidades e reconheça que os comprimentos formados são iguais.", "Se P pertence à mediatriz de CD e PC mede 7 cm → PD também mede 7 cm", "Estar na mediatriz não obriga a formar um triângulo equilátero; garante apenas duas distâncias iguais.", ["Confirme que está na mediatriz", "Ligue aos extremos", "Iguale as distâncias"], ["equidistância", "extremidades"]),
@@ -539,6 +539,48 @@ const quadrosVisuaisGeometria = {
 };
 
 function obterGuiaGeometriaFocado(questao) {
+  const tiposCalculo = {
+    "triangulo-angulos-calculo": ["somaTriangulo", "triangulo-soma"],
+    "triangulo-area": ["areaTriangulo", "triangulo-area"],
+    "triangulo-lados-calculo": ["existenciaTriangulo", "triangulo-existencia"],
+    "triangulo-externo": ["anguloExternoTriangulo", "triangulo-externo"],
+    mediana: ["medianaMetade", "triangulo-segmentos"],
+    bissetriz: ["bissetrizMetade", "triangulo-segmentos"],
+    baricentro: ["baricentroRazao", "triangulo-baricentro"],
+    mediatriz: ["propriedadeMediatriz", "mediatriz"],
+    retangulo: ["areaRetanguloParalelogramo", "quadrilatero-area"],
+    quadrado: ["areaQuadrado", "quadrado-area"],
+    "trapezio-calculo": ["areaTrapezio", "trapezio"],
+    "losango-calculo": ["areaLosango", "losango"],
+    "quadrilatero-angulos-calculo": ["somaQuadrilatero", "quadrilatero-angulos"],
+    paralelogramo: ["areaRetanguloParalelogramo", "quadrilatero-area"],
+    bloco: questao.pergunta.includes("litros")
+      ? ["volumeParaLitros", "volume-capacidade"]
+      : ["volumeBloco", "volume-capacidade"],
+    cubo: ["volumeBloco", "volume-capacidade"],
+    "circulo-calculo": ["areaCirculo", "circulo-area"],
+    "area-composta-calculo": ["areaComRetirada", "area-composta"],
+    reservatorio: ["porcentagemCapacidade", "volume-capacidade"],
+  };
+  if (questao.calculo && questao.diagrama) {
+    let calculo = tiposCalculo[questao.diagrama.tipo];
+    if (questao.diagrama.tipo === "triangulo-isosceles") {
+      calculo = questao.pergunta.includes("perímetro")
+        ? ["isoscelesPerimetro", "triangulo-perimetro"]
+        : ["isoscelesAngulos", "triangulo-isosceles"];
+    }
+    if (questao.diagrama.tipo === "poligono-calculo") {
+      if (questao.pergunta.includes("diagonais")) calculo = ["diagonaisPoligono", "poligono-diagonais"];
+      else if (questao.pergunta.includes("externo")) calculo = ["angulosExternos", "poligono-angulos"];
+      else if (questao.pergunta.includes("interno") && questao.pergunta.includes("cada")) calculo = ["anguloInternoRegular", "poligono-angulos"];
+      else calculo = ["somaPoligono", "poligono-angulos"];
+    }
+    if (calculo) {
+      const [chaveCalculo, visualCalculo] = calculo;
+      const guiaCalculo = guiasGeometriaFocados[chaveCalculo] || guiasGeometria[questao.conteudo];
+      return { ...guiaCalculo, visual: visualCalculo, quadro: quadrosVisuaisGeometria[visualCalculo] || [] };
+    }
+  }
   const numero = Number(String(questao.aprenderId || "").replace("geo-", ""));
   const chave = mapaGuiasGeometria[numero];
   const visuais = {
