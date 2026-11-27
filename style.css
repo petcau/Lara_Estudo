@@ -1184,7 +1184,8 @@ h1 em::after {
   border: 1px solid var(--line);
   border-radius: 16px;
 }
-.is-portuguese-guide .learn-sections article { border-top: 5px solid var(--learn-tone); }
+.is-portuguese-guide .learn-sections article,
+.is-geometry-guide .learn-sections article { border-top: 5px solid var(--learn-tone); }
 .learn-sections article:last-child:nth-child(odd) { grid-column: 1 / -1; }
 .learn-section-heading {
   display: flex;
@@ -1214,7 +1215,8 @@ h1 em::after {
   font-size: 0.9rem;
   line-height: 1.58;
 }
-.is-portuguese-guide .learn-sections h4 { color: var(--learn-tone-ink); }
+.is-portuguese-guide .learn-sections h4,
+.is-geometry-guide .learn-sections h4 { color: var(--learn-tone-ink); }
 .learn-keywords {
   display: flex;
   flex-wrap: wrap;
@@ -1237,7 +1239,8 @@ h1 em::after {
   font-size: 0.76rem;
   text-transform: uppercase;
 }
-.is-portuguese-guide .learn-sections article > strong { color: var(--learn-tone-ink); }
+.is-portuguese-guide .learn-sections article > strong,
+.is-geometry-guide .learn-sections article > strong { color: var(--learn-tone-ink); }
 .learn-sections ul {
   display: grid;
   gap: 6px;
@@ -1247,12 +1250,14 @@ h1 em::after {
   font-size: 0.88rem;
   line-height: 1.5;
 }
-.is-portuguese-guide .learn-sections ul {
+.is-portuguese-guide .learn-sections ul,
+.is-geometry-guide .learn-sections ul {
   gap: 8px;
   padding: 0;
   list-style: none;
 }
-.is-portuguese-guide .learn-sections li {
+.is-portuguese-guide .learn-sections li,
+.is-geometry-guide .learn-sections li {
   display: flex;
   align-items: center;
   flex-wrap: wrap;

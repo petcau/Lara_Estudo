@@ -1,5 +1,8 @@
+let proximoGuiaGeometria = 1;
+
 const criarQuestaoGeometria = (capitulo, conteudo, dificuldade, pergunta, alternativas, correta, explicacao, textoBase = "") => ({
   materia: "Geometria — 8º ano",
+  aprenderId: `geo-${proximoGuiaGeometria++}`,
   capitulo,
   conteudo,
   pagina: "Prova Final",

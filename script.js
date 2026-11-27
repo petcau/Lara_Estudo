@@ -632,7 +632,90 @@ function closeLearnGuide() {
   learnButton.classList.remove("is-open");
 }
 
-function createLearnIllustration(subject) {
+function createGeometryLearnIllustration(visual) {
+  const open = (label) => `<svg viewBox="0 0 520 220" role="img" aria-label="${label}"><rect x="12" y="12" width="496" height="196" rx="22" fill="#fff"/>`;
+  const close = "</svg>";
+
+  if (visual === "triangulo-area") return `${open("Triângulo com base e altura perpendicular")}
+    <path d="M90 174h330L260 42Z" fill="#eee9ff" stroke="#7157d9" stroke-width="5"/>
+    <path d="M260 42v132" stroke="#2b9b74" stroke-width="5" stroke-dasharray="8 7"/>
+    <path d="M260 154h20v20" fill="none" stroke="#2b9b74" stroke-width="4"/>
+    <text x="255" y="202" text-anchor="middle">BASE</text><text x="285" y="108">ALTURA ⟂</text>${close}`;
+
+  if (visual === "triangulo-congruencia") return `${open("Dois triângulos com lados e ângulos correspondentes marcados")}
+    <path d="M45 165 145 48l92 117Z" fill="#eee9ff" stroke="#7157d9" stroke-width="5"/>
+    <path d="M283 165 383 48l92 117Z" fill="#e8f8f1" stroke="#2b9b74" stroke-width="5"/>
+    <path d="M89 113h18M327 113h18M184 108l15 11M422 108l15 11" stroke="#df7a30" stroke-width="5"/>
+    <path d="M125 70q20 11 30 30M363 70q20 11 30 30" fill="none" stroke="#3278c8" stroke-width="4"/>
+    <text x="260" y="201" text-anchor="middle">COMPARE AS MARCAS CORRESPONDENTES</text>${close}`;
+
+  if (visual === "triangulo-existencia") return `${open("Três segmentos tentando fechar um triângulo")}
+    <path d="M70 170 230 52l215 118" fill="none" stroke="#7157d9" stroke-width="6" stroke-linecap="round"/>
+    <path d="M70 170h375" stroke="#2b9b74" stroke-width="6"/>
+    <text x="145" y="100">a</text><text x="350" y="100">b</text><text x="258" y="197">maior lado c</text>
+    <rect x="178" y="22" width="164" height="34" rx="12" fill="#fff5cf"/><text x="260" y="44" text-anchor="middle">a + b precisa superar c</text>${close}`;
+
+  if (["triangulo-segmentos", "triangulo-centros", "triangulo-baricentro"].includes(visual)) return `${open("Segmentos e pontos notáveis de um triângulo")}
+    <path d="M70 176 260 36l190 140Z" fill="#f7f4ff" stroke="#7157d9" stroke-width="5"/>
+    <path d="M260 36v140" stroke="#2b9b74" stroke-width="5"/><path d="M70 176 355 106" stroke="#3278c8" stroke-width="4" stroke-dasharray="8 6"/>
+    <circle cx="260" cy="113" r="9" fill="#df7a30"/><path d="M260 156h20v20" fill="none" stroke="#2b9b74" stroke-width="4"/>
+    <text x="287" y="106">ponto de encontro</text><text x="287" y="168">90°</text>${close}`;
+
+  if (visual === "mediatriz") return `${open("Construção da mediatriz com arcos de compasso")}
+    <path d="M85 120h350" stroke="#7157d9" stroke-width="6"/><circle cx="85" cy="120" r="7" fill="#7157d9"/><circle cx="435" cy="120" r="7" fill="#7157d9"/>
+    <path d="M85 120a210 210 0 0 1 350 0M85 120a210 210 0 0 0 350 0" fill="none" stroke="#3278c8" stroke-width="4" stroke-dasharray="7 6"/>
+    <path d="M260 30v170" stroke="#2b9b74" stroke-width="5"/><path d="M260 120h18v18" fill="none" stroke="#2b9b74" stroke-width="4"/>
+    <text x="70" y="148">A</text><text x="445" y="148">B</text><text x="278" y="48">mediatriz</text>${close}`;
+
+  if (["quadrilatero-area", "trapezio", "losango"].includes(visual)) {
+    if (visual === "losango") return `${open("Losango com as duas diagonais")}
+      <path d="M260 30 440 110 260 190 80 110Z" fill="#eee9ff" stroke="#7157d9" stroke-width="5"/>
+      <path d="M80 110h360M260 30v160" stroke="#2b9b74" stroke-width="5" stroke-dasharray="8 6"/>
+      <path d="M260 110h18v18" fill="none" stroke="#df7a30" stroke-width="4"/><text x="350" y="99">D</text><text x="274" y="70">d</text>${close}`;
+    if (visual === "trapezio") return `${open("Trapézio com bases paralelas e altura")}
+      <path d="M70 175 145 50h230l75 125Z" fill="#fff5d7" stroke="#d49a18" stroke-width="5"/>
+      <path d="M145 50v125" stroke="#2b9b74" stroke-width="5" stroke-dasharray="8 6"/><path d="M145 155h20v20" fill="none" stroke="#2b9b74" stroke-width="4"/>
+      <text x="260" y="42" text-anchor="middle">base menor</text><text x="260" y="204" text-anchor="middle">base maior</text><text x="169" y="115">altura</text>${close}`;
+    return `${open("Paralelogramo transformado em retângulo")}
+      <path d="M55 165 110 55h180l-55 110Z" fill="#eee9ff" stroke="#7157d9" stroke-width="5"/><path d="M110 55v110" stroke="#2b9b74" stroke-width="4" stroke-dasharray="7 6"/>
+      <path d="M315 55h150v110H315Z" fill="#e8f8f1" stroke="#2b9b74" stroke-width="5"/><path d="m285 110 25 0" stroke="#df7a30" stroke-width="5"/><path d="m302 99 12 11-12 11" fill="none" stroke="#df7a30" stroke-width="4"/>
+      <text x="172" y="197" text-anchor="middle">mesma base e altura</text><text x="390" y="197" text-anchor="middle">mesma área</text>${close}`;
+  }
+
+  if (["poligono-diagonais", "poligono-angulos", "hexagono-inscrito"].includes(visual)) return `${open("Hexágono com centro, ângulos e diagonais")}
+    <circle cx="260" cy="112" r="88" fill="#f9fbff" stroke="#cfe0f7" stroke-width="3"/>
+    <path d="m260 24 76 44v88l-76 44-76-44V68Z" fill="#e7f2ff" fill-opacity=".65" stroke="#3278c8" stroke-width="5"/>
+    <path d="M184 68 336 156M336 68 184 156M260 24v176" stroke="#7157d9" stroke-width="3" stroke-dasharray="7 6"/><circle cx="260" cy="112" r="6" fill="#df7a30"/>
+    <path d="M260 112 336 68" stroke="#2b9b74" stroke-width="5"/><text x="300" y="82">raio</text>${close}`;
+
+  if (visual === "construcao-angulos") return `${open("Construção de ângulos por perpendicular e bissetriz")}
+    <path d="M70 175h170V42M70 175 190 55" stroke="#7157d9" stroke-width="6" stroke-linecap="round"/><path d="M220 155h20v20" fill="none" stroke="#2b9b74" stroke-width="4"/>
+    <path d="M330 175h135M330 175l68-118M330 175l118-68" stroke="#3278c8" stroke-width="6" stroke-linecap="round"/>
+    <path d="M366 112q24 12 35 36M397 142q16 7 21 23" fill="none" stroke="#df7a30" stroke-width="4"/>
+    <text x="155" y="205" text-anchor="middle">90° dividido ao meio</text><text x="400" y="205" text-anchor="middle">60° dividido ao meio</text>${close}`;
+
+  if (["volume-capacidade", "unidades"].includes(visual)) return `${open("Bloco retangular com três dimensões e conversão de capacidade")}
+    <path d="M75 72h180v105H75ZM75 72l55-38h180v105l-55 38M255 72l55-38M255 177l55-38" fill="#e7f2ff" fill-opacity=".7" stroke="#3278c8" stroke-width="4"/>
+    <path d="M355 65h100v105H355Z" fill="#e8f8f1" stroke="#2b9b74" stroke-width="5"/><path d="M355 120h100" stroke="#2b9b74" stroke-width="3" stroke-dasharray="7 5"/>
+    <text x="165" y="199" text-anchor="middle">comprimento × largura × altura</text><text x="405" y="195" text-anchor="middle">volume ↔ litros</text>${close}`;
+
+  if (visual === "circulo-area") return `${open("Círculo com raio destacado")}
+    <circle cx="260" cy="112" r="82" fill="#fff5d7" stroke="#d49a18" stroke-width="5"/><circle cx="260" cy="112" r="7" fill="#7157d9"/>
+    <path d="M260 112h82" stroke="#7157d9" stroke-width="6"/><text x="300" y="101">raio r</text><path d="M260 30a82 82 0 0 1 82 82" fill="none" stroke="#2b9b74" stroke-width="5"/>
+    <text x="260" y="210" text-anchor="middle">a área ocupa toda a região interna</text>${close}`;
+
+  if (["area-composta", "comparar-areas"].includes(visual)) return `${open("Figuras divididas para comparar ou somar áreas")}
+    <path d="M55 170V55h150v115Z" fill="#e8f8f1" stroke="#2b9b74" stroke-width="5"/><path d="M205 170 300 75l75 95Z" fill="#eee9ff" stroke="#7157d9" stroke-width="5"/>
+    <circle cx="430" cy="112" r="57" fill="#fff5d7" stroke="#d49a18" stroke-width="5"/><path d="M205 170h170" stroke="#df7a30" stroke-width="4" stroke-dasharray="7 5"/>
+    <text x="214" y="204" text-anchor="middle">separe · calcule · combine</text>${close}`;
+
+  return `${open("Triângulo com lados e ângulos destacados")}
+    <path d="M75 175 260 38l185 137Z" fill="#eee9ff" stroke="#7157d9" stroke-width="5"/>
+    <path d="M101 156q26 10 38 33M381 189q13-23 38-33M235 58q25 18 50 0" fill="none" stroke="#df7a30" stroke-width="5"/>
+    <text x="145" y="105">lado</text><text x="350" y="105">lado</text><text x="260" y="207" text-anchor="middle">compare lados e ângulos</text>${close}`;
+}
+
+function createLearnIllustration(subject, visual) {
   if (subject === "Português — 8º ano") {
     return `
       <svg viewBox="0 0 520 170" role="img" aria-label="Ilustração de análise de uma frase">
@@ -648,15 +731,7 @@ function createLearnIllustration(subject) {
       </svg>`;
   }
   if (subject === GEOMETRY_SUBJECT) {
-    return `
-      <svg viewBox="0 0 520 190" role="img" aria-label="Esquema com triângulo, quadrilátero e polígono">
-        <rect x="18" y="18" width="484" height="154" rx="24" fill="#ffffff" opacity=".92"/>
-        <path d="M58 137 126 48l68 89Z" fill="#eee9ff" stroke="#7157d9" stroke-width="5" stroke-linejoin="round"/>
-        <path d="M226 58h104v79H226Z" fill="#e8f8f1" stroke="#2b9b74" stroke-width="5"/>
-        <path d="m408 46 54 31-1 62-54 30-53-31 1-62Z" fill="#fff5d7" stroke="#d49a18" stroke-width="5" stroke-linejoin="round"/>
-        <path d="M126 48v89M226 137l104-79M354 76l107 63" stroke="#ffffff" stroke-width="3" stroke-dasharray="6 6"/>
-        <text x="126" y="160" text-anchor="middle">TRIÂNGULO</text><text x="278" y="160" text-anchor="middle">QUADRILÁTERO</text><text x="408" y="28" text-anchor="middle">POLÍGONO</text>
-      </svg>`;
+    return createGeometryLearnIllustration(visual);
   }
   if (subject === "Ciências") {
     return `
@@ -753,13 +828,15 @@ function renderLearnGuide() {
   if (!guide) return;
 
   const isPortuguese = question.materia === PORTUGUESE_SUBJECT;
+  const isGeometry = question.materia === GEOMETRY_SUBJECT;
   learnPanel.classList.toggle("is-portuguese-guide", isPortuguese);
+  learnPanel.classList.toggle("is-geometry-guide", isGeometry);
 
   learnTitle.textContent = guide.titulo;
   learnIntro.textContent = guide.introducao;
   learnIllustration.replaceChildren();
   if (isPortuguese) renderPortugueseConceptMap(guide);
-  else learnIllustration.innerHTML = createLearnIllustration(question.materia);
+  else learnIllustration.innerHTML = createLearnIllustration(question.materia, guide.visual);
   learnDiagram.replaceChildren();
   guide.diagrama.forEach((step, index) => {
     const node = document.createElement("span");
