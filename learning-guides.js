@@ -217,6 +217,64 @@ const exemplosVisuaisPortugues = {
   },
 };
 
+const guiasGeometria = {
+  "Triângulos: classificação, propriedades, congruência e área": criarGuiaAprender(
+    "Triângulos: lados, ângulos, congruência e área",
+    "Triângulo é um polígono de três lados. Antes de calcular, identifique quais medidas foram dadas e o que a questão pede.",
+    ["Observe os lados", "Observe os ângulos", "Marque os dados", "Escolha a propriedade", "Calcule e confira"],
+    [
+      { titulo: "Classificação pelos lados", texto: "Equilátero tem três lados iguais; isósceles tem dois; escaleno tem os três diferentes.", exemplos: ["5, 5 e 5 cm → equilátero", "4, 4 e 7 cm → isósceles", "3, 4 e 5 cm → escaleno"] },
+      { titulo: "Classificação pelos ângulos", texto: "Acutângulo tem três ângulos menores que 90°; retângulo tem um de 90°; obtusângulo tem um maior que 90°.", exemplos: ["45°, 45° e 90° → triângulo retângulo"] },
+      { titulo: "Regras essenciais", texto: "Os ângulos internos somam 180°. Para três lados formarem triângulo, o maior deve ser menor que a soma dos outros dois.", exemplos: ["50° + 60° + x = 180° → x = 70°", "3, 4 e 5 → 5 < 3 + 4, então existe"] },
+      { titulo: "Área e congruência", texto: "Área é base × altura ÷ 2. Triângulos congruentes têm mesma forma e tamanho; casos comuns são LLL, LAL e ALA.", exemplos: ["b = 8 e h = 5 → área = 20", "dois lados e o ângulo entre eles iguais → caso LAL"] },
+    ],
+  ),
+  "Segmentos e pontos notáveis nos triângulos": criarGuiaAprender(
+    "Linhas e centros importantes do triângulo",
+    "Cada segmento nasce de uma regra diferente. Pergunte de onde ele parte, onde termina e se divide lado, ângulo ou forma 90°.",
+    ["Veja o ponto de partida", "Veja onde termina", "Procure metade ou 90°", "Nomeie o segmento", "Ligue ao ponto notável"],
+    [
+      { titulo: "Quatro segmentos", texto: "Mediana vai ao ponto médio; altura forma 90°; bissetriz divide o ângulo; mediatriz corta um lado ao meio em 90°.", exemplos: ["vértice → ponto médio do lado → mediana", "lado dividido ao meio em 90° → mediatriz"] },
+      { titulo: "Quatro pontos", texto: "Medianas encontram-se no baricentro; alturas no ortocentro; bissetrizes no incentro; mediatrizes no circuncentro.", exemplos: ["bissetrizes → incentro", "mediatrizes → circuncentro"] },
+      { titulo: "O que cada centro faz", texto: "Baricentro é centro de equilíbrio; incentro centra a circunferência inscrita; circuncentro centra a circunferência que passa pelos vértices.", exemplos: ["mesma distância dos lados → incentro", "mesma distância dos vértices → circuncentro"] },
+      { titulo: "Razão do baricentro", texto: "O baricentro divide a mediana em 2:1. Do vértice até ele há 2/3 da mediana; dele até o lado há 1/3.", exemplos: ["mediana de 15 cm → 10 cm + 5 cm"] },
+    ],
+  ),
+  "Quadriláteros: propriedades, classificação e áreas": criarGuiaAprender(
+    "Quadriláteros: compare propriedades",
+    "Quadrilátero possui quatro lados e ângulos internos que somam 360°. Para identificar a figura, examine paralelismo, medidas dos lados, ângulos e diagonais.",
+    ["Conte os lados", "Marque os paralelos", "Compare lados e ângulos", "Observe as diagonais", "Aplique a área"],
+    [
+      { titulo: "Família dos paralelogramos", texto: "Paralelogramo tem lados opostos paralelos. Retângulo acrescenta quatro ângulos retos; losango, quatro lados iguais; quadrado possui as duas propriedades.", exemplos: ["4 lados iguais + 4 ângulos retos → quadrado"] },
+      { titulo: "Trapézio", texto: "Possui um par de lados paralelos, chamados bases. Sua área usa a média das bases multiplicada pela altura.", exemplos: ["B = 10, b = 6, h = 4 → área = 32"] },
+      { titulo: "Fórmulas de área", texto: "Retângulo, quadrado e paralelogramo partem de base × altura. Losango usa diagonal maior × diagonal menor ÷ 2.", exemplos: ["losango: D = 10 e d = 6 → área = 30"] },
+      { titulo: "Diagonais", texto: "No retângulo são iguais; no losango são perpendiculares; no quadrado são iguais, perpendiculares e bissetam os ângulos.", exemplos: ["diagonais iguais, mas não necessariamente perpendiculares → retângulo"] },
+    ],
+  ),
+  "Polígonos: classificação, ângulos, diagonais e construções": criarGuiaAprender(
+    "Polígonos: lados, ângulos e diagonais",
+    "Polígono é uma figura plana fechada formada por segmentos. Em um polígono regular, todos os lados e todos os ângulos são iguais.",
+    ["Conte os lados", "Veja se é regular", "Escolha a fórmula", "Substitua n", "Confira a unidade"],
+    [
+      { titulo: "Nomes e forma", texto: "Triângulo tem 3 lados; quadrilátero 4; pentágono 5; hexágono 6; heptágono 7; octógono 8; decágono 10. O convexo não tem reentrância; o não convexo tem.", exemplos: ["6 lados → hexágono", "uma reentrância → polígono não convexo"] },
+      { titulo: "Ângulos internos", texto: "A soma é S = (n − 2) × 180°. Em um polígono regular, divida essa soma por n para obter cada ângulo.", exemplos: ["hexágono: S = 4 × 180° = 720°; cada ângulo = 120°"] },
+      { titulo: "Diagonais e ângulos externos", texto: "O número de diagonais é D = n(n − 3)/2. Os ângulos externos, um por vértice, sempre somam 360°.", exemplos: ["pentágono: D = 5 × 2 ÷ 2 = 5"] },
+      { titulo: "Construções com régua e compasso", texto: "Retas perpendiculares formam 90°. O triângulo equilátero fornece 60°; a bissetriz de 60° fornece 30° e a bissetriz de 90° fornece 45°. No hexágono inscrito, o lado é igual ao raio.", exemplos: ["90° dividido pela bissetriz → 45°", "raio de 4 cm → hexágono com seis lados de 4 cm"] },
+    ],
+  ),
+  "Áreas, capacidade e volume": criarGuiaAprender(
+    "Área, volume e capacidade sem confusão",
+    "Área mede superfície e usa unidade quadrada. Volume mede espaço ocupado e usa unidade cúbica. Capacidade indica quanto cabe em um recipiente.",
+    ["Identifique a grandeza", "Converta as unidades", "Escolha a fórmula", "Calcule", "Escreva a unidade"],
+    [
+      { titulo: "Área", texto: "Retângulo: b × h; triângulo: b × h ÷ 2; círculo: πr². Figuras compostas podem ser divididas e depois somadas ou subtraídas.", exemplos: ["retângulo 10 × 6 + triângulo 6 × 4 ÷ 2 → 72 m²"] },
+      { titulo: "Volume", texto: "No bloco retangular, multiplique comprimento, largura e altura. As três medidas devem estar na mesma unidade.", exemplos: ["5 × 4 × 3 cm → 60 cm³"] },
+      { titulo: "Capacidade", texto: "As equivalências fundamentais são 1 L = 1 dm³, 1 L = 1.000 cm³ e 1 m³ = 1.000 L.", exemplos: ["60.000 cm³ → 60 L"] },
+      { titulo: "Estratégia", texto: "Escreva os dados, converta antes de calcular e confira se a resposta pede comprimento, área, volume ou litros.", exemplos: ["22,5 m³ × 1.000 → 22.500 L"] },
+    ],
+  ),
+};
+
 const guiasCiencias = {
   "Digestão: funções e tipos": criarGuiaAprender("Transformação dos alimentos", "A digestão quebra os alimentos em partículas que o organismo consegue absorver e utilizar.", ["Alimento", "Quebra mecânica", "Quebra química", "Nutrientes"], [
     { titulo: "Duas formas de digestão", texto: "A mecânica reduz e mistura o alimento; a química usa enzimas e outras substâncias para transformar moléculas.", exemplos: ["Mastigação: processo mecânico", "Ação da amilase: processo químico"] },
@@ -337,6 +395,7 @@ function obterGuiaAprender(questao) {
       })),
     };
   }
+  if (questao.materia === "Geometria — 8º ano") return guiasGeometria[questao.conteudo];
   if (questao.materia === "Ciências") return guiasCiencias[questao.conteudo];
 
   const conteudo = normalizarConteudoGuia(`${questao.conteudo} ${questao.capitulo}`);

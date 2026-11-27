@@ -59,6 +59,7 @@ const performanceEmpty = document.querySelector("#performance-empty");
 
 const ALL = "__all";
 const PORTUGUESE_SUBJECT = "Português — 8º ano";
+const GEOMETRY_SUBJECT = "Geometria — 8º ano";
 const STORAGE_KEY = "estuda-plus-quiz-progress-v1";
 const PERFORMANCE_STORAGE_KEY = "estuda-plus-question-performance-v1";
 let selectedSubject = ALL;
@@ -467,10 +468,10 @@ function shuffle(items) {
 }
 
 function buildProgressiveQuiz(items, limit) {
-  const isPortugueseQuiz = selectedSubject === PORTUGUESE_SUBJECT
+  const isProgressiveQuiz = items.length > 0
     && items.every((question) => Boolean(question.dificuldade));
 
-  if (!isPortugueseQuiz || selectedDifficulty !== ALL) {
+  if (!isProgressiveQuiz || selectedDifficulty !== ALL) {
     return shuffle(items).slice(0, limit);
   }
 
@@ -644,6 +645,17 @@ function createLearnIllustration(subject) {
         <text x="385" y="80" text-anchor="middle">INFORMAÇÃO</text>
         <path d="M112 112h276" stroke="#7157d9" stroke-width="4" stroke-linecap="round" stroke-dasharray="7 10"/>
         <circle cx="112" cy="112" r="7" fill="#7157d9"/><circle cx="240" cy="112" r="7" fill="#57b995"/><circle cx="388" cy="112" r="7" fill="#f6c850"/>
+      </svg>`;
+  }
+  if (subject === GEOMETRY_SUBJECT) {
+    return `
+      <svg viewBox="0 0 520 190" role="img" aria-label="Esquema com triângulo, quadrilátero e polígono">
+        <rect x="18" y="18" width="484" height="154" rx="24" fill="#ffffff" opacity=".92"/>
+        <path d="M58 137 126 48l68 89Z" fill="#eee9ff" stroke="#7157d9" stroke-width="5" stroke-linejoin="round"/>
+        <path d="M226 58h104v79H226Z" fill="#e8f8f1" stroke="#2b9b74" stroke-width="5"/>
+        <path d="m408 46 54 31-1 62-54 30-53-31 1-62Z" fill="#fff5d7" stroke="#d49a18" stroke-width="5" stroke-linejoin="round"/>
+        <path d="M126 48v89M226 137l104-79M354 76l107 63" stroke="#ffffff" stroke-width="3" stroke-dasharray="6 6"/>
+        <text x="126" y="160" text-anchor="middle">TRIÂNGULO</text><text x="278" y="160" text-anchor="middle">QUADRILÁTERO</text><text x="408" y="28" text-anchor="middle">POLÍGONO</text>
       </svg>`;
   }
   if (subject === "Ciências") {
