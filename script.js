@@ -35,6 +35,7 @@ const resultMessage = document.querySelector("#result-message");
 const restartButton = document.querySelector("#restart-button");
 
 const ALL = "__all";
+const PORTUGUESE_SUBJECT = "Português — 9º ano";
 const STORAGE_KEY = "estuda-plus-quiz-progress-v1";
 let selectedSubject = ALL;
 let selectedChapters = new Set();
@@ -216,6 +217,42 @@ function shuffle(items) {
   return copy;
 }
 
+function buildProgressiveQuiz(items, limit) {
+  const isPortugueseQuiz = selectedSubject === PORTUGUESE_SUBJECT
+    && items.every((question) => Boolean(question.dificuldade));
+
+  if (!isPortugueseQuiz || selectedDifficulty !== ALL) {
+    return shuffle(items).slice(0, limit);
+  }
+
+  const groups = {
+    "Fácil": shuffle(items.filter((question) => question.dificuldade === "Fácil")),
+    "Médio": shuffle(items.filter((question) => question.dificuldade === "Médio")),
+    "Difícil": shuffle(items.filter((question) => question.dificuldade === "Difícil")),
+  };
+
+  const easyCount = Math.min(groups["Fácil"].length, Math.round(limit * 0.4));
+  const mediumCount = Math.min(groups["Médio"].length, Math.round(limit * 0.4));
+  const hardCount = Math.min(groups["Difícil"].length, limit - easyCount - mediumCount);
+  const selected = [
+    ...groups["Fácil"].slice(0, easyCount),
+    ...groups["Médio"].slice(0, mediumCount),
+    ...groups["Difícil"].slice(0, hardCount),
+  ];
+
+  if (selected.length < limit) {
+    const selectedIds = new Set(selected.map((question) => question.pergunta));
+    const remaining = [
+      ...groups["Fácil"],
+      ...groups["Médio"],
+      ...groups["Difícil"],
+    ].filter((question) => !selectedIds.has(question.pergunta));
+    selected.push(...remaining.slice(0, limit - selected.length));
+  }
+
+  return selected;
+}
+
 function updateQuizStats() {
   correctCount.textContent = score;
   wrongCount.textContent = wrongAnswers;
@@ -317,12 +354,12 @@ function openSetup() {
 }
 
 function buildQuiz() {
-  const filtered = shuffle(getFilteredQuestions());
+  const filtered = getFilteredQuestions();
   const limit = selectedAmount === "all"
     ? filtered.length
     : Math.min(Number(selectedAmount), filtered.length);
 
-  quizQuestions = filtered.slice(0, limit);
+  quizQuestions = buildProgressiveQuiz(filtered, limit);
   if (!quizQuestions.length) {
     showScreen(emptyScreen);
     return;
