@@ -1049,12 +1049,41 @@ h1 em::after {
   background: #fff;
 }
 .is-geometry-guide .geometry-main-figure {
+  display: grid;
+  gap: 5px;
+  padding: 16px;
   overflow: hidden;
   background: linear-gradient(145deg, #fbf9ff, #f8fffc);
   border: 1px solid #e5def7;
   border-radius: 16px;
 }
-.is-geometry-guide .geometry-main-figure svg { max-height: 300px; }
+.is-geometry-guide .geometry-main-figure > strong {
+  color: #4936a8;
+  font-family: "Nunito", sans-serif;
+  font-size: 1.05rem;
+}
+.is-geometry-guide .geometry-main-figure > span {
+  color: #655e76;
+  font-size: 0.9rem;
+}
+.geometry-main-worked-diagram {
+  margin-top: 8px;
+  overflow: hidden;
+  background: #fff;
+  border: 1px solid #e6def7;
+  border-radius: 14px;
+}
+.is-geometry-guide .geometry-main-figure svg {
+  display: block;
+  width: 100%;
+  max-height: 320px;
+}
+.is-geometry-guide .geometry-main-figure text {
+  fill: #4936a8;
+  font-family: "Nunito", sans-serif;
+  font-size: 15px;
+  font-weight: 800;
+}
 .geometry-reference {
   padding: 17px;
   background: #fbfaff;
@@ -1110,7 +1139,7 @@ h1 em::after {
 .geometry-card-diagram text {
   fill: var(--learn-tone-ink);
   font-family: "Nunito", sans-serif;
-  font-size: 10px;
+  font-size: 16px;
   font-weight: 800;
 }
 .geometry-reference-card .mini-card-example { margin-top: 3px; }

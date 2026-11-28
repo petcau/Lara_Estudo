@@ -1103,6 +1103,257 @@ function renderPortugueseConceptMap(guide) {
   learnIllustration.append(foundations, map);
 }
 
+function getGeometryWorkedSpecs(visual) {
+  const specs = {
+    "triangulo-lados": [
+      { tipo: "triangulo-lados-calculo", lados: ["5 cm", "5 cm", "5 cm"] },
+      { tipo: "triangulo-lados-calculo", lados: ["7 cm", "7 cm", "4 cm"] },
+      { tipo: "triangulo-lados-calculo", lados: ["4 cm", "5 cm", "6 cm"] },
+    ],
+    "triangulo-angulos": [
+      { tipo: "triangulo-angulos-calculo", angulos: ["50°", "70°", "60°"], forma: [50, 70, 60] },
+      { tipo: "triangulo-angulos-calculo", angulos: ["30°", "60°", "90°"], forma: [30, 60, 90] },
+      { tipo: "triangulo-angulos-calculo", angulos: ["25°", "120°", "35°"], forma: [25, 120, 35] },
+    ],
+    "triangulo-soma": [
+      { tipo: "triangulo-angulos-calculo", angulos: ["45°", "55°", "80°"], forma: [45, 55, 80] },
+      { tipo: "triangulo-angulos-calculo", angulos: ["35°", "80°", "65°"], forma: [35, 80, 65] },
+    ],
+    "triangulo-area": [
+      { tipo: "triangulo-area", base: "8 cm", altura: "6 cm" },
+      { tipo: "triangulo-area", base: "10 cm", altura: "4 cm" },
+      { tipo: "triangulo-area", base: "8 cm", altura: "6 cm" },
+      { tipo: "triangulo-area", base: "12 cm", altura: "5 cm" },
+    ],
+    "triangulo-congruencia": [
+      { tipo: "triangulo-lados-calculo", lados: ["3 cm", "4 cm", "5 cm"] },
+      { tipo: "triangulo-isosceles", esquerda: "5 cm", direita: "7 cm", vertice: "60°", base: "lado incluído" },
+      { tipo: "triangulo-angulos-calculo", angulos: ["45°", "65°", "70°"], forma: [45, 65, 70] },
+      { tipo: "triangulo-lados-calculo", lados: ["6 cm", "8 cm", "10 cm"] },
+    ],
+    "triangulo-existencia": [
+      { tipo: "triangulo-lados-calculo", lados: ["5 cm", "6 cm", "8 cm"] },
+      { tipo: "triangulo-lados-calculo", lados: ["4 cm", "5 cm", "9 cm"] },
+      { tipo: "triangulo-lados-calculo", lados: ["2 cm", "6 cm", "7 cm"] },
+    ],
+    "triangulo-classificacao": [
+      { tipo: "triangulo-lados-calculo", lados: ["6 cm", "6 cm", "9 cm"] },
+      { tipo: "triangulo-angulos-calculo", angulos: ["45°", "45°", "90°"], forma: [45, 45, 90] },
+      { tipo: "triangulo-isosceles", esquerda: "5 cm", direita: "5 cm", vertice: "90°", base: "5√2 cm", medidasLados: true },
+    ],
+    "triangulo-isosceles": [
+      { tipo: "triangulo-isosceles", esquerda: "7 cm", direita: "7 cm", base: "4 cm" },
+      { tipo: "triangulo-isosceles", esquerda: "65°", direita: "65°", vertice: "50°" },
+      { tipo: "triangulo-isosceles", esquerda: "70°", direita: "70°", vertice: "40°" },
+    ],
+    "triangulo-externo": [
+      { tipo: "triangulo-externo", internos: ["45°", "65°"], externo: "110°" },
+      { tipo: "triangulo-externo", internos: ["45°", "65°"], externo: "110°" },
+    ],
+    "triangulo-perimetro": [
+      { tipo: "triangulo-isosceles", esquerda: "11 cm", direita: "11 cm", base: "8 cm · P = 30 cm" },
+      { tipo: "triangulo-isosceles", esquerda: "11 cm", direita: "11 cm", base: "8 cm · P = 30 cm" },
+    ],
+    "triangulo-segmentos": [
+      { tipo: "mediana", partes: ["6 cm", "6 cm"], total: "12 cm" },
+      { tipo: "triangulo-area", base: "10 cm", altura: "8 cm · 90°" },
+      { tipo: "bissetriz", partes: ["40°", "40°"], total: "80°" },
+      { tipo: "mediatriz", distancias: ["PA = 10 cm", "PB = 10 cm"] },
+    ],
+    "triangulo-centros": [
+      { tipo: "baricentro", vg: "12 cm", gm: "6 cm", total: "18 cm" },
+      { tipo: "triangulo-area", base: "altura 8 cm", altura: "90°" },
+      { tipo: "bissetriz", partes: ["35°", "35°"], total: "70°" },
+      { tipo: "mediatriz", distancias: ["5 cm", "5 cm"] },
+    ],
+    "triangulo-baricentro": [
+      { tipo: "baricentro", vg: "10 cm", gm: "5 cm", total: "15 cm" },
+      { tipo: "baricentro", vg: "12 cm", gm: "6 cm", total: "18 cm" },
+      { tipo: "baricentro", vg: "12 cm", gm: "6 cm", total: "18 cm" },
+    ],
+    mediatriz: [
+      { tipo: "mediana", partes: ["6 cm", "6 cm"], total: "12 cm" },
+      { tipo: "mediatriz", distancias: ["PA = 10 cm", "PB = 10 cm"] },
+      { tipo: "mediatriz", distancias: ["7 cm", "7 cm"] },
+    ],
+    "quadrilateros-tipos": [
+      { tipo: "quadrado", lado: "5 cm · 90°" },
+      { tipo: "retangulo", base: "8 cm", altura: "5 cm" },
+      { tipo: "losango-calculo", diagonalMaior: "12 cm", diagonalMenor: "8 cm" },
+      { tipo: "trapezio-calculo", baseMaior: "10 cm", baseMenor: "6 cm", altura: "4 cm" },
+    ],
+    "quadrilatero-angulos": [
+      { tipo: "quadrilatero-angulos-calculo", angulos: ["90°", "90°", "90°", "90°"] },
+      { tipo: "quadrilatero-angulos-calculo", angulos: ["80°", "100°", "110°", "70°"] },
+    ],
+    "quadrilatero-area": [
+      { tipo: "retangulo", base: "8 cm", altura: "5 cm", interno: "A = 40 cm²" },
+      { tipo: "paralelogramo", base: "10 cm", altura: "4 cm" },
+      { tipo: "retangulo", base: "10 cm", altura: "4 cm", interno: "A = 40 cm²" },
+    ],
+    "quadrado-area": [
+      { tipo: "quadrado", lado: "6 cm · A = 36 cm²" },
+      { tipo: "quadrado", lado: "6 cm · P = 24 cm" },
+    ],
+    losango: [
+      { tipo: "losango-calculo", diagonalMaior: "lado 5 cm", diagonalMenor: "lado 5 cm" },
+      { tipo: "losango-calculo", diagonalMaior: "D = 12 cm", diagonalMenor: "d = 8 cm · 90°" },
+      { tipo: "losango-calculo", diagonalMaior: "12 cm", diagonalMenor: "8 cm" },
+    ],
+    trapezio: [
+      { tipo: "trapezio-calculo", baseMaior: "B = 10 cm", baseMenor: "b = 6 cm", altura: "h = 4 cm" },
+      { tipo: "trapezio-calculo", baseMaior: "10 cm", baseMenor: "6 cm", altura: "4 cm · 90°" },
+      { tipo: "trapezio-calculo", baseMaior: "10 cm", baseMenor: "6 cm", altura: "4 cm" },
+    ],
+    "escala-area": [
+      { tipo: "retangulo", base: "8 → 16 cm", altura: "5 cm", interno: "40 → 80 cm²" },
+      { tipo: "retangulo", base: "8 → 16 cm", altura: "5 → 10 cm", interno: "40 → 160 cm²" },
+      { tipo: "quadrado", lado: "3 → 9 cm · A: 9 → 81 cm²" },
+    ],
+    "poligonos-nomes": [3, 5, 7, 9].map((n) => ({ tipo: "poligono-calculo", n, centro: `${n} lados`, detalhe: `conte: ${n}` })),
+    "poligono-regular": [
+      { tipo: "poligono-calculo", n: 6, centro: "lado = 4 cm", detalhe: "6 lados iguais" },
+      { tipo: "poligono-calculo", n: 6, centro: "interno = 120°", detalhe: "6 ângulos iguais" },
+      { tipo: "poligono-calculo", n: 6, centro: "lado = 4 cm", detalhe: "interno = 120°" },
+    ],
+    "poligono-diagonais": [
+      { tipo: "poligono-calculo", n: 5, centro: "5 lados", detalhe: "diagonal liga não vizinhos" },
+      { tipo: "poligono-calculo", n: 6, centro: "6 lados", detalhe: "6 − 3 = 3 por vértice" },
+      { tipo: "poligono-calculo", n: 5, centro: "D = 5", detalhe: "5 × 2 ÷ 2" },
+    ],
+    "poligono-angulos": [
+      { tipo: "poligono-calculo", n: 6, centro: "S = 720°", detalhe: "(6 − 2) × 180°" },
+      { tipo: "poligono-calculo", n: 6, centro: "interno = 120°", detalhe: "720° ÷ 6" },
+      { tipo: "poligono-calculo", n: 8, centro: "externo = 45°", detalhe: "360° ÷ 8" },
+    ],
+    "poligono-convexidade": [
+      { tipo: "poligono-calculo", n: 5, centro: "5 ângulos < 180°", detalhe: "diagonais internas" },
+      { tipo: "poligono-calculo", n: 5, centro: "1 ângulo > 180°", detalhe: "há reentrância" },
+    ],
+    "construcao-angulos": [90, 60, 45, 30].map((angle) => ({ tipo: "poligono-calculo", n: angle === 60 ? 3 : 4, centro: `${angle}°`, detalhe: angle === 45 ? "90° ÷ 2" : angle === 30 ? "60° ÷ 2" : `ângulo de ${angle}°` })),
+    "hexagono-inscrito": [
+      { tipo: "poligono-calculo", n: 6, centro: "360° ÷ 6", detalhe: "central = 60°" },
+      { tipo: "poligono-calculo", n: 6, centro: "raio = 4 cm", detalhe: "lado = 4 cm" },
+      { tipo: "poligono-calculo", n: 6, centro: "6 marcações", detalhe: "abertura = 4 cm" },
+    ],
+    unidades: [
+      { tipo: "retangulo", base: "parede = 5 m", altura: "1 dimensão" },
+      { tipo: "retangulo", base: "5 m", altura: "4 m", interno: "A = 20 m²" },
+      { tipo: "bloco", comprimento: "5 cm", largura: "4 cm", altura: "3 cm" },
+      { tipo: "reservatorio", nivelY: 95, percentual: "20 L", capacidade: "capacidade: 20 L" },
+    ],
+    "volume-capacidade": [
+      { tipo: "bloco", comprimento: "5 cm", largura: "4 cm", altura: "3 cm" },
+      { tipo: "cubo", aresta: "3 cm" },
+      { tipo: "cubo", aresta: "1 dm · V = 1 dm³ = 1 L" },
+      { tipo: "bloco", comprimento: "20 cm", largura: "10 cm", altura: "10 cm" },
+    ],
+    "circulo-area": [
+      { tipo: "circulo-calculo", diametro: "10 cm · r = 5 cm" },
+      { tipo: "circulo-calculo", raio: "r = 3 cm · A = 28,26 cm²" },
+      { tipo: "circulo-calculo", raio: "r = 3 cm · C = 18,84 cm" },
+    ],
+    "area-composta": [
+      { tipo: "area-composta-calculo", base: "14 cm", altura: "8 cm", recorte: "4 × 2 cm" },
+      { tipo: "area-composta-calculo", base: "10 cm", altura: "6 cm", recorte: "somar 4 × 3 cm" },
+      { tipo: "area-composta-calculo", base: "8 m", altura: "4 m", recorte: "2,5 × 2 m" },
+    ],
+    "comparar-areas": [
+      { tipo: "quadrado", lado: "6 cm · A = 36 cm²" },
+      { tipo: "circulo-calculo", raio: "r = 3 cm · A = 28,26 cm²" },
+    ],
+  };
+  return specs[visual] || [{ tipo: "triangulo-angulos-calculo", angulos: ["50°", "70°", "60°"], forma: [50, 70, 60] }];
+}
+
+function createGeometryWorkedDiagram(visual, index = 0, question = null, isMain = false) {
+  if (!question?.diagrama && visual === "triangulo-congruencia") {
+    const open = `<svg viewBox="0 0 480 240" role="img" aria-label="Dois triângulos congruentes com medidas correspondentes"><rect x="4" y="4" width="472" height="232" rx="20" fill="#fff"/>`;
+    const close = "</svg>";
+    if (index === 1) return `${open}
+      <path d="M35 190h140L85 103.397Z" fill="#eee9ff" stroke="#7157d9" stroke-width="5"/><path d="M275 190h140l-90-86.603Z" fill="#e8f8f1" stroke="#2b9b74" stroke-width="5"/>
+      <text x="105" y="218" text-anchor="middle">7 cm</text><text x="49" y="148">5 cm</text><text x="69" y="181">60°</text>
+      <text x="345" y="218" text-anchor="middle">7 cm</text><text x="289" y="148">5 cm</text><text x="309" y="181">60°</text><text x="240" y="30" text-anchor="middle">LAL: 5 cm · 60° · 7 cm</text>${close}`;
+    if (index === 2) {
+      const first = triangleFromBaseAngles(35, 190, 145, 45, 70);
+      const second = { points: first.points.map((point) => ({ x: point.x + 250, y: point.y })) };
+      return `${open}<path d="${trianglePath(first)}" fill="#eee9ff" stroke="#7157d9" stroke-width="5"/><path d="${trianglePath(second)}" fill="#e8f8f1" stroke="#2b9b74" stroke-width="5"/>
+        <text x="108" y="218" text-anchor="middle">8 cm</text><text x="58" y="178">45°</text><text x="153" y="178">70°</text>
+        <text x="358" y="218" text-anchor="middle">8 cm</text><text x="308" y="178">45°</text><text x="403" y="178">70°</text><text x="240" y="30" text-anchor="middle">ALA: 45° · 8 cm · 70°</text>${close}`;
+    }
+    const scale = index === 3 ? 2 : 1;
+    const values = scale === 2 ? ["6 cm", "8 cm", "10 cm"] : ["3 cm", "4 cm", "5 cm"];
+    return `${open}<path d="M45 190V70h90Z" fill="#eee9ff" stroke="#7157d9" stroke-width="5"/><path d="M285 190V70h90Z" fill="#e8f8f1" stroke="#2b9b74" stroke-width="5"/>
+      <text x="90" y="218" text-anchor="middle">${values[0]}</text><text x="30" y="135">${values[1]}</text><text x="100" y="125">${values[2]}</text>
+      <text x="330" y="218" text-anchor="middle">${values[0]}</text><text x="270" y="135">${values[1]}</text><text x="340" y="125">${values[2]}</text><text x="240" y="30" text-anchor="middle">${values.join(" · ")} nos dois</text>${close}`;
+  }
+  if (!question?.diagrama && visual === "triangulo-existencia" && index === 1) {
+    return `<svg viewBox="0 0 480 240" role="img" aria-label="Segmentos de quatro, cinco e nove centímetros alinhados, sem formar triângulo"><rect x="4" y="4" width="472" height="232" rx="20" fill="#fff"/>
+      <path d="M40 130h180" stroke="#7157d9" stroke-width="7"/><path d="M220 130h220" stroke="#2b9b74" stroke-width="7"/><path d="M40 175h400" stroke="#d49a18" stroke-width="7"/>
+      <text x="130" y="115" text-anchor="middle">4 cm</text><text x="330" y="115" text-anchor="middle">5 cm</text><text x="240" y="205" text-anchor="middle">9 cm</text><text x="240" y="45" text-anchor="middle">4 + 5 = 9 → fica alinhado</text>${"</svg>"}`;
+  }
+  if (!question?.diagrama && visual === "quadrilatero-area" && index === 0 && isMain) {
+    return `<svg viewBox="0 0 480 240" role="img" aria-label="Paralelogramo e retângulo com base dez e altura quatro, ambos com área quarenta">
+      <rect x="4" y="4" width="472" height="232" rx="20" fill="#fff"/>
+      <path d="M28 174 78 54h150l-50 120Z" fill="#eee9ff" stroke="#7157d9" stroke-width="5"/>
+      <path d="M78 54v120" stroke="#2b9b74" stroke-width="4" stroke-dasharray="8 6"/><path d="M78 154h20v20" fill="none" stroke="#df7a30" stroke-width="4"/>
+      <path d="M272 54h180v120H272Z" fill="#e8f8f1" stroke="#2b9b74" stroke-width="5"/><path d="M272 154h20v20" fill="none" stroke="#df7a30" stroke-width="4"/>
+      <text x="128" y="207" text-anchor="middle">b = 10 cm</text><text x="61" y="115" text-anchor="middle">h = 4 cm</text>
+      <text x="362" y="207" text-anchor="middle">b = 10 cm</text><text x="255" y="115" text-anchor="middle">h = 4 cm</text>
+      <text x="150" y="125" text-anchor="middle">A = 40 cm²</text><text x="362" y="125" text-anchor="middle">A = 40 cm²</text>
+    </svg>`;
+  }
+  if (!question?.diagrama && visual === "poligono-convexidade" && isMain) {
+    return `<svg viewBox="0 0 480 240" role="img" aria-label="Polígono convexo e polígono não convexo com ângulos medidos">
+      <rect x="4" y="4" width="472" height="232" rx="20" fill="#fff"/>
+      <path d="M40 170 65 75 150 40 215 105 185 190 85 195Z" fill="#e8f8f1" stroke="#2b9b74" stroke-width="5"/>
+      <path d="M270 55H440V195H360V125H270Z" fill="#fff0e4" stroke="#df7a30" stroke-width="5"/>
+      <text x="128" y="25" text-anchor="middle">todos os ângulos &lt; 180°</text><text x="355" y="25" text-anchor="middle">reentrância = 270°</text>
+      <text x="128" y="224" text-anchor="middle">CONVEXO</text><text x="355" y="224" text-anchor="middle">NÃO CONVEXO</text>
+    </svg>`;
+  }
+  if (!question?.diagrama && visual === "poligono-convexidade" && index === 1) {
+    return `<svg viewBox="0 0 480 240" role="img" aria-label="Polígono não convexo com ângulo interno de 270 graus"><rect x="4" y="4" width="472" height="232" rx="20" fill="#fff"/><path d="M95 35H385V210H270V120H95Z" fill="#fff0e4" stroke="#df7a30" stroke-width="6"/><text x="270" y="108" text-anchor="middle">270°</text><text x="240" y="230" text-anchor="middle">ângulo interno maior que 180°</text></svg>`;
+  }
+  if (!question?.diagrama && visual === "construcao-angulos") {
+    const angles = [90, 60, 45, 30];
+    const angle = angles[index] || 90;
+    const radians = angle * Math.PI / 180;
+    const x = geometryRound(95 + 120 * Math.cos(radians));
+    const y = geometryRound(190 - 120 * Math.sin(radians));
+    return `<svg viewBox="0 0 480 240" role="img" aria-label="Construção exata de um ângulo de ${angle} graus">
+      <rect x="4" y="4" width="472" height="232" rx="20" fill="#fff"/>
+      <path d="M95 190H405M95 190L${x} ${y}" stroke="#7157d9" stroke-width="6" stroke-linecap="round"/>
+      <path d="M155 190 A60 60 0 0 0 ${geometryRound(95 + 60 * Math.cos(radians))} ${geometryRound(190 - 60 * Math.sin(radians))}" fill="none" stroke="#df7a30" stroke-width="5"/>
+      <text x="175" y="155" text-anchor="middle">${angle}°</text><text x="240" y="222" text-anchor="middle">${angle === 45 ? "90° ÷ 2 = 45°" : angle === 30 ? "60° ÷ 2 = 30°" : `medida exata: ${angle}°`}</text>
+    </svg>`;
+  }
+  if (!question?.diagrama && visual === "hexagono-inscrito") {
+    const points = regularPolygonPoints(240, 120, 88, 6);
+    return `<svg viewBox="0 0 480 240" role="img" aria-label="Hexágono regular inscrito com raio e lado de quatro centímetros">
+      <rect x="4" y="4" width="472" height="232" rx="20" fill="#fff"/><circle cx="240" cy="120" r="88" fill="#f8fbff" stroke="#bcd5f4" stroke-width="4"/>
+      <path d="${polygonPath(points)}" fill="#e7f2ff" fill-opacity=".7" stroke="#3278c8" stroke-width="5"/>
+      <path d="M240 120 L${geometryPoint(points[1])} M240 120 L${geometryPoint(points[2])}" stroke="#7157d9" stroke-width="4"/>
+      <text x="296" y="93">r = 4 cm</text><text x="240" y="220" text-anchor="middle">lado = 4 cm · ângulo central = 60°</text>
+    </svg>`;
+  }
+  if (!question?.diagrama && visual === "losango" && index === 0) {
+    return `<svg viewBox="0 0 480 240" role="img" aria-label="Losango com quatro lados de cinco centímetros"><rect x="4" y="4" width="472" height="232" rx="20" fill="#fff"/><path d="M240 25 425 120 240 215 55 120Z" fill="#eee9ff" stroke="#7157d9" stroke-width="5"/><text x="145" y="74">5 cm</text><text x="335" y="74">5 cm</text><text x="145" y="180">5 cm</text><text x="335" y="180">5 cm</text></svg>`;
+  }
+  if (!question?.diagrama && visual === "area-composta" && index === 1) {
+    return `<svg viewBox="0 0 480 240" role="img" aria-label="Duas áreas retangulares somadas"><rect x="4" y="4" width="472" height="232" rx="20" fill="#fff"/><path d="M45 65h270v130H45Z" fill="#e8f8f1" stroke="#2b9b74" stroke-width="5"/><path d="M315 117h120v78H315Z" fill="#eee9ff" stroke="#7157d9" stroke-width="5"/><text x="180" y="220" text-anchor="middle">10 × 6 = 60 cm²</text><text x="375" y="220" text-anchor="middle">4 × 3 = 12 cm²</text><text x="240" y="35" text-anchor="middle">60 + 12 = 72 cm²</text></svg>`;
+  }
+  if (!question?.diagrama && visual === "comparar-areas" && index === 0) {
+    return `<svg viewBox="0 0 480 240" role="img" aria-label="Comparação numérica entre as áreas de um quadrado e um círculo">
+      <rect x="4" y="4" width="472" height="232" rx="20" fill="#fff"/><path d="M50 48h150v150H50Z" fill="#eee9ff" stroke="#7157d9" stroke-width="5"/>
+      <circle cx="355" cy="123" r="75" fill="#fff5d7" stroke="#d49a18" stroke-width="5"/><path d="M355 123h75" stroke="#7157d9" stroke-width="5"/>
+      <text x="125" y="220" text-anchor="middle">lado 6 cm → A = 36 cm²</text><text x="355" y="220" text-anchor="middle">r = 3 cm → A = 28,26 cm²</text>
+    </svg>`;
+  }
+  const spec = question?.diagrama || getGeometryWorkedSpecs(visual)[index] || getGeometryWorkedSpecs(visual)[0];
+  return createGeometryQuestionDiagram(spec);
+}
+
 function createGeometryCardDiagram(visual, index, title) {
   const open = (label) => `<svg viewBox="0 0 220 112" role="img" aria-label="${label}"><rect x="1" y="1" width="218" height="110" rx="12" fill="#fff" fill-opacity=".78"/>`;
   const close = "</svg>";
@@ -1182,13 +1433,22 @@ function createGeometryCardDiagram(visual, index, title) {
     return `${open(title)}<path d="M35 38h95v55H35ZM35 38l28-19h95v55l-28 19M130 38l28-19M130 93l28-19" fill="#e7f2ff" fill-opacity=".75" stroke="#3278c8" stroke-width="3"/><text x="176" y="61" text-anchor="middle">1 dm³</text><text x="176" y="82" text-anchor="middle">= 1 L</text>${close}`;
   }
 
-  return createGeometryLearnIllustration(visual);
+  return createGeometryWorkedDiagram(visual, index);
 }
 
-function renderGeometryVisualLesson(guide) {
+function renderGeometryVisualLesson(guide, question) {
   const figure = document.createElement("div");
   figure.className = "geometry-main-figure";
-  figure.innerHTML = createGeometryLearnIllustration(guide.visual);
+  const figureTitle = document.createElement("strong");
+  const figureHint = document.createElement("span");
+  const figureDiagram = document.createElement("div");
+  figureTitle.textContent = "Exemplo visual com valores";
+  figureHint.textContent = question?.diagrama
+    ? "Use as medidas da questão para acompanhar o raciocínio."
+    : "Observe as medidas no desenho antes de aplicar a regra.";
+  figureDiagram.className = "geometry-main-worked-diagram";
+  figureDiagram.innerHTML = createGeometryWorkedDiagram(guide.visual, 0, question, true);
+  figure.append(figureTitle, figureHint, figureDiagram);
   learnIllustration.appendChild(figure);
 
   if (!guide.quadro?.length) return;
@@ -1210,7 +1470,7 @@ function renderGeometryVisualLesson(guide) {
     text.textContent = item.texto;
     const diagram = document.createElement("div");
     diagram.className = "geometry-card-diagram";
-    diagram.innerHTML = createGeometryCardDiagram(guide.visual, index, item.titulo);
+    diagram.innerHTML = createGeometryWorkedDiagram(guide.visual, index);
     card.append(title, text, diagram);
     if (item.exemplo) appendMiniExample(card, item.exemplo);
     grid.appendChild(card);
@@ -1235,7 +1495,7 @@ function renderLearnGuide() {
   learnIntro.textContent = guide.introducao;
   learnIllustration.replaceChildren();
   if (isPortuguese) renderPortugueseConceptMap(guide);
-  else if (isGeometry) renderGeometryVisualLesson(guide);
+  else if (isGeometry) renderGeometryVisualLesson(guide, question);
   else learnIllustration.innerHTML = createLearnIllustration(question.materia, guide.visual);
   learnDiagram.replaceChildren();
   guide.diagrama.forEach((step, index) => {
@@ -1337,10 +1597,20 @@ function createGeometryQuestionDiagram(spec) {
     <path d="M245 38V190" stroke="#2b9b74" stroke-width="5" stroke-dasharray="9 7"/><path d="M245 170h20v20" fill="none" stroke="#df7a30" stroke-width="4"/>
     ${label(240, 222, spec.base)}${label(278, 112, spec.altura, "start")}${close}`;
 
-  if (spec.tipo === "triangulo-isosceles") return `${open("Triângulo isósceles com medidas indicadas")}
-    <path d="M65 190 240 35 415 190Z" fill="#e8f8f1" stroke="#2b9b74" stroke-width="5"/>
-    <path d="M125 132l16 13M339 145l16-13" stroke="#df7a30" stroke-width="5"/>
-    ${label(240, 75, spec.vertice || "")}${label(105, 178, spec.esquerda || "")}${label(375, 178, spec.direita || "")}${spec.base ? label(240, 220, spec.base) : ""}${close}`;
+  if (spec.tipo === "triangulo-isosceles") {
+    const vertexAngle = Number.parseFloat(spec.vertice);
+    const baseAngle = Number.isFinite(vertexAngle) ? (180 - vertexAngle) / 2 : 48;
+    const maxWidth = 350;
+    const width = Math.min(maxWidth, 290 / Math.tan(baseAngle * Math.PI / 180));
+    const triangle = triangleFromBaseAngles((480 - width) / 2, 190, width, baseAngle, baseAngle);
+    const [left, apex, right] = triangle.points;
+    const leftSideLabel = { x: (left.x + apex.x) / 2 - 18, y: (left.y + apex.y) / 2 };
+    const rightSideLabel = { x: (right.x + apex.x) / 2 + 18, y: (right.y + apex.y) / 2 };
+    return `${open("Triângulo isósceles com medidas indicadas")}
+      <path d="${trianglePath(triangle)}" fill="#e8f8f1" stroke="#2b9b74" stroke-width="5"/>
+      ${geometrySideTicks(left, apex, 1)}${geometrySideTicks(apex, right, 1)}
+      ${label(apex.x, apex.y + 36, spec.vertice || "")}${spec.medidasLados || !spec.vertice ? label(leftSideLabel.x, leftSideLabel.y, spec.esquerda || "") : label(left.x + 35, left.y - 18, spec.esquerda || "")}${spec.medidasLados || !spec.vertice ? label(rightSideLabel.x, rightSideLabel.y, spec.direita || "") : label(right.x - 35, right.y - 18, spec.direita || "")}${spec.base ? label(240, 220, spec.base) : ""}${close}`;
+  }
 
   if (spec.tipo === "triangulo-lados-calculo") return `${open("Triângulo com medidas dos lados")}
     <path d="M65 190 230 35 420 190Z" fill="#fff5d7" stroke="#d49a18" stroke-width="5"/>
@@ -1350,13 +1620,17 @@ function createGeometryQuestionDiagram(spec) {
     const leftAngle = Number.parseFloat(spec.internos[0]);
     const apexAngle = Number.parseFloat(spec.internos[1]);
     const rightAngle = 180 - leftAngle - apexAngle;
-    const triangle = triangleFromBaseAngles(55, 185, 335, leftAngle, rightAngle);
+    const leftTangent = Math.tan(leftAngle * Math.PI / 180);
+    const rightTangent = Math.tan(rightAngle * Math.PI / 180);
+    const heightPerWidth = leftTangent * rightTangent / (leftTangent + rightTangent);
+    const width = Math.min(315, 135 / heightPerWidth);
+    const triangle = triangleFromBaseAngles(45, 185, width, leftAngle, rightAngle);
     const [left, apex, right] = triangle.points;
     const extension = { x: 462, y: right.y };
     return `${open("Triângulo exato com ângulo externo")}
       <path d="${trianglePath(triangle)}" fill="#eee9ff" stroke="#7157d9" stroke-width="5"/><path d="M${geometryPoint(right)} L${geometryPoint(extension)}" stroke="#7157d9" stroke-width="5"/>
       <path d="${geometryAngleArc(left, apex, right)} ${geometryAngleArc(apex, left, right)} ${geometryAngleArc(right, apex, extension, 38)}" fill="none" stroke="#df7a30" stroke-width="4"/>
-      ${label(left.x + 35, left.y - 18, spec.internos[0])}${label(apex.x, apex.y + 38, spec.internos[1])}${label(right.x + 38, right.y - 38, spec.externo)}${close}`;
+      ${label(left.x + 35, left.y - 18, spec.internos[0])}${label(apex.x, apex.y + 38, spec.internos[1])}${label(right.x - 34, right.y - 18, `${rightAngle}°`)}${label(right.x + 42, right.y - 38, spec.externo)}${close}`;
   }
 
   if (spec.tipo === "mediana") return `${open("Mediana dividindo o lado oposto ao meio")}
